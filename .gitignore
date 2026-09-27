@@ -1,0 +1,36 @@
+# ---- Legacy CodeIgniter app (intentionally not part of the new system) ----
+app/
+public/
+system/
+tests/
+vendor/
+writable/
+Online_Marketplace/
+DATABASE/
+.env
+
+# ---- New-system secrets (never commit) ----
+web/.env
+web/.env.local
+web/.env*.local
+.env*.local
+*.pem
+*.key
+
+# ---- Dependencies & builds ----
+node_modules/
+web/.next/
+web/out/
+web/*.tsbuildinfo
+web/next-env.d.ts
+
+# ---- Local artifacts ----
+.web/.transformers-cache/
+web/.transformers-cache/
+web/public/uploads/
+web/*.txt
+web/*.log
+.freebuff/
+*.log
+.DS_Store
+Thumbs.db
