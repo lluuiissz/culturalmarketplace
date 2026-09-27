@@ -1,13 +1,15 @@
 # ---- Legacy CodeIgniter app (intentionally not part of the new system) ----
-app/
-public/
-system/
-tests/
-vendor/
-writable/
-Online_Marketplace/
-DATABASE/
-.env
+# ANCHORED to repo root (leading slash): unanchored 'app/' also matched
+# web/src/app/ and silently excluded the whole Next.js app from pushes.
+/app/
+/public/
+/system/
+/tests/
+/vendor/
+/writable/
+/Online_Marketplace/
+/DATABASE/
+/.env
 
 # ---- New-system secrets (never commit) ----
 web/.env
