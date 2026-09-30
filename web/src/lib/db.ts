@@ -277,16 +277,21 @@ function mapProduct(r: Record<string, unknown>): Product {
 
 export async function listActiveProducts(opts?: { category?: string; search?: string; artisanId?: number }): Promise<Product[]> {
   if (usingPostgres) {
+    // Verification gating (study Objective 2): only products of APPROVED
+    // artisans are publicly visible — pending/rejected/suspended artisans'
+    // products are hidden from browse everywhere.
     const rows = await sql`
-      select * from products
-      where status = 'active'
-        and (${opts?.category ?? null}::text is null or category = ${opts?.category ?? null})
-        and (${opts?.artisanId ?? null}::bigint is null or artisan_id = ${opts?.artisanId ?? null})
-        and (${opts?.search ?? null}::text is null or name ilike '%' || ${opts?.search ?? null} || '%' or description ilike '%' || ${opts?.search ?? null} || '%')
-      order by created_at desc limit 100`;
+      select p.* from products p
+      join artisans a on a.id = p.artisan_id
+      where p.status = 'active' and a.verification_status = 'approved'
+        and (${opts?.category ?? null}::text is null or p.category = ${opts?.category ?? null})
+        and (${opts?.artisanId ?? null}::bigint is null or p.artisan_id = ${opts?.artisanId ?? null})
+        and (${opts?.search ?? null}::text is null or p.name ilike '%' || ${opts?.search ?? null} || '%' or p.description ilike '%' || ${opts?.search ?? null} || '%')
+      order by p.created_at desc limit 100`;
     return (rows as unknown as Record<string, unknown>[]).map(mapProduct);
   }
-  let list = store!.products.filter((p) => p.status === 'active');
+  const approved = new Set(store!.artisans.filter((a) => a.verification_status === 'approved').map((a) => a.id));
+  let list = store!.products.filter((p) => p.status === 'active' && approved.has(p.artisan_id));
   if (opts?.category) list = list.filter((p) => p.category === opts.category);
   if (opts?.artisanId) list = list.filter((p) => p.artisan_id === opts.artisanId);
   if (opts?.search) {
@@ -935,9 +940,21 @@ export async function updateProduct(artisanId: number, id: number, p: Partial<Pr
   Object.assign(prod, Object.fromEntries(Object.entries(p).filter(([, v]) => v !== undefined)));
 }
 
+/** Verification gating helper: which of these artisans are approved? */
+export async function approvedArtisanIds(ids: number[]): Promise<Set<number>> {
+  if (!ids.length) return new Set();
+  if (usingPostgres) {
+    const rows = await sql`select id from artisans where verification_status = 'approved' and id in ${sql(ids)}`;
+    return new Set(rows.map((r) => num(r.id)));
+  }
+  return new Set(store!.artisans.filter((a) => a.verification_status === 'approved' && ids.includes(a.id)).map((a) => a.id));
+}
+
 export async function toggleProductStatus(artisanId: number, id: number): Promise<void> {
   if (usingPostgres) {
-    await sql`update products set status = case when status = 'active' then 'inactive' else 'active' end where id = ${id} and artisan_id = ${artisanId}`;
+    // Never let the toggle resurrect a moderated product (pending_review) —
+    // an artisan un-hiding a flagged product would bypass admin review.
+    await sql`update products set status = case when status = 'active' then 'inactive' else 'active' end where id = ${id} and artisan_id = ${artisanId} and status in ('active','inactive')`;
     return;
   }
   const p = store!.products.find((x) => x.id === id && x.artisan_id === artisanId);

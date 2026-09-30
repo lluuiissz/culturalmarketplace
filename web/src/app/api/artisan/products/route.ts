@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { createProduct, listCategories, logActivity } from '@/lib/db';
+import { createProduct, listCategories, logActivity, getArtisan } from '@/lib/db';
 
 // Categories are curated (admin-managed). Free-text would fragment the browse
 // filter, so submissions must match an existing category (case-insensitive).
@@ -18,6 +18,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 'error', message: 'Unauthorized.' }, { status: 401 });
   }
   try {
+    // Verification gating: only APPROVED artisans can publish products.
+    // Pending/rejected/suspended artisans get a clear, honest message instead
+    // of a product that silently never appears for buyers.
+    const artisan = await getArtisan(session.id);
+    if (!artisan || artisan.verification_status !== 'approved') {
+      return NextResponse.json({ status: 'error', message: 'Your artisan account must be approved by an admin before you can list products.' }, { status: 403 });
+    }
     const b = (await req.json()) as {
       name?: string; description?: string; price?: number; stock_quantity?: number; category?: string;
       has_tutorial?: boolean; tutorial_title?: string; tutorial_description?: string; tutorial_price?: number;

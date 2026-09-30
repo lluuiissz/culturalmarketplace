@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { getCart, createOrder, clearCart, pushNotification, logActivity } from '@/lib/db';
+import { getCart, createOrder, clearCart, pushNotification, logActivity, approvedArtisanIds } from '@/lib/db';
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -20,6 +20,20 @@ export async function POST(req: Request) {
     const cart = await getCart(session.id);
     const items = cart.filter((i) => i.product);
     if (!items.length) return NextResponse.json({ status: 'error', message: 'Your cart is empty.' }, { status: 400 });
+
+    // Visibility + verification re-validation (fix #7): a stale cart must not
+    // be able to order a product that has since been deactivated, hidden by
+    // moderation, or whose artisan is no longer approved.
+    const approved = await approvedArtisanIds([...new Set(items.map((i) => i.product!.artisan_id))]);
+    for (const i of items) {
+      const p = i.product!;
+      if (p.status !== 'active') {
+        return NextResponse.json({ status: 'error', message: `${p.name} is no longer available. Please remove it from your cart.` }, { status: 409 });
+      }
+      if (!approved.has(p.artisan_id)) {
+        return NextResponse.json({ status: 'error', message: `${p.name} can no longer be purchased — the seller's account is under review. Please remove it from your cart.` }, { status: 409 });
+      }
+    }
 
     // Stock validation BEFORE creating the order — products and, when a
     // variant is chosen, the specific variation's stock (prevents overbooking).
