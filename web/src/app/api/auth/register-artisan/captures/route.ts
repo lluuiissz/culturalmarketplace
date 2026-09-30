@@ -39,9 +39,14 @@ export async function POST(req: Request) {
     const notes: string[] = [];
     let warnings: string[] = [];
 
-    // ---- 1. OCR on both ID sides (advisory; skipped without OCR_API_KEY) ----
-    const ocrFront = await captureOcr(idFrontBuf, idFront.name || 'id-front.jpg');
-    const ocrBack = await captureOcr(idBackBuf, idBack.name || 'id-back.jpg');
+    // ---- 1+2. OCR both ID sides and face-verify in PARALLEL ----
+    // Three remote calls used to run back-to-back (each 1-8s); Promise.all
+    // caps total wait at the slowest single call instead of the sum.
+    const [ocrFront, ocrBack, verify] = await Promise.all([
+      captureOcr(idFrontBuf, idFront.name || 'id-front.jpg'),
+      captureOcr(idBackBuf, idBack.name || 'id-back.jpg'),
+      verifyFace(idFrontBuf, selfieBuf),
+    ]);
     if (ocrFront.status === 'ok' && ocrFront.fields.id_number) {
       const found = ocrFront.fields.id_number.replace(/[\s-]/g, '');
       const given = (d.id_number ?? '').replace(/[\s-]/g, '');
@@ -51,11 +56,10 @@ export async function POST(req: Request) {
     }
     const ocrDetail = { front: ocrFront.status === 'ok' ? ocrFront.fields : ocrFront.status, back: ocrBack.status === 'ok' ? ocrBack.fields : ocrBack.status };
 
-    // ---- 2. Face verification: selfie vs ID photo ----
+    // ---- Face verification (result from the parallel block above) ----
     let faceMatch: boolean | null = null;
     let selfieEmbedding: number[] | null = null;
     let faceConfidence: number | null = null;
-    const verify = await verifyFace(idFrontBuf, selfieBuf);
     if (verify.status === 'ok') {
       faceMatch = verify.data.match;
       faceConfidence = verify.data.confidence;

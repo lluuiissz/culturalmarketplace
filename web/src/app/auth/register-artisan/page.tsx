@@ -54,25 +54,31 @@ export default function ArtisanRegisterPage() {
   async function runOcr(file: File, side: 'front' | 'back') {
     if (!services.ocr) return;
     setOcrBusy(true); setOcrHint('');
-    const fd = new FormData();
-    fd.append('id_image', file);
-    fd.append('side', side);
-    fd.append('email', form.email);
-    const res = await fetch('/api/auth/ocr-id', { method: 'POST', body: fd });
-    const data = await res.json();
-    setOcrBusy(false);
-    if (data.status === 'ok' && data.fields) {
-      const f = data.fields;
-      setForm((prev) => ({
-        ...prev,
-        id_number: prev.id_number || f.id_number || '',
-        dob: prev.dob || f.dob || '',
-      }));
-      setOcrHint(`Auto-filled from ID: ${[f.id_number && `ID #${f.id_number}`, f.dob && `DOB ${f.dob}`].filter(Boolean).join(', ') || 'text read but no key fields found'}`);
-    } else if (data.status === 'error') {
-      setOcrHint(`OCR error: ${data.message}`);
-    } else {
-      setOcrHint('');
+    try {
+      const fd = new FormData();
+      fd.append('id_image', file);
+      fd.append('side', side);
+      fd.append('email', form.email);
+      const res = await fetch('/api/auth/ocr-id', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.status === 'ok' && data.fields) {
+        const f = data.fields;
+        setForm((prev) => ({
+          ...prev,
+          id_number: prev.id_number || f.id_number || '',
+          dob: prev.dob || f.dob || '',
+        }));
+        setOcrHint(`Auto-filled from ID: ${[f.id_number && `ID #${f.id_number}`, f.dob && `DOB ${f.dob}`].filter(Boolean).join(', ') || 'text read but no key fields found'}`);
+      } else if (data.status === 'error') {
+        setOcrHint(`Couldn't auto-read the ID (${data.message}). You can still continue — the fields below are optional.`);
+      } else {
+        setOcrHint('');
+      }
+    } catch {
+      // Network drop / dev-server reload — never leave the UI stuck on "Reading ID…"
+      setOcrHint("Couldn't reach the ID-reading service. You can still continue — the fields below are optional.");
+    } finally {
+      setOcrBusy(false);
     }
   }
 
@@ -122,18 +128,25 @@ export default function ArtisanRegisterPage() {
   async function finalSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setError('');
-    const fd = new FormData();
-    fd.append('token', token);
-    if (idFront) fd.append('id_front', idFront);
-    if (idBack) fd.append('id_back', idBack);
-    if (selfie) fd.append('selfie', selfie);
-    const res = await fetch('/api/auth/register-artisan/captures', { method: 'POST', body: fd });
-    const data = await res.json();
-    setBusy(false);
-    if (data.status === 'success') {
-      setDone(true);
-      setStep('done');
-    } else setError(data.message || 'Registration failed.');
+    try {
+      const fd = new FormData();
+      fd.append('token', token);
+      if (idFront) fd.append('id_front', idFront);
+      if (idBack) fd.append('id_back', idBack);
+      if (selfie) fd.append('selfie', selfie);
+      const res = await fetch('/api/auth/register-artisan/captures', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setDone(true);
+        setStep('done');
+      } else setError(data.message || 'Registration failed.');
+    } catch {
+      // Uploading + reading your ID can take up to ~30s; a dropped connection
+      // or dev-server reload previously looked like the page silently dying.
+      setError('The connection dropped while submitting. Please press Submit again — your photos are still attached.');
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (done) {
@@ -275,7 +288,7 @@ export default function ArtisanRegisterPage() {
           </div>
 
           <button className="btn-primary mt-6 w-full" disabled={busy || !idFront || !idBack || !selfie} type="submit">
-            {busy ? 'Verifying & submitting…' : 'Submit application'}
+            {busy ? 'Reading your ID & checking your selfie… (up to ~30s)' : 'Submit application'}
           </button>
           <p className="mt-2 text-center text-xs text-stone-400">Images up to 8 MB each (JPEG/PNG).</p>
         </form>
