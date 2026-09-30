@@ -28,14 +28,25 @@ export async function POST(req: Request) {
     const idFront = form.get('id_front') as File | null;
     const idBack = form.get('id_back') as File | null;
     const selfie = form.get('selfie') as File | null;
+    // Deterministic verification rules R4-R6: proof of craft production and at
+    // least two product samples are REQUIRED — registration is refused without them.
+    const proofCraft = form.get('proof_of_craft') as File | null;
+    const sample1 = form.get('product_sample_1') as File | null;
+    const sample2 = form.get('product_sample_2') as File | null;
     if (!idFront || !idBack || !selfie) {
       return NextResponse.json({ status: 'error', message: 'ID front, ID back, and a live selfie are required.' }, { status: 400 });
     }
-    for (const f of [idFront, idBack, selfie]) {
+    if (!proofCraft || !sample1 || !sample2) {
+      return NextResponse.json({ status: 'error', message: 'Proof of craft production and two product samples are required for verification.' }, { status: 400 });
+    }
+    for (const f of [idFront, idBack, selfie, proofCraft, sample1, sample2]) {
       if (f.size > 8 * 1024 * 1024) return NextResponse.json({ status: 'error', message: 'Each image must be under 8 MB.' }, { status: 400 });
     }
 
-    const [idFrontBuf, idBackBuf, selfieBuf] = await Promise.all([idFront.arrayBuffer(), idBack.arrayBuffer(), selfie.arrayBuffer()]);
+    const [idFrontBuf, idBackBuf, selfieBuf, proofBuf, s1Buf, s2Buf] = await Promise.all([
+      idFront.arrayBuffer(), idBack.arrayBuffer(), selfie.arrayBuffer(),
+      proofCraft.arrayBuffer(), sample1.arrayBuffer(), sample2.arrayBuffer(),
+    ]);
     const notes: string[] = [];
     let warnings: string[] = [];
 
@@ -95,16 +106,22 @@ export async function POST(req: Request) {
     let idFrontPath: string | null = null;
     let idBackPath: string | null = null;
     let selfiePath: string | null = null;
+    let proofPath: string | null = null;
+    let s1Path: string | null = null;
+    let s2Path: string | null = null;
     const safeEmail = (d.email ?? 'applicant').replace(/[^a-z0-9]/gi, '_');
     try {
       const up = async (f: File, buf: ArrayBuffer, name: string) => {
         const r = await uploadFile('verification-docs', `${safeEmail}/${Date.now()}-${name}`, buf, f.type || 'image/jpeg');
         return r.path;
       };
-      [idFrontPath, idBackPath, selfiePath] = await Promise.all([
+      [idFrontPath, idBackPath, selfiePath, proofPath, s1Path, s2Path] = await Promise.all([
         up(idFront, idFrontBuf, 'id-front'),
         up(idBack, idBackBuf, 'id-back'),
         up(selfie, selfieBuf, 'selfie'),
+        up(proofCraft, proofBuf, 'proof-of-craft'),
+        up(sample1, s1Buf, 'product-sample-1'),
+        up(sample2, s2Buf, 'product-sample-2'),
       ]);
       if (!idFrontPath) notes.push('File storage not configured - documents not retained; admin will request them separately.');
     } catch (e) {
@@ -119,6 +136,7 @@ export async function POST(req: Request) {
       craft_type: d.craft_type ?? '', business_name: d.business_name,
       id_number: d.id_number ?? '', dob: d.dob,
       id_document_path: idFrontPath, id_document_back_path: idBackPath,
+      proof_of_craft_path: proofPath, product_sample_1_path: s1Path, product_sample_2_path: s2Path,
       selfie_path: selfiePath, face_matched: faceMatch, face_confidence: faceConfidence,
       registration_notes: notes.join(' ') || null,
     });

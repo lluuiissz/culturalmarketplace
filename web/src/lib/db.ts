@@ -154,14 +154,27 @@ export async function createArtisan(input: {
   name: string; email: string; password: string; phone: string; location: string;
   craft_type: string; business_name?: string; id_number: string; dob?: string;
   id_document_path?: string | null; id_document_back_path?: string | null;
+  proof_of_craft_path?: string | null; product_sample_1_path?: string | null; product_sample_2_path?: string | null;
   selfie_path?: string | null; face_matched?: boolean | null; face_confidence?: number | null;
   registration_notes?: string | null;
 }): Promise<number> {
   if (usingPostgres) {
-    const rows = await sql`insert into artisans (name, email, password, phone, location, craft_type, business_name, id_number, dob, id_document_path, id_document_back_path, selfie_path, face_matched, face_confidence, registration_notes, verification_status)
-      values (${input.name}, ${input.email}, ${input.password}, ${input.phone}, ${input.location}, ${input.craft_type}, ${input.business_name ?? null}, ${input.id_number}, ${input.dob ?? null}, ${input.id_document_path ?? null}, ${input.id_document_back_path ?? null}, ${input.selfie_path ?? null}, ${input.face_matched ?? null}, ${input.face_confidence ?? null}, ${input.registration_notes ?? null}, 'pending')
+    const rows = await sql`insert into artisans (name, email, password, phone, location, craft_type, business_name, id_number, dob, id_document_path, id_document_back_path, proof_of_craft_path, product_sample_1_path, product_sample_2_path, selfie_path, face_matched, face_confidence, registration_notes, verification_status)
+      values (${input.name}, ${input.email}, ${input.password}, ${input.phone}, ${input.location}, ${input.craft_type}, ${input.business_name ?? null}, ${input.id_number}, ${input.dob ?? null}, ${input.id_document_path ?? null}, ${input.id_document_back_path ?? null}, ${input.proof_of_craft_path ?? null}, ${input.product_sample_1_path ?? null}, ${input.product_sample_2_path ?? null}, ${input.selfie_path ?? null}, ${input.face_matched ?? null}, ${input.face_confidence ?? null}, ${input.registration_notes ?? null}, 'pending')
       returning id`;
-    return num(rows[0].id);
+    const id = num(rows[0].id);
+    // Mirror into users (legacy schema keeps artisan credentials in both tables):
+    // notifications and other FKs point at users(id), so without this row every
+    // later notification for this artisan would fail. Best-effort — login also
+    // works directly from the artisans table via findUserByEmail's fallback.
+    try {
+      await sql`insert into users (id, name, email, password, role, location, phone, profile_picture)
+        values (${id}, ${input.name}, ${input.email}, ${input.password}, 'artisan', ${input.location}, ${input.phone}, null)
+        on conflict (id) do nothing`;
+      // Explicit-id inserts don't advance the sequence — keep it ahead of max(id)
+      await sql`select setval(pg_get_serial_sequence('users','id'), (select greatest(max(id), 1) from users))`;
+    } catch { /* non-fatal: login fallback covers this artisan */ }
+    return id;
   }
   const id = Math.max(0, ...store!.artisans.map((a) => a.id)) + 1;
   store!.artisans.push({
@@ -169,6 +182,7 @@ export async function createArtisan(input: {
     location: input.location, craft_type: input.craft_type, business_name: input.business_name ?? null,
     bio: null, profile_picture: null, verification_status: 'pending',
     id_document_path: input.id_document_path ?? null, id_document_back_path: input.id_document_back_path ?? null,
+    proof_of_craft_path: input.proof_of_craft_path ?? null, product_sample_1_path: input.product_sample_1_path ?? null, product_sample_2_path: input.product_sample_2_path ?? null,
     selfie_path: input.selfie_path ?? null, face_matched: input.face_matched ?? null,
     face_confidence: input.face_confidence ?? null, registration_notes: input.registration_notes ?? null,
     dob: input.dob ?? null,

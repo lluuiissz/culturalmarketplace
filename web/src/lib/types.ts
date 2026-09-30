@@ -149,6 +149,13 @@ export interface Artisan {
   face_matched?: boolean | null;
   face_confidence?: number | null;
   registration_notes?: string | null;
+  id_number?: string | null;
+  dob?: string | null;
+  id_document_path?: string | null;
+  id_document_back_path?: string | null;
+  proof_of_craft_path?: string | null;
+  product_sample_1_path?: string | null;
+  product_sample_2_path?: string | null;
 }
 
 export interface Order {

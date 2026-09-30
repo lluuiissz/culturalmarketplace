@@ -22,9 +22,15 @@ export default function ArtisanRegisterPage() {
   const [idFront, setIdFront] = useState<File | null>(null);
   const [idBack, setIdBack] = useState<File | null>(null);
   const [selfie, setSelfie] = useState<File | null>(null);
+  const [proofCraft, setProofCraft] = useState<File | null>(null);
+  const [sample1, setSample1] = useState<File | null>(null);
+ const [sample2, setSample2] = useState<File | null>(null);
   const frontRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLInputElement>(null);
   const selfieFileRef = useRef<HTMLInputElement>(null);
+  const proofRef = useRef<HTMLInputElement>(null);
+  const s1Ref = useRef<HTMLInputElement>(null);
+  const s2Ref = useRef<HTMLInputElement>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -134,6 +140,9 @@ export default function ArtisanRegisterPage() {
       if (idFront) fd.append('id_front', idFront);
       if (idBack) fd.append('id_back', idBack);
       if (selfie) fd.append('selfie', selfie);
+      if (proofCraft) fd.append('proof_of_craft', proofCraft);
+      if (sample1) fd.append('product_sample_1', sample1);
+      if (sample2) fd.append('product_sample_2', sample2);
       const res = await fetch('/api/auth/register-artisan/captures', { method: 'POST', body: fd });
       const data = await res.json();
       if (data.status === 'success') {
@@ -287,7 +296,37 @@ export default function ArtisanRegisterPage() {
             )}
           </div>
 
-          <button className="btn-primary mt-6 w-full" disabled={busy || !idFront || !idBack || !selfie} type="submit">
+          <h2 className="mt-6 font-semibold text-stone-800">Proof of craft production</h2>
+          <p className="mt-1 text-xs text-stone-500">
+            A photo of you making your craft, your workshop, or your tools — evidence that you produce what you sell.
+          </p>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {([['proof', proofRef, proofCraft, setProofCraft, '🛠️', 'Proof'], ['sample1', s1Ref, sample1, setSample1, '🧺', 'Sample 1'], ['sample2', s2Ref, sample2, setSample2, '🏺', 'Sample 2']] as const).map(([side, ref, file, setFile, icon, label]) => (
+              <div key={side} className="rounded-xl border-2 border-dashed border-stone-200 p-2 text-center">
+                {file ? (
+                  <div>
+                    <img src={URL.createObjectURL(file)} alt={label} className="mx-auto h-16 rounded object-cover" />
+                    <p className="mt-1 text-xs text-leaf-700">✓</p>
+                    <button type="button" className="text-xs text-stone-400 underline" onClick={() => { setFile(null); if (ref.current) ref.current.value = ''; }}>Remove</button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="py-2 text-2xl">{icon}</div>
+                    <button type="button" className="btn-outline w-full text-xs" onClick={() => ref.current?.click()}>
+                      {label}
+                    </button>
+                  </div>
+                )}
+                <input ref={ref} type="file" accept="image/*" capture="environment" className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0] ?? null; setFile(f); }} />
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-stone-400">
+            Required for verification: 2 different product samples you made. Admins review these before approval.
+          </p>
+
+          <button className="btn-primary mt-6 w-full" disabled={busy || !idFront || !idBack || !selfie || !proofCraft || !sample1 || !sample2} type="submit">
             {busy ? 'Reading your ID & checking your selfie… (up to ~30s)' : 'Submit application'}
           </button>
           <p className="mt-2 text-center text-xs text-stone-400">Images up to 8 MB each (JPEG/PNG).</p>
