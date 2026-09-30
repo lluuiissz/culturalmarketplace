@@ -764,7 +764,17 @@ export async function openConversation(customerId: number, artisanId: number, pr
 export async function getConversation(id: number): Promise<{ id: number; customer_id: number; artisan_id: number; product_id: number | null } | null> {
   if (usingPostgres) {
     const rows = await sql`select id, customer_id, artisan_id, product_id from chat_conversations where id = ${id} limit 1`;
-    return rows.length ? (rows[0] as unknown as { id: number; customer_id: number; artisan_id: number; product_id: number | null }) : null;
+    if (!rows.length) return null;
+    // bigint columns arrive as STRINGS from postgres.js — they must be mapped
+    // through num() or every `=== session.id` participant check fails (chat
+    // 403s for both sides even though the conversation exists).
+    const r = rows[0] as Record<string, unknown>;
+    return {
+      id: num(r.id),
+      customer_id: num(r.customer_id),
+      artisan_id: num(r.artisan_id),
+      product_id: r.product_id == null ? null : num(r.product_id),
+    };
   }
   const c = store!.chat_conversations.find((x) => x.id === id);
   return c ? { id: c.id, customer_id: c.customer_id, artisan_id: c.artisan_id, product_id: c.product_id } : null;
@@ -773,11 +783,15 @@ export async function getConversation(id: number): Promise<{ id: number; custome
 export async function listConversations(user: { id: number; role: Role }): Promise<Array<{ id: number; counterpart: string; product_name: string | null; last_message_at: string }>> {
   if (usingPostgres) {
     const isCustomer = user.role === 'customer';
+    // Left join + coalesce: a missing users row must never silently drop a
+    // conversation from the inbox.
     const rows = await sql`
-      select c.id, ${isCustomer ? sql`a.name` : sql`u.name`} as counterpart, p.name as product_name, c.last_message_at
+      select c.id,
+        ${isCustomer ? sql`a.name` : sql`coalesce(u.name, 'Customer')`} as counterpart,
+        p.name as product_name, c.last_message_at
       from chat_conversations c
       join artisans a on a.id = c.artisan_id
-      join users u on u.id = c.customer_id
+      left join users u on u.id = c.customer_id
       left join products p on p.id = c.product_id
       where ${isCustomer ? sql`c.customer_id = ${user.id}` : sql`c.artisan_id = ${user.id}`}
       order by c.last_message_at desc`;
