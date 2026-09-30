@@ -87,20 +87,22 @@ export default function PortalSidebar({
 
   return (
     <>
-      {/* Mobile top bar with hamburger (portal-scoped) */}
+      {/* Mobile top bar: hamburger sits LEFT — directly above where the
+          desktop sidebar (and this drawer) appear, so the control lives
+          where the thing it opens lives (Gmail/Notion dashboard pattern). */}
       <div className="sticky top-0 z-40 border-b border-brand-100 bg-white md:hidden">
-        <div className="flex h-14 items-center justify-between px-4">
-          <Link href={portalHome} className="font-serif text-lg font-bold text-brand-900">🧶 {portalLabel}</Link>
+        <div className="flex h-14 items-center gap-2 px-3">
           <button
             type="button"
             aria-label="Menu"
             aria-expanded={open}
-            className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50"
+            className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50"
             onClick={() => setOpen((o) => !o)}
           >
             <span aria-hidden className="text-xl leading-none">{open ? '✕' : '☰'}</span>
             <span>Menu</span>
           </button>
+          <Link href={portalHome} className="min-w-0 truncate font-serif text-lg font-bold text-brand-900">🧶 {portalLabel}</Link>
         </div>
         {open && (
           <>
