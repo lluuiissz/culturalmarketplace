@@ -2,13 +2,13 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { listActiveProducts, listApprovedArtisans, getSettings, listCategories } from '@/lib/db';
+import { listActiveProducts, getSettings, listCategories } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [products, artisans, settings, categories] = await Promise.all([
-    listActiveProducts(), listApprovedArtisans(), getSettings(), listCategories('product'),
+  const [products, settings, categories] = await Promise.all([
+    listActiveProducts(), getSettings(), listCategories('product'),
   ]);
   const featured = products.slice(0, 8);
 

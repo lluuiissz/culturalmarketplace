@@ -55,6 +55,7 @@ export default function PortalSidebar({
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     aria-current={active ? 'page' : undefined}
                     className={`flex items-center gap-2 rounded-lg px-3 py-2 transition ${active ? 'bg-brand-500 text-white shadow-sm' : 'hover:bg-brand-50 hover:text-brand-700'}`}
                     onClick={() => setOpen(false)}
@@ -70,7 +71,7 @@ export default function PortalSidebar({
       </nav>
 
       <div className="mt-3 shrink-0 border-t border-stone-100 pt-3">
-        <Link href="/" className="block rounded-lg px-3 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50">
+        <Link href="/" prefetch={true} className="block rounded-lg px-3 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50">
           🛍️ {backLabel}
         </Link>
         <p className="mt-1 px-3 text-xs text-stone-400">

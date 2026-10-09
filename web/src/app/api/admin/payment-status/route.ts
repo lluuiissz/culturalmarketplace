@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { getOrder, getOrderItems, updateOrderStatus, pushNotification, logActivity } from '@/lib/db';
+import {
+  getOrder,
+  getOrderItems,
+  updateOrderStatus,
+  updateOrderItemStatus,
+  pushNotification,
+  logActivity,
+} from '@/lib/db';
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -15,9 +22,16 @@ export async function POST(req: Request) {
   const order = await getOrder(Number(order_id));
   if (!order) return NextResponse.json({ status: 'error', message: 'Order not found.' }, { status: 404 });
 
+  const items = await getOrderItems(order.id);
+
   if (decision === 'verify') {
     await updateOrderStatus(order.id, 'paid');
-    const items = await getOrderItems(order.id);
+    for (const it of items) {
+      if (it.status === 'awaiting_payment') {
+        await updateOrderItemStatus(it.id, 'pending');
+      }
+    }
+
     const artisanIds = [...new Set(items.map((i) => i.artisan_id))];
     for (const aid of artisanIds) {
       await pushNotification({
@@ -32,6 +46,9 @@ export async function POST(req: Request) {
     });
   } else {
     await updateOrderStatus(order.id, 'payment_failed');
+    for (const it of items) {
+      await updateOrderItemStatus(it.id, 'cancelled');
+    }
     await pushNotification({
       userId: order.customer_id, role: 'customer', type: 'payment_failed',
       message: `⚠️ Payment for order #${order.id} could not be verified. Please try again or contact support.`,

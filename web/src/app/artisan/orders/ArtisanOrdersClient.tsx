@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface Row {
@@ -11,9 +12,11 @@ interface Row {
 
 const NEXT_STATUS: Record<string, Array<{ value: string; label: string }>> = {
   pending: [{ value: 'preparing', label: 'Start preparing' }, { value: 'cancelled', label: 'Cancel' }],
+  paid: [{ value: 'preparing', label: 'Start preparing' }, { value: 'cancelled', label: 'Cancel' }],
   preparing: [{ value: 'ready_to_ship', label: 'Ready to ship' }, { value: 'cancelled', label: 'Cancel' }],
   ready_to_ship: [{ value: 'shipped', label: 'Mark shipped' }, { value: 'cancelled', label: 'Cancel' }],
   shipped: [{ value: 'received', label: 'Await customer receipt' }],
+  awaiting_payment: [],
   received: [],
   cancelled: [],
   no_show: [],
@@ -48,7 +51,7 @@ export default function ArtisanOrdersClient({ initial }: { initial: Row[] }) {
             <span className="badge bg-stone-100 capitalize text-stone-600">{r.status.replace(/_/g, ' ')}</span>
             {r.tracking_number && <span className="font-mono text-xs text-brand-700" title="J&T tracking">📦 {r.tracking_number}</span>}
             {r.purchase_type !== 'workshop' && ['paid', 'pending', 'preparing', 'ready_to_ship'].includes(r.status) && (
-              <a className="btn-primary px-3 py-1 text-xs" href={`/artisan/orders/${r.item_id}/ship`}>📦 Ship with J&T</a>
+              <Link className="btn-primary px-3 py-1 text-xs" href={`/artisan/orders/${r.item_id}/ship`} prefetch={true}>📦 Ship with J&T</Link>
             )}
             {(NEXT_STATUS[r.status] ?? []).map((s) => (
               <button key={s.value} className={`px-3 py-1 text-xs ${s.value === 'cancelled' ? 'btn-danger' : 'btn-outline'}`} disabled={busy} onClick={() => setStatus(r.item_id, s.value)}>

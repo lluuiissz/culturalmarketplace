@@ -35,39 +35,19 @@ export default function ProductMedia({
     fd.append('kind', kind);
     fd.append('file', file);
 
-    // Async pipeline: POST returns instantly with a jobId; the server checks
-    // the photo (size, duplicates, NSFW, craft relevance) in the background
-    // and we poll until done. The browser request never blocks on the classifier.
-    const res = await fetch(`/api/artisan/products/${productId}/media`, { method: 'POST', body: fd });
-    const ack = await res.json();
-    if (res.status !== 202 || !ack.jobId) {
+    try {
+      const res = await fetch(`/api/artisan/products/${productId}/media`, { method: 'POST', body: fd });
+      const data = await res.json();
       setBusy('');
-      setError(ack.message || 'Upload failed.');
-      return;
-    }
-
-    const started = Date.now();
-    for (;;) {
-      await new Promise((r) => setTimeout(r, 1200));
-      if (Date.now() - started > 60_000) {
-        setBusy('');
-        setError('The check is taking unusually long — try again in a minute.');
+      if (!res.ok || data.status !== 'success') {
+        setError(data.message || 'Upload failed.');
         return;
       }
-      const poll = await fetch(`/api/artisan/products/${productId}/media?jobId=${ack.jobId}`);
-      const data = await poll.json();
-      if (data.status === 'pending') continue;
+      setMain(data.image_path);
+      setGallery(data.product_gallery ?? []);
+    } catch {
       setBusy('');
-      if (data.status === 'success') {
-        setMain(data.image_path);
-        setGallery(data.product_gallery ?? []);
-        if (data.moderation === 'pending_review') {
-          setError('Photo received — it will appear to buyers after a quick admin review.');
-        }
-      } else {
-        setError(data.message || 'Upload failed.');
-      }
-      return;
+      setError('Upload failed. Please check your connection and try again.');
     }
   }
 

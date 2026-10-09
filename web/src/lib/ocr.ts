@@ -42,14 +42,45 @@ export type OcrResult =
 // Ordered per-field patterns: first regex that matches wins. Group 1 is the
 // extracted value (inner groups are non-capturing).
 const FIELD_PATTERNS: Array<{ field: keyof OcrFields; regexes: RegExp[] }> = [
-  // Philippine IDs: license "N08-12-345678", PhilSys/UMID "1234-5678-9012"
-  { field: 'id_number', regexes: [/\b([A-Z]{0,2}\d{2,4}[- ]\d{2,4}[- ]\d{4,8}|\d{4}[- ]\d{4}[- ]\d{4})\b/] },
-  // Prefer "SURNAME, GIVEN" comma form, then a labelled "Name: ..." line.
-  { field: 'full_name', regexes: [/[A-Z][A-Z '\-]{2,},\s*[A-Z][A-Z '\-]+/, /\bname\s*[:\-]\s*([A-Z][A-Z '\-]{4,})/i] },
-  // Full dates, either order (inner groups non-capturing so group 1 is the date)
-  { field: 'dob', regexes: [/\b((?:19|20)\d{2}[-/.](?:0?[1-9]|1[0-2])[-/.](?:0?[1-9]|[12]\d|3[01]))\b/, /\b((?:0?[1-9]|[12]\d|3[01])[-/.](?:0?[1-9]|1[0-2])[-/.](?:19|20)\d{2})\b/] },
-  // "Address: ..." labelled line first, else the longest line with an address cue
-  { field: 'address', regexes: [/\baddress\s*[:\-]\s*([^\n]{5,120})/i, /(.{10,120}(?:street|st\.|brgy|barangay|purok|sitio|city|municipality|province)[^\n]*)/i] },
+  // Philippine IDs: PhilSys "1234-5678-9012-3456" / "1234 5678 9012 3456", license "N08-12-345678", UMID "1234-5678901-2"
+  {
+    field: 'id_number',
+    regexes: [
+      /\b(\d{4}[- ]\d{4}[- ]\d{4}[- ]\d{4})\b/,
+      /\b([A-Z]\d{2}[- ]\d{2}[- ]\d{6})\b/,
+      /\b(\d{4}[- ]\d{7}[- ]\d{1})\b/,
+      /\b([A-Z]{0,2}\d{2,4}[- ]\d{2,4}[- ]\d{4,8})\b/,
+      /\bID\s*(?:NO|NUMBER)?[:.\s#]*([A-Z0-9-]{6,20})\b/i,
+    ],
+  },
+  // Full Name: "SURNAME, GIVEN NAME", "NAME: ...", or multi-word capitalized names
+  {
+    field: 'full_name',
+    regexes: [
+      /\b(?:NAME|FULL NAME|PANGALAN)\s*[:\-]\s*([A-Z][A-Za-z '\-]{3,40})/i,
+      /([A-Z][A-Z '\-]{2,25},\s*[A-Z][A-Za-z '\-]{2,25})/,
+      /\b([A-Z][a-z]+ [A-Z][a-z]+(?: [A-Z][a-z]+)?)\b/,
+    ],
+  },
+  // Date of Birth: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, or textual "12 Jan 1990"
+  {
+    field: 'dob',
+    regexes: [
+      /\b(?:DOB|DATE OF BIRTH|BIRTHDATE|KAPANGANAKAN)\s*[:\-]\s*([0-9A-Za-z,/\- ]{8,20})/i,
+      /\b((?:19|20)\d{2}[-/.](?:0?[1-9]|1[0-2])[-/.](?:0?[1-9]|[12]\d|3[01]))\b/,
+      /\b((?:0?[1-9]|[12]\d|3[01])[-/.](?:0?[1-9]|1[0-2])[-/.](?:19|20)\d{2})\b/,
+      /\b((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? (?:19|20)\d{2})\b/i,
+    ],
+  },
+  // Address: "Address: ...", "TIRAHAN: ...", or lines containing barangay/purok/city/municipality
+  {
+    field: 'address',
+    regexes: [
+      /\b(?:ADDRESS|TIRAHAN)\s*[:\-]\s*([^\n]{5,100})/i,
+      /(.{8,90}(?:purok|sitio|barangay|brgy|san francisco|prosperidad|bayugan|bunawan|trento|rosario|agusan)[^\n]*)/i,
+      /(.{10,100}(?:street|st\.|road|city|municipality|province)[^\n]*)/i,
+    ],
+  },
 ];
 
 export async function captureOcr(image: ArrayBuffer, filename = 'id.jpg'): Promise<OcrResult> {
@@ -58,11 +89,10 @@ export async function captureOcr(image: ArrayBuffer, filename = 'id.jpg'): Promi
 
   const prepared = await prepImage(image);
 
-  // One retry: the free tier regularly answers 503 under load (shared key),
-  // and a transient network blip shouldn't fail the user's registration step.
   let lastError = 'OCR request failed';
+  // Fast single or quick-retry with tight 8s timeout to ensure prompt UI response
   for (let attempt = 0; attempt < 2; attempt++) {
-    if (attempt > 0) await new Promise((r) => setTimeout(r, 1500));
+    if (attempt > 0) await new Promise((r) => setTimeout(r, 800));
     try {
       const form = new FormData();
       form.append('file', new Blob([new Uint8Array(prepared)]), filename);
@@ -72,14 +102,13 @@ export async function captureOcr(image: ArrayBuffer, filename = 'id.jpg'): Promi
       form.append('scale', 'true');
       form.append('detectOrientation', 'true');
 
-      // Hard 20s cap: a hung call previously blocked the request until the
-      // platform killed it, which looked like the page silently dying.
-      const res = await fetch(OCR_ENDPOINT, { method: 'POST', body: form, signal: AbortSignal.timeout(20_000) });
+      // Fast 8-second timeout cap: prevents UI stalls
+      const res = await fetch(OCR_ENDPOINT, { method: 'POST', body: form, signal: AbortSignal.timeout(8_000) });
       if (!res.ok) {
         lastError = res.status === 503
-          ? 'The ID-reading service is busy right now — please try again in a few seconds.'
+          ? 'The ID-reading service is momentarily busy.'
           : `OCR service returned ${res.status}`;
-        if (res.status >= 500) continue; // retryable
+        if (res.status >= 500 && attempt === 0) continue;
         return { status: 'error', message: lastError };
       }
       const json = (await res.json()) as {
@@ -106,9 +135,8 @@ export async function captureOcr(image: ArrayBuffer, filename = 'id.jpg'): Promi
       return { status: 'ok', fields, engineMs: Number(json.ProcessingTimeInMilliseconds ?? 0) };
     } catch (e) {
       lastError = e instanceof Error && e.name === 'TimeoutError'
-        ? 'ID reading took too long — please try again.'
+        ? 'ID reading timed out. You may type your ID details directly.'
         : e instanceof Error ? e.message : 'OCR request failed';
-      // network errors → retry once
     }
   }
   return { status: 'error', message: lastError };

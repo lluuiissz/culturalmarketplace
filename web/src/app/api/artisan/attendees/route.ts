@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { markAttendeePresent, listBookings } from '@/lib/db';
+import { markAttendeePresent, getOrderItem } from '@/lib/db';
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -12,8 +12,8 @@ export async function POST(req: Request) {
   }
 
   // Ownership check: the booking must belong to this artisan
-  const mine = await listBookings(session.id);
-  if (!mine.some((b) => b.order_item_id === order_item_id)) {
+  const item = await getOrderItem(order_item_id);
+  if (!item || item.artisan_id !== session.id) {
     return NextResponse.json({ status: 'error', message: 'Booking not found.' }, { status: 404 });
   }
 

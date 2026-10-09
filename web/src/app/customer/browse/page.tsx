@@ -28,7 +28,7 @@ export default async function BrowsePage({ searchParams }: { searchParams: Promi
           </select>
           <button className="btn-outline" type="submit">Apply</button>
           {(params.q || params.category) && (
-            <a href="/customer/browse" className="text-sm font-medium text-stone-400 hover:text-stone-600">Clear filters</a>
+            <Link href="/customer/browse" className="text-sm font-medium text-stone-400 hover:text-stone-600">Clear filters</Link>
           )}
         </form>
         {params.q && <p className="mt-2 text-sm text-stone-500">Results for <b>“{params.q}”</b></p>}

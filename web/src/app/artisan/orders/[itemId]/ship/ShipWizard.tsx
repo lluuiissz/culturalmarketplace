@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Shipment } from '@/lib/types';
 
@@ -99,7 +100,7 @@ export default function ShipWizard({ orderItemId, item, shippingAddress, custome
         <p className="text-4xl">📦</p>
         <p className="mt-2 font-semibold text-stone-800">This item is already booked for shipping.</p>
         <p className="mt-1 text-stone-500">Tracking: <span className="font-mono font-semibold text-brand-700">{existingTracking}</span></p>
-        <a className="btn-outline mt-4 inline-block" href="/artisan/shipments">Manage shipments</a>
+        <Link className="btn-outline mt-4 inline-block" href="/artisan/shipments" prefetch={true}>Manage shipments</Link>
       </div>
     );
   }
@@ -201,8 +202,8 @@ export default function ShipWizard({ orderItemId, item, shippingAddress, custome
             <div className="flex justify-between"><dt>Declared value</dt><dd>₱{shipment.declared_value.toFixed(2)}</dd></div>
           </dl>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <a className="btn-outline" href={`/artisan/orders/${orderItemId}/waybill`}>🖨 Print waybill</a>
-            <a className="btn-primary" href="/artisan/shipments">Manage shipments</a>
+            <Link className="btn-outline" href={`/artisan/orders/${orderItemId}/waybill`} prefetch={true}>🖨 Print waybill</Link>
+            <Link className="btn-primary" href="/artisan/shipments" prefetch={true}>Manage shipments</Link>
           </div>
         </section>
       )}

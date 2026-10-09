@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type { Shipment } from '@/lib/types';
 
 // Printable 4x6in-style waybill. Barcode is generated locally as an inline SVG
@@ -77,7 +78,7 @@ export default function WaybillPrint({ shipment }: { shipment: Shipment }) {
 
       <div className="my-6 flex justify-center gap-3 print:hidden">
         <button className="btn-primary" onClick={() => window.print()}>🖨 Print</button>
-        <a className="btn-outline" href="/artisan/shipments">Back to shipments</a>
+        <Link className="btn-outline" href="/artisan/shipments" prefetch={true}>Back to shipments</Link>
       </div>
 
       <style jsx global>{`

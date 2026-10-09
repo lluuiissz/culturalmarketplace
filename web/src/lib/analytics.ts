@@ -30,8 +30,13 @@ export interface Analytics {
 }
 
 const WEEKS = 12;
+let cachedAnalytics: { data: Analytics; expiresAt: number } | null = null;
 
 export async function getAdminAnalytics(): Promise<Analytics> {
+  if (cachedAnalytics && Date.now() < cachedAnalytics.expiresAt) {
+    return cachedAnalytics.data;
+  }
+
   if (!usingPg) {
     // Demo store: return honest zeros rather than fake numbers.
     return {
@@ -83,7 +88,7 @@ export async function getAdminAnalytics(): Promise<Analytics> {
   ]);
 
   const t = totals[0] as Record<string, unknown>;
-  return {
+  const result: Analytics = {
     totalCustomers: Number(t.customers ?? 0),
     totalArtisans: Number(t.artisans ?? 0),
     totalOrders: Number(t.orders ?? 0),
@@ -105,4 +110,7 @@ export async function getAdminAnalytics(): Promise<Analytics> {
       week: new Date(r.week).toISOString().slice(0, 10), revenue: Number(r.revenue ?? 0),
     })),
   };
+
+  cachedAnalytics = { data: result, expiresAt: Date.now() + 30_000 };
+  return result;
 }

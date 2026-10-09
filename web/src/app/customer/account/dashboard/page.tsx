@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
-import { listCustomerOrders, listNotifications, getCart } from '@/lib/db';
+import { listCustomerOrders, listNotifications, getCart, listCustomerBookings } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,15 +9,45 @@ export default async function CustomerDashboard() {
   const session = await getSession();
   if (!session || session.role !== 'customer') redirect('/auth/login?next=/customer/account/dashboard');
 
-  const [orders, notifications, cart] = await Promise.all([listCustomerOrders(session.id), listNotifications(session.id, 'customer'), getCart(session.id)]);
+  const [orders, notifications, cart, bookings] = await Promise.all([
+    listCustomerOrders(session.id),
+    listNotifications(session.id, 'customer'),
+    getCart(session.id),
+    listCustomerBookings(session.id),
+  ]);
   const unread = notifications.filter((n) => !n.is_read).length;
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
+  const nextBooking = bookings.find(
+    (b) => b.status !== 'cancelled' && b.status !== 'attended' && b.order_status !== 'cancelled'
+  );
 
   return (
     <>
       <main className="mx-auto max-w-5xl px-4 py-10">
         <h1 className="font-serif text-3xl font-bold text-brand-900">Hi, {session.name} 👋</h1>
         <p className="mt-1 text-stone-500">Track your orders and support local artisans.</p>
+
+        {nextBooking && (
+          <div className="card mt-6 p-5 border-2 border-leaf-600/30 bg-gradient-to-r from-leaf-500/10 via-white to-brand-50 flex flex-wrap items-center justify-between gap-4 shadow-xs">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="badge bg-leaf-700 text-white text-xs font-bold">🌿 Upcoming Workshop</span>
+                {nextBooking.ticket_code && (
+                  <span className="font-mono text-xs font-bold text-brand-800">🎟️ {nextBooking.ticket_code}</span>
+                )}
+              </div>
+              <h3 className="font-serif text-lg font-bold text-stone-900">{nextBooking.product_name}</h3>
+              <p className="text-xs text-stone-600">
+                📅 {nextBooking.selected_session?.date || 'Confirmed Session'} · 📍 {nextBooking.venue_location || 'Artisan Workshop Studio'}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href="/customer/account/bookings" className="btn-primary text-xs px-3.5 py-2 font-bold shadow-xs">
+                🧭 Track Venue & Pathfinding →
+              </Link>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="card p-5">
@@ -35,6 +65,7 @@ export default async function CustomerDashboard() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
+          <Link className="btn-primary" href="/customer/account/bookings">🎟️ Workshops & Bookings</Link>
           <Link className="btn-outline" href="/customer/account/profile">Edit profile</Link>
           <Link className="btn-outline" href="/customer/account/addresses">Address book</Link>
           <Link className="btn-outline" href="/customer/account/report">Report an issue</Link>

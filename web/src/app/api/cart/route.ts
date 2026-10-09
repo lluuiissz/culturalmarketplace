@@ -24,6 +24,26 @@ export async function POST(req: Request) {
     const product = await getProduct(Number(body.product_id));
     if (!product) return NextResponse.json({ status: 'error', message: 'Product not found.' }, { status: 404 });
 
+    if (body.purchase_type === 'bundle') {
+      // Add physical handcrafted item
+      await addToCart({
+        customerId: session.id,
+        productId: product.id,
+        purchaseType: 'product',
+        quantity: Math.max(1, Number(body.quantity) || 1),
+        selectedVariant: body.selected_variant ?? null,
+      });
+      // Add cultural workshop session booking
+      await addToCart({
+        customerId: session.id,
+        productId: product.id,
+        purchaseType: 'workshop',
+        quantity: Math.max(1, Number(body.quantity) || 1),
+        selectedSession: body.selected_session ?? null,
+      });
+      return NextResponse.json({ status: 'success', message: 'Craft and Workshop added to cart!' });
+    }
+
     const purchaseType = body.purchase_type === 'workshop' ? 'workshop' : 'product';
     await addToCart({
       customerId: session.id,

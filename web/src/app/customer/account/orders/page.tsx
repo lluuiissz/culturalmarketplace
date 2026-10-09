@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
-import { listCustomerOrders, getOrderItemsForOrders } from '@/lib/db';
+import { listCustomerOrdersWithItems } from '@/lib/db';
 import { listShipmentsForCustomer } from '@/lib/shipments';
 import OrdersClient from './OrdersClient';
 
@@ -10,15 +10,11 @@ export default async function CustomerOrdersPage() {
   const session = await getSession();
   if (!session || session.role !== 'customer') redirect('/auth/login?next=/customer/account/orders');
 
-  const orders = await listCustomerOrders(session.id);
-  // Parallel: items + shipments fetched together (LCP — each round-trip is ~100ms
-  // to Supabase and these are independent).
-  const [itemsByOrder, shipments] = await Promise.all([
-    getOrderItemsForOrders(orders.map((o) => o.id)),
+  const [withItems, shipments] = await Promise.all([
+    listCustomerOrdersWithItems(session.id),
     listShipmentsForCustomer(session.id),
   ]);
   const trackingByItem = new Map(shipments.map((s) => [s.order_item_id, s]));
-  const withItems = orders.map((o) => ({ order: o, items: itemsByOrder.get(o.id) ?? [] }));
 
   return (
     <>
@@ -33,7 +29,22 @@ export default async function CustomerOrdersPage() {
             created_at: order.created_at,
             items: items.map((i) => {
               const sh = trackingByItem.get(i.id);
-              return { id: i.id, name: i.product_name, qty: i.quantity, status: i.status, price: Number(i.price), rating: i.review_rating, tracking: sh?.tracking_number ?? i.tracking_number ?? null, courier: sh?.courier_name ?? i.courier_name ?? null };
+              return {
+                id: i.id,
+                product_id: i.product_id,
+                name: i.product_name,
+                qty: i.quantity,
+                status: i.status,
+                price: Number(i.price),
+                rating: i.review_rating,
+                tracking: sh?.tracking_number ?? i.tracking_number ?? null,
+                courier: sh?.courier_name ?? i.courier_name ?? null,
+                purchase_type: i.purchase_type ?? 'product',
+                ticket_code: i.ticket_code ?? null,
+                selected_session: i.selected_session ?? null,
+                selected_variant: i.selected_variant ?? null,
+                attendee_name: i.attendee_name ?? null,
+              };
             }),
           }))}
         />

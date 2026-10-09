@@ -20,14 +20,15 @@ function getPool(): ReturnType<typeof postgres> | null {
   if (!globalThis.__pgPool) {
     globalThis.__pgPool = postgres(DATABASE_URL, {
       prepare: false, // required by Supavisor/pgbouncer transaction+session modes
-      max: 3,
+      max: 6,
       // KEEP CONNECTIONS WARM — LCP critical. Every new TCP+TLS+auth handshake
       // to Supabase (Singapore) costs ~650ms, and a cold connection was being
       // paid on nearly every navigation: idle_timeout 20s tore connections down
       // after a 20s pause, and max_lifetime 5min rotated even busy sessions.
       // idle_timeout 0 keeps established connections open (bounded by Supavisor's
       // own server-side idle limit); max_lifetime 30min only rotates truly
-      // long-lived busy connections. Still ≤3 conns, well under the 15 cap.
+      // long-lived busy connections. 6 connections easily handles parallel Promise.all,
+      // well within Supavisor's 15 client cap.
       idle_timeout: 0,
       max_lifetime: 60 * 30,
       // Through Supavisor the driver cannot fetch column type metadata, so jsonb

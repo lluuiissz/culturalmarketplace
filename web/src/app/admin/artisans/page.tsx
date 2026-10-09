@@ -5,9 +5,11 @@ import ArtisansClient from './ArtisansClient';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminArtisansPage() {
-  const [pending, approved] = await Promise.all([listPendingArtisans(), listApprovedArtisans()]);
-  // ONE batched counts query (N+1 fix) — was a full products query per artisan.
-  const counts = await getProductCountsByArtisan(approved.map((a) => a.id));
+  const [pending, approved, counts] = await Promise.all([
+    listPendingArtisans(),
+    listApprovedArtisans(),
+    getProductCountsByArtisan(),
+  ]);
   const withProducts = approved.map((a) => ({
     ...a,
     productCount: counts.get(a.id) ?? 0,

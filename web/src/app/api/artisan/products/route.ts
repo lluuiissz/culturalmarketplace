@@ -29,6 +29,7 @@ export async function POST(req: Request) {
       name?: string; description?: string; price?: number; stock_quantity?: number; category?: string;
       has_tutorial?: boolean; tutorial_title?: string; tutorial_description?: string; tutorial_price?: number;
       tutorial_capacity?: number; tutorial_dates?: object[]; tutorial_fee_type?: 'paid' | 'free';
+      tutorial_location?: string; tutorial_lat?: number; tutorial_lng?: number;
       has_variations?: boolean; variations_data?: object[];
     };
     if (!b.name) return NextResponse.json({ status: 'error', message: 'Product name is required.' }, { status: 400 });
@@ -46,6 +47,9 @@ export async function POST(req: Request) {
       tutorial_description: b.tutorial_description ?? null,
       tutorial_price: b.tutorial_price != null ? Number(b.tutorial_price) : null,
       tutorial_capacity: b.tutorial_capacity != null ? Number(b.tutorial_capacity) : null,
+      tutorial_location: b.tutorial_location ?? null,
+      tutorial_lat: b.tutorial_lat != null ? Number(b.tutorial_lat) : null,
+      tutorial_lng: b.tutorial_lng != null ? Number(b.tutorial_lng) : null,
       tutorial_dates: (b.tutorial_dates as never) ?? null,
       tutorial_fee_type: b.tutorial_fee_type ?? null,
       has_variations: Boolean(b.has_variations),

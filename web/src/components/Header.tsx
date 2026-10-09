@@ -1,14 +1,13 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { getSession } from '@/lib/auth';
-import { getCart } from '@/lib/db';
+import { getCartCount } from '@/lib/db';
 import MobileMenu from './MobileMenu';
 import SearchBox from './SearchBox';
 
 export default async function Header() {
   const session = await getSession();
-  const cart = session?.role === 'customer' ? await getCart(session.id) : [];
-  const count = cart.reduce((s, i) => s + i.quantity, 0);
+  const count = session?.role === 'customer' ? await getCartCount(session.id) : 0;
 
   const links = [
     { href: '/', label: 'Home' },
@@ -46,11 +45,11 @@ export default async function Header() {
         <div className="flex items-center gap-2">
           <nav className="hidden items-center gap-5 text-sm font-medium text-stone-600 md:flex">
             {links.map((l) => (
-              <Link key={l.href} className="hover:text-brand-700" href={l.href}>{l.label}</Link>
+              <Link key={l.href} className="hover:text-brand-700" href={l.href} prefetch={true}>{l.label}</Link>
             ))}
           </nav>
           {session?.role === 'customer' && (
-            <Link href="/cart" className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50" aria-label={`Cart, ${count} item${count === 1 ? '' : 's'}`}>
+            <Link href="/cart" prefetch={true} className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50" aria-label={`Cart, ${count} item${count === 1 ? '' : 's'}`}>
               <span aria-hidden className="text-xl leading-none">🛒</span>
               <span className="hidden sm:inline">Cart</span>
               {count > 0 && (

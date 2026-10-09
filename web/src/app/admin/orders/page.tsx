@@ -1,19 +1,17 @@
-import { listAllOrders, getOrderItemsForOrders } from '@/lib/db';
+import { listAllOrdersWithItems } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminOrdersPage() {
-  const orders = await listAllOrders();
-  // ONE batched items query for all orders (N+1 fix: was 1 query per order).
-  const itemsByOrder = await getOrderItemsForOrders(orders.map((o) => o.id));
-  const rows = orders.map((o) => ({
+  const withItems = await listAllOrdersWithItems();
+  const rows = withItems.map(({ order: o, items }) => ({
     id: o.id,
     customer_id: o.customer_id,
     total: Number(o.total_amount),
     status: o.status,
     method: o.payment_method,
     created: new Date(o.created_at).toLocaleString(),
-    items: (itemsByOrder.get(o.id) ?? []).map((i) => `${i.product_name} ×${i.quantity}`),
+    items: items.map((i) => `${i.product_name} ×${i.quantity}`),
   }));
 
   return (

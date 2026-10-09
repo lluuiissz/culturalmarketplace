@@ -50,22 +50,30 @@ export async function POST(req: Request) {
     const notes: string[] = [];
     let warnings: string[] = [];
 
-    // ---- 1+2. OCR both ID sides and face-verify in PARALLEL ----
-    // Three remote calls used to run back-to-back (each 1-8s); Promise.all
-    // caps total wait at the slowest single call instead of the sum.
+    // Optional pre-extracted OCR results passed from the upload step to avoid redundant 20s latency
+    let preOcr: { front?: unknown; back?: unknown } | null = null;
+    const ocrDataRaw = form.get('ocr_data');
+    if (typeof ocrDataRaw === 'string') {
+      try { preOcr = JSON.parse(ocrDataRaw); } catch { /* ignore */ }
+    }
+
+    // ---- 1+2. OCR (if not already cached) and face-verify in PARALLEL ----
     const [ocrFront, ocrBack, verify] = await Promise.all([
-      captureOcr(idFrontBuf, idFront.name || 'id-front.jpg'),
-      captureOcr(idBackBuf, idBack.name || 'id-back.jpg'),
+      preOcr?.front ? Promise.resolve({ status: 'ok', fields: preOcr.front } as const) : captureOcr(idFrontBuf, idFront.name || 'id-front.jpg'),
+      preOcr?.back ? Promise.resolve({ status: 'ok', fields: preOcr.back } as const) : captureOcr(idBackBuf, idBack.name || 'id-back.jpg'),
       verifyFace(idFrontBuf, selfieBuf),
     ]);
-    if (ocrFront.status === 'ok' && ocrFront.fields.id_number) {
-      const found = ocrFront.fields.id_number.replace(/[\s-]/g, '');
+    if (ocrFront.status === 'ok' && 'fields' in ocrFront && (ocrFront.fields as any)?.id_number) {
+      const found = String((ocrFront.fields as any).id_number).replace(/[\s-]/g, '');
       const given = (d.id_number ?? '').replace(/[\s-]/g, '');
       if (given && found !== given) {
-        notes.push(`OCR read ID number "${ocrFront.fields.id_number}" which differs from the entered one.`);
+        notes.push(`OCR read ID number "${(ocrFront.fields as any).id_number}" which differs from the entered one.`);
       }
     }
-    const ocrDetail = { front: ocrFront.status === 'ok' ? ocrFront.fields : ocrFront.status, back: ocrBack.status === 'ok' ? ocrBack.fields : ocrBack.status };
+    const ocrDetail = {
+      front: ocrFront.status === 'ok' ? ('fields' in ocrFront ? ocrFront.fields : ocrFront) : ocrFront.status,
+      back: ocrBack.status === 'ok' ? ('fields' in ocrBack ? ocrBack.fields : ocrBack) : ocrBack.status,
+    };
 
     // ---- Face verification (result from the parallel block above) ----
     let faceMatch: boolean | null = null;

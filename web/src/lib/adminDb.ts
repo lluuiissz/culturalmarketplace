@@ -202,7 +202,9 @@ export async function listBookings(artisanId?: number): Promise<ExperienceBookin
     const rows = await sql`
       select oi.id as order_item_id, oi.order_id, oi.product_id, oi.artisan_id, oi.product_name,
              oi.attendee_name, oi.attendee_contact, oi.selected_session, oi.quantity, oi.price,
-             oi.status, oi.ticket_code, o.customer_id, u.name as customer_name
+             oi.status, oi.ticket_code, oi.selected_variant, oi.purchase_type,
+             o.customer_id, u.name as customer_name, u.phone as customer_phone,
+             o.notes as order_notes, o.payment_method
       from order_items oi
       join orders o on o.id = oi.order_id
       join users u on u.id = o.customer_id
@@ -212,9 +214,14 @@ export async function listBookings(artisanId?: number): Promise<ExperienceBookin
     return (rows as unknown as Record<string, unknown>[]).map((r) => ({
       order_item_id: n(r.order_item_id), order_id: n(r.order_id), product_id: n(r.product_id),
       customer_id: n(r.customer_id), customer_name: String(r.customer_name),
+      customer_phone: (r.customer_phone as string) ?? null,
       id: n(r.product_id), product_name: String(r.product_name),
       attendee_name: (r.attendee_name as string) ?? null, attendee_contact: (r.attendee_contact as string) ?? null,
       selected_session: (r.selected_session as ExperienceBooking['selected_session']) ?? null,
+      selected_variant: (r.selected_variant as string) ?? null,
+      purchase_type: (r.purchase_type as string) ?? 'workshop',
+      order_notes: (r.order_notes as string) ?? null,
+      payment_method: (r.payment_method as string) ?? null,
       quantity: n(r.quantity), price: n(r.price), status: String(r.status), ticket_code: (r.ticket_code as string) ?? null,
     }));
   }
@@ -227,8 +234,14 @@ export async function listBookings(artisanId?: number): Promise<ExperienceBookin
       return {
         id: x.product_id, order_item_id: x.id, order_id: x.order_id, product_id: x.product_id,
         customer_id: o?.customer_id ?? 0, customer_name: cust?.name ?? 'Customer',
+        customer_phone: cust?.phone ?? null,
         product_name: x.product_name, attendee_name: x.attendee_name,
-        attendee_contact: null, selected_session: x.selected_session,
+        attendee_contact: (x as unknown as { attendee_contact?: string }).attendee_contact ?? cust?.phone ?? null,
+        selected_session: x.selected_session as ExperienceBooking['selected_session'],
+        selected_variant: (x as unknown as { selected_variant?: string }).selected_variant ?? null,
+        purchase_type: x.purchase_type,
+        order_notes: o?.notes ?? null,
+        payment_method: o?.payment_method ?? null,
         quantity: x.quantity, price: n(x.price), status: x.status, ticket_code: x.ticket_code,
       };
     })
@@ -310,8 +323,17 @@ export async function deleteReview(itemId: number): Promise<void> {
 export async function listReports(): Promise<Report[]> {
   syncFromCore();
   if (usingPg) {
-    const rows = await sql`select * from reports order by created_at desc limit 200`;
-    return (rows as unknown as Record<string, unknown>[]).map((r) => ({ ...r, created_at: tsString(r.created_at), resolved_at: tsString((r as { resolved_at?: unknown }).resolved_at) })) as unknown as Report[];
+    const rows = await sql`
+      select r.*, coalesce(r.reporter_name, u.name) as reporter_name
+      from reports r
+      left join users u on u.id = r.reporter_id
+      order by r.created_at desc limit 200`;
+    return (rows as unknown as Record<string, unknown>[]).map((r) => ({
+      ...r,
+      reporter_name: (r.reporter_name as string) ?? null,
+      created_at: tsString(r.created_at),
+      resolved_at: tsString((r as { resolved_at?: unknown }).resolved_at),
+    })) as unknown as Report[];
   }
   return [...store().reports].sort((a, b) => b.id - a.id);
 }
@@ -712,17 +734,22 @@ export async function getCustomerNames(ids: number[]): Promise<Map<number, strin
 }
 
 /** Batched product counts for many artisans — ONE query (N+1 fix for artisan lists). */
-export async function getProductCountsByArtisan(artisanIds: number[]): Promise<Map<number, number>> {
+export async function getProductCountsByArtisan(artisanIds?: number[]): Promise<Map<number, number>> {
   const map = new Map<number, number>();
-  const unique = [...new Set(artisanIds)].filter(Boolean);
-  if (!unique.length) return map;
+  if (artisanIds && artisanIds.length === 0) return map;
+  const unique = artisanIds ? [...new Set(artisanIds)].filter(Boolean) : null;
   if (usingPg) {
-    const rows = await sql`select artisan_id, count(*)::int as cnt from products where artisan_id = any(${unique}) group by artisan_id`;
+    const rows = unique && unique.length
+      ? await sql`select artisan_id, count(*)::int as cnt from products where artisan_id = any(${unique}) group by artisan_id`
+      : await sql`select artisan_id, count(*)::int as cnt from products group by artisan_id`;
     for (const r of rows as unknown as Record<string, unknown>[]) map.set(n(r.artisan_id), n(r.cnt));
     return map;
   }
-  for (const id of unique) {
-    map.set(id, store().products.filter((p) => p.artisan_id === id).length);
+  const prods = store().products;
+  for (const p of prods) {
+    if (!unique || unique.includes(p.artisan_id)) {
+      map.set(p.artisan_id, (map.get(p.artisan_id) ?? 0) + 1);
+    }
   }
   return map;
 }

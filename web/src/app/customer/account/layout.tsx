@@ -12,6 +12,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { href: '/customer/account/dashboard', label: 'Dashboard', icon: '🏠' },
       { href: '/customer/account/orders', label: 'My orders', icon: '🧾' },
+      { href: '/customer/account/bookings', label: 'My workshops & bookings', icon: '🎟️' },
       { href: '/customer/account/messages', label: 'Messages', icon: '💬' },
       { href: '/customer/account/addresses', label: 'Address book', icon: '📍' },
       { href: '/customer/account/report', label: 'Report an issue', icon: '🚩' },

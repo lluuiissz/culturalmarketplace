@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { getProduct } from '@/lib/db';
@@ -23,12 +24,12 @@ export default async function NewProductMediaPage({ params }: { params: Promise<
         </p>
         <ProductMedia productId={product.id} initialMain={product.image_path} initialGallery={product.product_gallery} />
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <a href="/artisan/products" className="btn-primary px-6 py-2.5">
+          <Link href="/artisan/products" className="btn-primary px-6 py-2.5">
             Done — go to my products
-          </a>
-          <a href={`/artisan/products/${product.id}/nfc`} className="btn-outline px-6 py-2.5">
+          </Link>
+          <Link href={`/artisan/products/${product.id}/nfc`} className="btn-outline px-6 py-2.5">
             🏷️ Add an NFC tag (optional)
-          </a>
+          </Link>
         </div>
         <p className="mt-2 text-xs text-stone-400">
           NFC is optional — it lets buyers tap a card to verify authenticity. You can add or skip it any time.

@@ -3,6 +3,7 @@
 // Segment error boundary for admin artisan pages: a failure while loading an
 // artisan's evidence/checklist shouldn't kick the admin out of the portal.
 import { useEffect } from 'react';
+import Link from 'next/link';
 
 export default function ArtisanAdminError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function ArtisanAdminError({ error, reset }: { error: Error & { d
       {error.digest && <p className="mt-2 text-xs text-stone-400">Error ID: {error.digest}</p>}
       <div className="mt-4 flex justify-center gap-2">
         <button className="btn-primary" onClick={reset}>Try again</button>
-        <a href="/admin/artisans" className="btn-outline">Back to artisans</a>
+        <Link href="/admin/artisans" className="btn-outline">Back to artisans</Link>
       </div>
     </div>
   );

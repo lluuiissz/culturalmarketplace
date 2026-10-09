@@ -265,6 +265,8 @@ function mapProduct(r: Record<string, unknown>): Product {
     tutorial_price: r.tutorial_price == null ? null : num(r.tutorial_price),
     tutorial_capacity: r.tutorial_capacity == null ? null : num(r.tutorial_capacity),
     tutorial_location: (r.tutorial_location as string) ?? null,
+    tutorial_lat: r.tutorial_lat == null ? null : num(r.tutorial_lat),
+    tutorial_lng: r.tutorial_lng == null ? null : num(r.tutorial_lng),
     tutorial_fee_type: (r.tutorial_fee_type as Product['tutorial_fee_type']) ?? null,
     tutorial_learnings: (r.tutorial_learnings as string[] | null) ?? null,
     tutorial_status: (r.tutorial_status as Product['tutorial_status']) ?? null,
@@ -276,6 +278,14 @@ function mapProduct(r: Record<string, unknown>): Product {
 }
 
 export async function listActiveProducts(opts?: { category?: string; search?: string; artisanId?: number }): Promise<Product[]> {
+  const isDefault = !opts?.category && !opts?.search && !opts?.artisanId;
+  if (isDefault) {
+    return cached('products:active:default', () => queryActiveProducts(opts), 25_000);
+  }
+  return queryActiveProducts(opts);
+}
+
+async function queryActiveProducts(opts?: { category?: string; search?: string; artisanId?: number }): Promise<Product[]> {
   if (usingPostgres) {
     // Verification gating (study Objective 2): only products of APPROVED
     // artisans are publicly visible — pending/rejected/suspended artisans'
@@ -302,12 +312,14 @@ export async function listActiveProducts(opts?: { category?: string; search?: st
 }
 
 export async function getProduct(id: number): Promise<Product | null> {
-  if (usingPostgres) {
-    const rows = await sql`select * from products where id = ${id} limit 1`;
-    return rows.length ? mapProduct(rows[0] as unknown as Record<string, unknown>) : null;
-  }
-  const p = store!.products.find((x) => x.id === id);
-  return p ?? null;
+  return cached(`product:${id}`, async () => {
+    if (usingPostgres) {
+      const rows = await sql`select * from products where id = ${id} limit 1`;
+      return rows.length ? mapProduct(rows[0] as unknown as Record<string, unknown>) : null;
+    }
+    const p = store!.products.find((x) => x.id === id);
+    return p ?? null;
+  }, 30_000);
 }
 
 export async function getProductByNfc(tagId: string): Promise<Product | null> {
@@ -348,12 +360,14 @@ export async function listApprovedArtisans(): Promise<Artisan[]> {
 }
 
 export async function getArtisan(id: number): Promise<Artisan | null> {
-  if (usingPostgres) {
-    const rows = await sql`select * from artisans where id = ${id} limit 1`;
-    return rows.length ? mapArtisan(rows[0] as unknown as Record<string, unknown>) : null;
-  }
-  const a = store!.artisans.find((x) => x.id === id);
-  return a ? { ...a } : null;
+  return cached(`artisan:${id}`, async () => {
+    if (usingPostgres) {
+      const rows = await sql`select * from artisans where id = ${id} limit 1`;
+      return rows.length ? mapArtisan(rows[0] as unknown as Record<string, unknown>) : null;
+    }
+    const a = store!.artisans.find((x) => x.id === id);
+    return a ? { ...a } : null;
+  }, 60_000);
 }
 
 /** Phone number on a user account (used for shipment recipient contact). */
@@ -421,11 +435,34 @@ export async function getCart(customerId: number): Promise<Array<CartItem & { pr
     .sort((a, b) => b.id - a.id);
 }
 
+export async function getCartCount(customerId: number): Promise<number> {
+  return cached(`cart_count:${customerId}`, async () => {
+    if (usingPostgres) {
+      const rows = await sql`select coalesce(sum(quantity), 0) as count from cart_items where customer_id = ${customerId}`;
+      return num(rows[0]?.count ?? 0);
+    }
+    return store!.cart_items
+      .filter((c) => c.customer_id === customerId)
+      .reduce((s, i) => s + i.quantity, 0);
+  }, 15_000);
+}
+
+export async function getBookedSeatsCount(productId: number): Promise<number> {
+  if (usingPostgres) {
+    const rows = await sql`select coalesce(sum(quantity), 0) as count from order_items where product_id = ${productId} and status <> 'cancelled' and status <> 'no_show'`;
+    return num(rows[0]?.count ?? 0);
+  }
+  return store!.order_items
+    .filter((x) => x.product_id === productId && x.status !== 'cancelled' && x.status !== 'no_show')
+    .reduce((s, x) => s + x.quantity, 0);
+}
+
 export async function addToCart(item: {
   customerId: number; productId: number; purchaseType: CartItem['purchase_type'];
   quantity: number; selectedVariant?: string | null; selectedSession?: object | null;
   attendeeFor?: string; attendeeName?: string | null; attendeeContact?: string | null; attendeeNote?: string | null;
 }): Promise<void> {
+  invalidate(`cart_count:${item.customerId}`);
   // postgres.js JSON-serializes plain objects for jsonb params at runtime; the
   // cast only satisfies the driver's parameter typing.
   const sessionParam = (item.selectedSession ?? null) as unknown as string | null;
@@ -445,6 +482,7 @@ export async function addToCart(item: {
 }
 
 export async function updateCartQty(customerId: number, itemId: number, quantity: number): Promise<void> {
+  invalidate(`cart_count:${customerId}`);
   if (usingPostgres) {
     await sql`update cart_items set quantity = ${quantity} where id = ${itemId} and customer_id = ${customerId}`;
     return;
@@ -454,6 +492,7 @@ export async function updateCartQty(customerId: number, itemId: number, quantity
 }
 
 export async function removeFromCart(customerId: number, itemId: number): Promise<void> {
+  invalidate(`cart_count:${customerId}`);
   if (usingPostgres) {
     await sql`delete from cart_items where id = ${itemId} and customer_id = ${customerId}`;
     return;
@@ -462,6 +501,7 @@ export async function removeFromCart(customerId: number, itemId: number): Promis
 }
 
 export async function clearCart(customerId: number, ids?: number[]): Promise<void> {
+  invalidate(`cart_count:${customerId}`);
   if (usingPostgres) {
     if (ids?.length) await sql`delete from cart_items where customer_id = ${customerId} and id = any(${ids})`;
     else await sql`delete from cart_items where customer_id = ${customerId}`;
@@ -555,13 +595,15 @@ export async function createOrder(input: {
       quantity: it.quantity, price: it.price, status: input.status === 'awaiting_payment' ? 'awaiting_payment' : 'pending',
       review_rating: null, review_comment: null, reviewed_at: null, selected_variant: it.selectedVariant ?? null,
     });
-    const p = store!.products.find((x) => x.id === it.productId);
-    if (p) {
-      p.stock_quantity = Math.max(0, p.stock_quantity - it.quantity);
-      // Variation-level deduction mirrors the Postgres path.
-      if (it.selectedVariant && Array.isArray(p.variations_data)) {
-        const entry = p.variations_data.find((v) => `${v.typeLabel}: ${v.name}` === it.selectedVariant);
-        if (entry) entry.stock = Math.max(0, entry.stock - it.quantity);
+    if (it.purchaseType !== 'workshop') {
+      const p = store!.products.find((x) => x.id === it.productId);
+      if (p) {
+        p.stock_quantity = Math.max(0, p.stock_quantity - it.quantity);
+        // Variation-level deduction mirrors the Postgres path.
+        if (it.selectedVariant && Array.isArray(p.variations_data)) {
+          const entry = p.variations_data.find((v) => `${v.typeLabel}: ${v.name}` === it.selectedVariant);
+          if (entry) entry.stock = Math.max(0, entry.stock - it.quantity);
+        }
       }
     }
   }
@@ -614,6 +656,137 @@ export async function listCustomerOrders(customerId: number): Promise<Order[]> {
   return store!.orders.filter((o) => o.customer_id === customerId).sort((a, b) => b.id - a.id);
 }
 
+export async function listCustomerOrdersWithItems(customerId: number): Promise<Array<{ order: Order; items: OrderItem[] }>> {
+  if (usingPostgres) {
+    const rows = await sql`
+      select o.*,
+        coalesce(jsonb_agg(to_jsonb(oi.*) order by oi.id) filter (where oi.id is not null), '[]'::jsonb) as items
+      from orders o
+      left join order_items oi on oi.order_id = o.id
+      where o.customer_id = ${customerId}
+      group by o.id
+      order by o.created_at desc`;
+    return (rows as unknown as Record<string, unknown>[]).map((r) => ({
+      order: mapOrder(r),
+      items: ((r.items as unknown as Record<string, unknown>[]) || []).map(mapOrderItem),
+    }));
+  }
+  const orders = store!.orders.filter((o) => o.customer_id === customerId).sort((a, b) => b.id - a.id);
+  return orders.map((o) => ({
+    order: { ...o },
+    items: store!.order_items.filter((oi) => oi.order_id === o.id).map((oi) => ({ ...oi })),
+  }));
+}
+
+export interface CustomerBooking {
+  order_item_id: number;
+  order_id: number;
+  product_id: number;
+  artisan_id: number;
+  artisan_name: string;
+  artisan_phone: string | null;
+  product_name: string;
+  purchase_type: string;
+  quantity: number;
+  price: number;
+  selected_variant: string | null;
+  selected_session: {
+    date: string;
+    time_start: string;
+    time_end: string;
+    location?: string;
+  } | null;
+  attendee_name: string | null;
+  attendee_contact: string | null;
+  ticket_code: string | null;
+  status: string;
+  order_status: string;
+  payment_method: string;
+  created_at: string;
+  venue_location: string | null;
+  venue_lat: number | null;
+  venue_lng: number | null;
+  image_path: string | null;
+}
+
+export async function listCustomerBookings(customerId: number): Promise<CustomerBooking[]> {
+  if (usingPostgres) {
+    const rows = await sql`
+      select oi.id as order_item_id, oi.order_id, oi.product_id, oi.artisan_id, oi.product_name,
+             oi.purchase_type, oi.quantity, oi.price, oi.selected_variant, oi.selected_session,
+             oi.attendee_name, oi.attendee_contact, oi.ticket_code, oi.status,
+             o.status as order_status, o.payment_method, o.created_at,
+             a.name as artisan_name, a.phone as artisan_phone,
+             p.tutorial_location, p.tutorial_lat, p.tutorial_lng, p.image_path
+      from order_items oi
+      join orders o on o.id = oi.order_id
+      left join artisans a on a.id = oi.artisan_id
+      left join products p on p.id = oi.product_id
+      where o.customer_id = ${customerId}
+        and (oi.purchase_type = 'workshop' or oi.purchase_type = 'bundle' or oi.ticket_code is not null or p.has_tutorial = true)
+      order by oi.id desc`;
+    return (rows as unknown as Record<string, unknown>[]).map((r) => ({
+      order_item_id: num(r.order_item_id),
+      order_id: num(r.order_id),
+      product_id: num(r.product_id),
+      artisan_id: num(r.artisan_id),
+      artisan_name: String(r.artisan_name ?? 'Artisan'),
+      artisan_phone: (r.artisan_phone as string) ?? null,
+      product_name: String(r.product_name),
+      purchase_type: (r.purchase_type as string) ?? 'workshop',
+      quantity: num(r.quantity),
+      price: num(r.price),
+      selected_variant: (r.selected_variant as string) ?? null,
+      selected_session: parseJsonish<CustomerBooking['selected_session']>(r.selected_session),
+      attendee_name: (r.attendee_name as string) ?? null,
+      attendee_contact: (r.attendee_contact as string) ?? null,
+      ticket_code: (r.ticket_code as string) ?? null,
+      status: String(r.status ?? 'pending'),
+      order_status: String(r.order_status),
+      payment_method: String(r.payment_method),
+      created_at: tsString(r.created_at) ?? new Date().toISOString(),
+      venue_location: (r.tutorial_location as string) ?? null,
+      venue_lat: r.tutorial_lat == null ? null : num(r.tutorial_lat),
+      venue_lng: r.tutorial_lng == null ? null : num(r.tutorial_lng),
+      image_path: (r.image_path as string) ?? null,
+    }));
+  }
+  const custOrders = new Set(store!.orders.filter((o) => o.customer_id === customerId).map((o) => o.id));
+  return store!.order_items
+    .filter((oi) => custOrders.has(oi.order_id) && (oi.purchase_type === 'workshop' || oi.purchase_type === 'bundle' || oi.ticket_code))
+    .map((oi) => {
+      const o = store!.orders.find((oo) => oo.id === oi.order_id);
+      const a = store!.artisans.find((aa) => aa.id === oi.artisan_id);
+      const p = store!.products.find((pp) => pp.id === oi.product_id);
+      return {
+        order_item_id: oi.id,
+        order_id: oi.order_id,
+        product_id: oi.product_id,
+        artisan_id: oi.artisan_id,
+        artisan_name: a?.name ?? 'Artisan',
+        artisan_phone: a?.phone ?? null,
+        product_name: oi.product_name,
+        purchase_type: oi.purchase_type,
+        quantity: oi.quantity,
+        price: num(oi.price),
+        selected_variant: oi.selected_variant ?? null,
+        selected_session: oi.selected_session as CustomerBooking['selected_session'],
+        attendee_name: oi.attendee_name ?? null,
+        attendee_contact: (oi as unknown as { attendee_contact?: string }).attendee_contact ?? null,
+        ticket_code: oi.ticket_code ?? null,
+        status: oi.status ?? 'pending',
+        order_status: o?.status ?? 'pending',
+        payment_method: o?.payment_method ?? 'cod',
+        created_at: o?.created_at ?? new Date().toISOString(),
+        venue_location: p?.tutorial_location ?? null,
+        venue_lat: p?.tutorial_lat ?? null,
+        venue_lng: p?.tutorial_lng ?? null,
+        image_path: p?.image_path ?? null,
+      };
+    })
+    .sort((a, b) => b.order_item_id - a.order_item_id);
+}
+
 export async function listArtisanOrders(artisanId: number): Promise<Array<OrderItem & { order: Order | null; customer_name: string | null }>> {
   if (usingPostgres) {
     const rows = await sql`
@@ -646,6 +819,107 @@ export async function updateOrderStatus(orderId: number, status: string): Promis
   if (o) o.status = status;
 }
 
+export async function restoreItemStock(item: OrderItem): Promise<void> {
+  if (item.purchase_type === 'workshop') return;
+  if (usingPostgres) {
+    await sql`update products set stock_quantity = stock_quantity + ${item.quantity} where id = ${item.product_id}`;
+    if (item.selected_variant) {
+      const vrows = await sql`select variations_data from products where id = ${item.product_id}`;
+      let variants: Array<{ name: string; stock: number; price: number; type: string; typeLabel: string }> | null = null;
+      try {
+        variants = typeof vrows[0].variations_data === 'string' ? JSON.parse(vrows[0].variations_data) : (vrows[0].variations_data as typeof variants);
+      } catch { /* ignore */ }
+      const entry = variants?.find((v) => `${v.typeLabel}: ${v.name}` === item.selected_variant);
+      if (entry) {
+        const updated = variants!.map((v) => (v === entry ? { ...v, stock: v.stock + item.quantity } : v));
+        await sql`update products set variations_data = ${JSON.stringify(updated)}::jsonb where id = ${item.product_id}`;
+      }
+    }
+    return;
+  }
+  const p = store!.products.find((x) => x.id === item.product_id);
+  if (p) {
+    p.stock_quantity += item.quantity;
+    if (item.selected_variant && Array.isArray(p.variations_data)) {
+      const entry = p.variations_data.find((v) => `${v.typeLabel}: ${v.name}` === item.selected_variant);
+      if (entry) entry.stock += item.quantity;
+    }
+  }
+}
+
+export async function cancelOrderCustomer(
+  orderId: number,
+  customerId: number,
+  reason?: string
+): Promise<{ success: boolean; message: string }> {
+  invalidate('admin:stats');
+  if (usingPostgres) {
+    const oRows = await sql`select * from orders where id = ${orderId} limit 1`;
+    if (!oRows.length) return { success: false, message: 'Order not found.' };
+    const order = mapOrder(oRows[0] as unknown as Record<string, unknown>);
+    if (order.customer_id !== customerId) return { success: false, message: 'Unauthorized.' };
+    if (order.status === 'cancelled') {
+      return { success: false, message: 'Order is already cancelled.' };
+    }
+    const items = await getOrderItems(orderId);
+    const hasProgressed = items.some((i) => ['shipped', 'delivered', 'received', 'attended'].includes(i.status));
+    if (hasProgressed) {
+      return {
+        success: false,
+        message: 'Order cannot be cancelled because it has already progressed to shipping or workshop attendance.',
+      };
+    }
+    if (!['pending', 'awaiting_payment', 'paid'].includes(order.status)) {
+      return {
+        success: false,
+        message: `Order cannot be cancelled because it is already ${order.status.replace(/_/g, ' ')}.`,
+      };
+    }
+
+    await sql`update orders set status = 'cancelled' where id = ${orderId}`;
+    await sql`update order_items set status = 'cancelled' where order_id = ${orderId}`;
+
+    for (const it of items) {
+      await restoreItemStock(it);
+
+      await pushNotification({
+        userId: it.artisan_id,
+        role: 'artisan',
+        type: 'order_status',
+        message: `⚠️ Customer cancelled order #${orderId} (${it.product_name} × ${it.quantity})${reason ? `: "${reason}"` : '.'}${order.status === 'paid' ? ' (Order was paid — refund processing required)' : ''}`,
+      });
+    }
+
+    return { success: true, message: 'Order has been successfully cancelled.' };
+  }
+
+  const o = store!.orders.find((x) => x.id === orderId);
+  if (!o) return { success: false, message: 'Order not found.' };
+  if (o.customer_id !== customerId) return { success: false, message: 'Unauthorized.' };
+  if (o.status === 'cancelled') {
+    return { success: false, message: 'Order is already cancelled.' };
+  }
+  const its = store!.order_items.filter((x) => x.order_id === orderId);
+  const hasProgressed = its.some((i) => ['shipped', 'delivered', 'received', 'attended'].includes(i.status));
+  if (hasProgressed) {
+    return {
+      success: false,
+      message: 'Order cannot be cancelled because it has already progressed to shipping or workshop attendance.',
+    };
+  }
+  if (!['pending', 'awaiting_payment', 'paid'].includes(o.status)) {
+    return { success: false, message: `Order cannot be cancelled because it is already ${o.status}.` };
+  }
+
+  o.status = 'cancelled';
+  for (const it of its) {
+    it.status = 'cancelled';
+    await restoreItemStock(it);
+  }
+
+  return { success: true, message: 'Order has been successfully cancelled.' };
+}
+
 export async function getOrderItem(itemId: number): Promise<OrderItem | null> {
   if (usingPostgres) {
     const rows = await sql`select * from order_items where id = ${itemId} limit 1`;
@@ -655,6 +929,11 @@ export async function getOrderItem(itemId: number): Promise<OrderItem | null> {
 }
 
 export async function updateOrderItemStatus(itemId: number, status: string): Promise<void> {
+  const item = await getOrderItem(itemId);
+  if (item && status === 'cancelled' && item.status !== 'cancelled') {
+    await restoreItemStock(item);
+  }
+
   if (usingPostgres) {
     await sql`update order_items set status = ${status} where id = ${itemId}`;
     return;
@@ -673,19 +952,30 @@ export async function updateOrderItemReview(itemId: number, rating: number, comm
 }
 
 export async function setOrderPayment(orderId: number, opts: { receipt?: string; reference?: string; status?: string }): Promise<void> {
+  invalidate('admin:stats');
   if (usingPostgres) {
     await sql`update orders set
         payment_receipt = coalesce(${opts.receipt ?? null}, payment_receipt),
         payment_reference = coalesce(${opts.reference ?? null}, payment_reference),
         status = coalesce(${opts.status ?? null}, status)
       where id = ${orderId}`;
+    if (opts.status === 'paid') {
+      await sql`update order_items set status = 'pending' where order_id = ${orderId} and status = 'awaiting_payment'`;
+    }
     return;
   }
   const o = store!.orders.find((x) => x.id === orderId);
   if (!o) return;
   if (opts.receipt) o.payment_receipt = opts.receipt;
   if (opts.reference) o.payment_reference = opts.reference;
-  if (opts.status) o.status = opts.status;
+  if (opts.status) {
+    o.status = opts.status;
+    if (opts.status === 'paid') {
+      for (const it of store!.order_items.filter((x) => x.order_id === orderId && x.status === 'awaiting_payment')) {
+        it.status = 'pending';
+      }
+    }
+  }
 }
 
 export async function listPendingPaymentOrders(): Promise<Order[]> {
@@ -702,6 +992,27 @@ export async function listAllOrders(): Promise<Order[]> {
     return (rows as unknown as Record<string, unknown>[]).map(mapOrder);
   }
   return [...store!.orders].sort((a, b) => b.id - a.id);
+}
+
+export async function listAllOrdersWithItems(): Promise<Array<{ order: Order; items: OrderItem[] }>> {
+  if (usingPostgres) {
+    const rows = await sql`
+      select o.*,
+        coalesce(jsonb_agg(to_jsonb(oi.*) order by oi.id) filter (where oi.id is not null), '[]'::jsonb) as items
+      from orders o
+      left join order_items oi on oi.order_id = o.id
+      group by o.id
+      order by o.created_at desc limit 200`;
+    return (rows as unknown as Record<string, unknown>[]).map((r) => ({
+      order: mapOrder(r),
+      items: ((r.items as unknown as Record<string, unknown>[]) || []).map(mapOrderItem),
+    }));
+  }
+  const orders = [...store!.orders].sort((a, b) => b.id - a.id);
+  return orders.map((o) => ({
+    order: { ...o },
+    items: store!.order_items.filter((oi) => oi.order_id === o.id).map((oi) => ({ ...oi })),
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -874,41 +1185,46 @@ export async function listActivityLogs(limit = 100): Promise<ActivityLog[]> {
 // Admin stats
 // ---------------------------------------------------------------------------
 export async function adminStats(): Promise<{ customers: number; artisans: number; pendingArtisans: number; orders: number; revenue: number; products: number }> {
-  if (usingPostgres) {
-    const r = await sql`
-      select
-        (select count(*) from users where role = 'customer') as customers,
-        (select count(*) from artisans) as artisans,
-        (select count(*) from artisans where verification_status = 'pending') as pending_artisans,
-        (select count(*) from orders) as orders,
-        (select coalesce(sum(total_amount), 0) from orders where status = 'paid') as revenue,
-        (select count(*) from products) as products`;
-    const row = r[0] as Record<string, unknown>;
+  return cached('admin:stats', async () => {
+    if (usingPostgres) {
+      const r = await sql`
+        select
+          (select count(*) from users where role = 'customer') as customers,
+          (select count(*) from artisans) as artisans,
+          (select count(*) from artisans where verification_status = 'pending') as pending_artisans,
+          (select count(*) from orders) as orders,
+          (select coalesce(sum(total_amount), 0) from orders where status = 'paid') as revenue,
+          (select count(*) from products) as products`;
+      const row = r[0] as Record<string, unknown>;
+      return {
+        customers: num(row.customers), artisans: num(row.artisans), pendingArtisans: num(row.pending_artisans),
+        orders: num(row.orders), revenue: num(row.revenue), products: num(row.products),
+      };
+    }
     return {
-      customers: num(row.customers), artisans: num(row.artisans), pendingArtisans: num(row.pending_artisans),
-      orders: num(row.orders), revenue: num(row.revenue), products: num(row.products),
+      customers: store!.users.filter((u) => u.role === 'customer').length,
+      artisans: store!.artisans.length,
+      pendingArtisans: store!.artisans.filter((a) => a.verification_status === 'pending').length,
+      orders: store!.orders.length,
+      revenue: store!.orders.filter((o) => o.status === 'paid').reduce((s, o) => s + o.total_amount, 0),
+      products: store!.products.length,
     };
-  }
-  return {
-    customers: store!.users.filter((u) => u.role === 'customer').length,
-    artisans: store!.artisans.length,
-    pendingArtisans: store!.artisans.filter((a) => a.verification_status === 'pending').length,
-    orders: store!.orders.length,
-    revenue: store!.orders.filter((o) => o.status === 'paid').reduce((s, o) => s + o.total_amount, 0),
-    products: store!.products.length,
-  };
+  }, 15_000);
 }
 
 // ---------------------------------------------------------------------------
 // Products (artisan CRUD)
 // ---------------------------------------------------------------------------
 export async function createProduct(artisanId: number, p: Partial<Product>): Promise<number> {
+  invalidate('products:active:default');
+  invalidate('admin:stats');
   if (usingPostgres) {
-    const rows = await sql`insert into products (artisan_id, name, description, price, stock_quantity, category, has_tutorial, tutorial_title, tutorial_description, tutorial_price, tutorial_capacity, tutorial_dates, tutorial_fee_type, has_variations, variations_data)
+    const rows = await sql`insert into products (artisan_id, name, description, price, stock_quantity, category, has_tutorial, tutorial_title, tutorial_description, tutorial_price, tutorial_capacity, tutorial_location, tutorial_lat, tutorial_lng, tutorial_dates, tutorial_fee_type, has_variations, variations_data)
       values (${artisanId}, ${p.name!}, ${p.description ?? null}, ${p.price ?? 0}, ${p.stock_quantity ?? 0}, ${p.category ?? null},
               ${p.has_tutorial ?? false}, ${p.tutorial_title ?? null}, ${p.tutorial_description ?? null}, ${p.tutorial_price ?? null},
-              ${p.tutorial_capacity ?? null}, ${(p.tutorial_dates ?? null) as unknown as string | null}, ${p.tutorial_fee_type ?? null},
-              ${p.has_variations ?? false}, ${(p.variations_data ?? null) as unknown as string | null})
+              ${p.tutorial_capacity ?? null}, ${p.tutorial_location ?? null}, ${p.tutorial_lat ?? null}, ${p.tutorial_lng ?? null},
+              ${(p.tutorial_dates ? JSON.stringify(p.tutorial_dates) : null) as unknown as string | null}, ${p.tutorial_fee_type ?? null},
+              ${p.has_variations ?? false}, ${(p.variations_data ? JSON.stringify(p.variations_data) : null) as unknown as string | null})
       returning id`;
     return num(rows[0].id);
   }
@@ -919,7 +1235,9 @@ export async function createProduct(artisanId: number, p: Partial<Product>): Pro
     video_path: null, status: 'active', nfc_tag_id: null, nfc_tag_status: null, has_tutorial: p.has_tutorial ?? false,
     tutorial_title: p.tutorial_title ?? null, tutorial_description: p.tutorial_description ?? null,
     tutorial_dates: (p.tutorial_dates as Product['tutorial_dates']) ?? null, tutorial_price: p.tutorial_price ?? null,
-    tutorial_capacity: p.tutorial_capacity ?? null, tutorial_location: null, tutorial_fee_type: p.tutorial_fee_type ?? null,
+    tutorial_capacity: p.tutorial_capacity ?? null, tutorial_location: p.tutorial_location ?? null,
+    tutorial_lat: p.tutorial_lat ?? null, tutorial_lng: p.tutorial_lng ?? null,
+    tutorial_fee_type: p.tutorial_fee_type ?? null,
     tutorial_learnings: null, tutorial_status: null, materials_used: null, has_variations: p.has_variations ?? false,
     variation_pricing: p.variation_pricing ?? false, variations_data: (p.variations_data as Product['variations_data']) ?? null,
     created_at: new Date().toISOString(),
@@ -928,6 +1246,9 @@ export async function createProduct(artisanId: number, p: Partial<Product>): Pro
 }
 
 export async function updateProduct(artisanId: number, id: number, p: Partial<Product>): Promise<void> {
+  invalidate('products:active:default');
+  invalidate(`product:${id}`);
+  invalidate('admin:stats');
   if (usingPostgres) {
     await sql`update products set
         name = coalesce(${p.name ?? null}, name),
@@ -941,6 +1262,10 @@ export async function updateProduct(artisanId: number, id: number, p: Partial<Pr
         tutorial_description = coalesce(${p.tutorial_description ?? null}, tutorial_description),
         tutorial_price = coalesce(${p.tutorial_price ?? null}, tutorial_price),
         tutorial_capacity = coalesce(${p.tutorial_capacity ?? null}, tutorial_capacity),
+        tutorial_location = coalesce(${p.tutorial_location ?? null}, tutorial_location),
+        tutorial_lat = coalesce(${p.tutorial_lat ?? null}, tutorial_lat),
+        tutorial_lng = coalesce(${p.tutorial_lng ?? null}, tutorial_lng),
+        tutorial_dates = coalesce(${p.tutorial_dates !== undefined ? (p.tutorial_dates ? JSON.stringify(p.tutorial_dates) : null) : null}::jsonb, tutorial_dates),
         tutorial_fee_type = coalesce(${p.tutorial_fee_type ?? null}, tutorial_fee_type),
         has_variations = coalesce(${p.has_variations ?? null}, has_variations),
         variation_pricing = coalesce(${p.variation_pricing ?? null}, variation_pricing),

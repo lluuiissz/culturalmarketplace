@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface Row {
@@ -62,7 +63,7 @@ export default function ShipmentsClient({ initial }: { initial: Row[] }) {
           </div>
           <div className="flex items-center gap-2">
             <span className={`badge capitalize ${STATUS_STYLE[r.status] ?? 'bg-stone-100 text-stone-600'}`}>{r.status.replace(/_/g, ' ')}</span>
-            <a className="btn-outline px-3 py-1 text-xs" href={`/artisan/orders/${r.order_item_id}/waybill`}>🖨 Waybill</a>
+            <Link className="btn-outline px-3 py-1 text-xs" href={`/artisan/orders/${r.order_item_id}/waybill`} prefetch={true}>🖨 Waybill</Link>
             {NEXT[r.status] && (
               <button className="btn-primary px-3 py-1 text-xs" disabled={busy} onClick={() => advance(r.id, NEXT[r.status]!.value)}>
                 {NEXT[r.status]!.label}

@@ -38,11 +38,16 @@ export interface ExperienceBooking {
   order_item_id: number;
   customer_id: number;
   customer_name: string;
+  customer_phone?: string | null;
   product_id: number;
   product_name: string;
   attendee_name: string | null;
   attendee_contact: string | null;
-  selected_session: TutorialDate | null;
+  selected_session: (TutorialDate & { location?: string }) | null;
+  selected_variant?: string | null;
+  purchase_type?: string | null;
+  order_notes?: string | null;
+  payment_method?: string | null;
   quantity: number;
   price: number;
   status: string;
@@ -102,6 +107,8 @@ export interface Product {
   tutorial_price: number | null;
   tutorial_capacity: number | null;
   tutorial_location: string | null;
+  tutorial_lat?: number | null;
+  tutorial_lng?: number | null;
   tutorial_fee_type: 'paid' | 'free' | null;
   tutorial_learnings: string[] | null;
   tutorial_status: 'accept_bookings' | 'draft' | null;

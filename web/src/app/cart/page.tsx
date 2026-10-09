@@ -30,16 +30,25 @@ export default async function CartPage() {
       <main className="mx-auto max-w-4xl px-4 py-10">
         <h1 className="font-serif text-3xl font-bold text-brand-900">Your cart</h1>
         <CartClient
-          initialItems={cart.map((i) => ({
-            id: i.id,
-            product_id: i.product_id,
-            quantity: i.quantity,
-            name: i.product?.name ?? 'Unknown product',
-            price: Number(i.product?.price ?? 0),
-            variant: i.selected_variant,
-            purchase_type: i.purchase_type,
-            session: i.selected_session,
-          }))}
+          initialItems={cart.map((i) => {
+            let itemPrice = Number(i.product?.price ?? 0);
+            if (i.purchase_type === 'workshop') {
+              itemPrice = Number(i.product?.tutorial_price ?? i.product?.price ?? 0);
+            } else if (i.selected_variant && i.product?.variations_data) {
+              const v = i.product.variations_data.find((x) => `${x.typeLabel}: ${x.name}` === i.selected_variant);
+              if (v && v.price > 0) itemPrice += Number(v.price);
+            }
+            return {
+              id: i.id,
+              product_id: i.product_id,
+              quantity: i.quantity,
+              name: i.product?.name ?? 'Unknown product',
+              price: itemPrice,
+              variant: i.selected_variant,
+              purchase_type: i.purchase_type,
+              session: i.selected_session,
+            };
+          })}
         />
       </main>
       <Footer />
