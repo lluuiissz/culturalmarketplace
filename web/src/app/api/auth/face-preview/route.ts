@@ -13,14 +13,32 @@ export async function POST(req: Request) {
 
     const result = await verifyFace(await idImage.arrayBuffer(), await selfie.arrayBuffer());
     if (result.status === 'ok') {
-      return NextResponse.json({ match: result.data.match, confidence: result.data.confidence });
+      return NextResponse.json({
+        match: Boolean(result.data.match),
+        confidence: result.data.confidence,
+        distance: result.data.distance,
+        message: result.data.match ? 'Face matched your ID photo.' : 'Face did not match ID photo.',
+      });
     }
     if (result.status === 'skipped') {
-      return NextResponse.json({ match: true, skipped: true, message: 'Face service not configured - automatic comparison unavailable.' });
+      return NextResponse.json({
+        match: false,
+        skipped: true,
+        message: 'Face comparison service is offline. Photo saved for manual admin review.',
+      });
     }
+
     await logFaceAttempt({ result: 'error', detail: { step: 'preview', message: result.message } });
-    return NextResponse.json({ match: false, message: result.message });
-  } catch {
-    return NextResponse.json({ match: false, message: 'Face check failed.' }, { status: 500 });
+
+    const isNoFace = result.message?.toLowerCase().includes('no face') || result.message?.toLowerCase().includes('face found');
+    return NextResponse.json({
+      match: false,
+      no_face: isNoFace,
+      message: isNoFace
+        ? 'No face was detected in one or both images. Ensure your face and ID photo are clearly visible and well-lit.'
+        : (result.message || 'Face comparison service error.'),
+    });
+  } catch (err) {
+    return NextResponse.json({ match: false, message: 'Face check failed. Admin will review manually.' }, { status: 500 });
   }
 }

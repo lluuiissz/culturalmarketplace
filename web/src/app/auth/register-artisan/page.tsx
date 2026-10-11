@@ -50,7 +50,8 @@ export default function ArtisanRegisterPage() {
   const [s1Preview, setS1Preview] = useState<string>('');
   const [s2Preview, setS2Preview] = useState<string>('');
 
-  const [faceResult, setFaceResult] = useState<'idle' | 'matching' | 'match' | 'mismatch'>('idle');
+  const [faceResult, setFaceResult] = useState<'idle' | 'matching' | 'match' | 'mismatch' | 'no_face' | 'manual_review'>('idle');
+  const [faceMessage, setFaceMessage] = useState<string>('');
 
   // Input refs
   const frontRef = useRef<HTMLInputElement>(null);
@@ -64,6 +65,9 @@ export default function ArtisanRegisterPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [camOn, setCamOn] = useState(false);
+  const [camReady, setCamReady] = useState(false);
+  const [camFacing, setCamFacing] = useState<'user' | 'environment'>('user');
+  const [cameraError, setCameraError] = useState<string>('');
 
   // 1. Accidental Refresh Recovery: Restore draft on initial page mount
   useEffect(() => {
@@ -178,6 +182,9 @@ export default function ArtisanRegisterPage() {
       if (side === 'front') {
         setIdFront(compressed);
         setIdFrontPreview(dataUrl);
+        if (selfie) {
+          void triggerFaceMatch(selfie, compressed);
+        }
       } else {
         setIdBack(compressed);
         setIdBackPreview(dataUrl);
@@ -260,34 +267,204 @@ export default function ArtisanRegisterPage() {
     }
   }
 
-  async function startCamera() {
+  // Ensure the live video element receives the MediaStream as soon as it mounts
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (camOn && videoRef.current && streamRef.current) {
+      const video = videoRef.current;
+      video.srcObject = streamRef.current;
+
+      const markReady = () => {
+        if (!isCancelled) setCamReady(true);
+      };
+
+      video.addEventListener('playing', markReady);
+      video.addEventListener('canplay', markReady);
+      video.addEventListener('loadedmetadata', markReady);
+
+      video.play().then(() => {
+        markReady();
+      }).catch((err) => {
+        console.warn('Video play warning:', err);
+      });
+
+      return () => {
+        isCancelled = true;
+        video.removeEventListener('playing', markReady);
+        video.removeEventListener('canplay', markReady);
+        video.removeEventListener('loadedmetadata', markReady);
+      };
+    } else if (!camOn) {
+      setCamReady(false);
+    }
+  }, [camOn]);
+
+  // Clean up media tracks on unmount
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+      }
+    };
+  }, []);
+
+  async function startCamera(facing?: 'user' | 'environment') {
+    const targetFacing: 'user' | 'environment' =
+      facing === 'user' || facing === 'environment' ? facing : camFacing;
+    setError('');
+    setCameraError('');
+    setCamReady(false);
+
+    // Stop any existing stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 720 } } });
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Your browser does not support live camera access. Please upload a selfie file instead.');
+      }
+
+      let stream: MediaStream;
+      try {
+        // First try with desired facing mode & ideal resolution
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: targetFacing,
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+      } catch {
+        // Fallback: generic video constraint for webcams that reject facingMode
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      }
+
       streamRef.current = stream;
+      setCamFacing(targetFacing);
+      setCamOn(true);
+
+      // If video ref is already mounted in the DOM, attach immediately
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        videoRef.current.play().then(() => {
+          setCamReady(true);
+        }).catch(() => {});
       }
-      setCamOn(true);
-    } catch {
-      setError('Camera unavailable. Use the upload option below instead.');
+    } catch (err: unknown) {
+      console.error('Camera access error:', err);
+      stopCamera();
+      const msg = err instanceof Error ? err.message : '';
+      let formatted = 'Unable to access camera. Please check camera permissions or upload a selfie file.';
+      if (msg.includes('Permission') || msg.includes('NotAllowedError') || msg.includes('PermissionDeniedError')) {
+        formatted = 'Camera permission was blocked. Please grant camera access in your browser address bar or upload a selfie file.';
+      } else if (msg.includes('NotFound') || msg.includes('DevicesNotFoundError')) {
+        formatted = 'No camera device detected. Please attach a camera or upload a selfie file.';
+      }
+      setCameraError(formatted);
+      setError(formatted);
     }
   }
 
   function stopCamera() {
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
     setCamOn(false);
+    setCamReady(false);
+  }
+
+  function flipCamera() {
+    const nextFacing = camFacing === 'user' ? 'environment' : 'user';
+    void startCamera(nextFacing);
+  }
+
+  async function triggerFaceMatch(file: File, idFrontFile: File | null = idFront) {
+    if (!idFrontFile) {
+      setFaceResult('idle');
+      setFaceMessage('✓ Selfie captured. (Attach ID front to compare with face.)');
+      return;
+    }
+
+    setFaceResult('matching');
+    setFaceMessage('🔍 Analyzing face and comparing with ID photo…');
+
+    try {
+      const fd = new FormData();
+      fd.append('id_image', idFrontFile);
+      fd.append('selfie', file);
+      const res = await fetch('/api/auth/face-preview', { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (data.skipped) {
+        setFaceResult('manual_review');
+        setFaceMessage(data.message || 'ℹ️ Automated face service unavailable. Your photo will be manually verified by admin.');
+      } else if (data.no_face) {
+        setFaceResult('no_face');
+        setFaceMessage(data.message || '⚠️ No face detected in the photo. Please look directly at the camera with clear lighting.');
+      } else if (data.match) {
+        setFaceResult('match');
+        setFaceMessage(data.message || '✅ Face matched your ID photo!');
+      } else {
+        setFaceResult('mismatch');
+        setFaceMessage(data.message || '⚠️ Face did not match ID photo. You may retake or proceed with manual admin verification.');
+      }
+    } catch {
+      setFaceResult('manual_review');
+      setFaceMessage('ℹ️ Automatic face check could not complete. Photo saved for manual admin review.');
+    }
   }
 
   async function captureSelfie(matchAgainstId: boolean) {
-    if (!canvasRef.current || !videoRef.current) return;
+    setError('');
+    if (!videoRef.current || !canvasRef.current) {
+      setError('Camera is not ready yet. Please wait a moment.');
+      return;
+    }
+
+    const video = videoRef.current;
+    if (video.videoWidth === 0 || video.videoHeight === 0 || video.readyState < 2) {
+      setError('Camera feed is still loading. Please wait for the live video to appear.');
+      return;
+    }
+
     const canvas = canvasRef.current;
-    canvas.width = videoRef.current.videoWidth || 640;
-    canvas.height = videoRef.current.videoHeight || 480;
-    canvas.getContext('2d')?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Sanity check: Ensure the captured frame is not pitch black / blank
+    const sample = ctx.getImageData(0, 0, Math.min(canvas.width, 100), Math.min(canvas.height, 100));
+    let sumBrightness = 0;
+    for (let i = 0; i < sample.data.length; i += 4) {
+      sumBrightness += sample.data[i] + sample.data[i + 1] + sample.data[i + 2];
+    }
+    const avgBrightness = sumBrightness / ((sample.data.length / 4) * 3);
+    if (avgBrightness < 3) {
+      setError('Captured photo appears completely dark or blank. Please check camera lens/lighting and try again.');
+      return;
+    }
+
     const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.92));
-    if (!blob) return;
+    if (!blob) {
+      setError('Failed to capture photo. Please try again.');
+      return;
+    }
+
     const file = new File([blob], 'selfie.jpg', { type: 'image/jpeg' });
     const dataUrl = await fileToDataUrl(file);
     setSelfie(file);
@@ -295,17 +472,10 @@ export default function ArtisanRegisterPage() {
     stopCamera();
 
     if (matchAgainstId && idFront) {
-      setFaceResult('matching');
-      const fd = new FormData();
-      fd.append('id_image', idFront);
-      fd.append('selfie', file);
-      const res = await fetch('/api/auth/face-preview', { method: 'POST', body: fd }).catch(() => null);
-      if (res && res.ok) {
-        const data = await res.json();
-        setFaceResult(data.match ? 'match' : 'mismatch');
-      } else {
-        setFaceResult('idle');
-      }
+      await triggerFaceMatch(file);
+    } else {
+      setFaceResult('idle');
+      setFaceMessage('✓ Selfie captured.');
     }
   }
 
@@ -718,48 +888,163 @@ export default function ArtisanRegisterPage() {
 
             <div className="mt-3 rounded-xl border-2 border-dashed border-stone-200 p-4 text-center">
               {selfiePreview ? (
-                <div>
-                  <img src={selfiePreview} alt="Selfie" className="mx-auto h-32 rounded object-cover" />
-                  <p className="mt-1 text-xs text-leaf-700 font-medium">
-                    {faceResult === 'match' && '✅ Face matched your ID!'}
-                    {faceResult === 'mismatch' && '⚠️ Did not match — submit anyway for manual admin review or retake'}
-                    {faceResult === 'idle' && '✓ Selfie captured'}
-                    {faceResult === 'matching' && 'Matching with ID…'}
-                  </p>
+                <div className="space-y-3">
+                  <div className="relative mx-auto w-36 h-36 rounded-2xl overflow-hidden border-2 border-stone-200 shadow-sm bg-stone-100">
+                    <img src={selfiePreview} alt="Selfie preview" className="w-full h-full object-cover" />
+                  </div>
+
+                  {/* Status badge */}
+                  <div className="mx-auto max-w-sm rounded-xl text-xs text-left">
+                    {faceResult === 'matching' && (
+                      <div className="flex items-center gap-2.5 text-primary-700 bg-primary-50 border border-primary-200 p-3 rounded-xl">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-300 border-t-primary-600 shrink-0" />
+                        <span>{faceMessage || 'Matching with ID photo…'}</span>
+                      </div>
+                    )}
+                    {faceResult === 'match' && (
+                      <div className="flex items-start gap-2.5 text-emerald-800 bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
+                        <span className="text-base leading-none">✅</span>
+                        <div>
+                          <p className="font-semibold">Face matched your ID!</p>
+                          <p className="text-[11px] text-emerald-700 mt-0.5">{faceMessage || 'Biometric verification passed successfully.'}</p>
+                        </div>
+                      </div>
+                    )}
+                    {faceResult === 'mismatch' && (
+                      <div className="flex items-start gap-2.5 text-amber-800 bg-amber-50 border border-amber-200 p-3 rounded-xl">
+                        <span className="text-base leading-none">⚠️</span>
+                        <div>
+                          <p className="font-semibold">Face match score below threshold</p>
+                          <p className="text-[11px] text-amber-700 mt-0.5">{faceMessage || 'You can retake photo or submit anyway for manual admin review.'}</p>
+                        </div>
+                      </div>
+                    )}
+                    {faceResult === 'no_face' && (
+                      <div className="flex items-start gap-2.5 text-amber-800 bg-amber-50 border border-amber-200 p-3 rounded-xl">
+                        <span className="text-base leading-none">👤</span>
+                        <div>
+                          <p className="font-semibold">No face detected</p>
+                          <p className="text-[11px] text-amber-700 mt-0.5">{faceMessage || 'Please retake with your face clearly centered in good lighting.'}</p>
+                        </div>
+                      </div>
+                    )}
+                    {faceResult === 'manual_review' && (
+                      <div className="flex items-start gap-2.5 text-stone-700 bg-stone-100 border border-stone-200 p-3 rounded-xl">
+                        <span className="text-base leading-none">ℹ️</span>
+                        <div>
+                          <p className="font-semibold">Pending Admin Review</p>
+                          <p className="text-[11px] text-stone-600 mt-0.5">{faceMessage || 'Selfie saved. An admin will review your photo during application approval.'}</p>
+                        </div>
+                      </div>
+                    )}
+                    {faceResult === 'idle' && (
+                      <div className="text-center text-leaf-700 font-medium py-1">
+                        {faceMessage || '✓ Selfie captured'}
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     type="button"
-                    className="mt-1 text-xs text-stone-400 underline hover:text-stone-700"
-                    onClick={() => { setSelfie(null); setSelfiePreview(''); setFaceResult('idle'); }}
+                    className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-800 font-medium underline"
+                    onClick={() => {
+                      setSelfie(null);
+                      setSelfiePreview('');
+                      setFaceResult('idle');
+                      setFaceMessage('');
+                    }}
                   >
                     Retake selfie
                   </button>
                 </div>
               ) : camOn ? (
-                <div>
-                  <video ref={videoRef} className="mx-auto h-44 rounded-lg object-cover" muted playsInline />
-                  <canvas ref={canvasRef} className="hidden" />
-                  <div className="mt-3 flex justify-center gap-2">
-                    <button type="button" className="btn-primary" onClick={() => captureSelfie(Boolean(idFront))}>
+                <div className="flex flex-col items-center">
+                  <div className="relative w-full max-w-sm aspect-[3/4] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-stone-900 shadow-lg border border-stone-700">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      onLoadedMetadata={() => setCamReady(true)}
+                      onCanPlay={() => setCamReady(true)}
+                      onPlaying={() => setCamReady(true)}
+                      className="w-full h-full object-cover"
+                    />
+                    <canvas ref={canvasRef} className="hidden" />
+
+                    {/* Face oval alignment guide */}
+                    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-4">
+                      <div className="w-40 h-52 sm:w-44 sm:h-56 rounded-[50%] border-2 border-dashed border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.35)]" />
+                      <span className="mt-2 text-[11px] font-medium text-white/90 bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                        Align your face inside oval
+                      </span>
+                    </div>
+
+                    {/* Camera starting / loading indicator */}
+                    {!camReady && (
+                      <div className="absolute inset-0 bg-stone-900/90 flex flex-col items-center justify-center gap-2 text-white">
+                        <div className="h-7 w-7 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        <p className="text-xs font-medium">Starting camera feed…</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      disabled={!camReady}
+                      className="btn-primary text-xs py-2 px-4 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => captureSelfie(Boolean(idFront))}
+                    >
                       📸 Capture Photo
                     </button>
-                    <button type="button" className="btn-outline text-xs" onClick={stopCamera}>
+                    <button
+                      type="button"
+                      className="btn-outline text-xs py-2 px-3"
+                      onClick={flipCamera}
+                      title="Flip camera"
+                    >
+                      🔄 Flip
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline text-xs py-2 px-3 text-stone-500 hover:text-stone-800"
+                      onClick={stopCamera}
+                    >
                       Cancel
                     </button>
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="py-2 text-3xl">🤳</div>
-                  <button type="button" className="btn-primary" onClick={startCamera}>
-                    Open Camera
-                  </button>
-                  <div className="mt-2">
+                <div className="py-4">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-stone-100 text-2xl text-stone-600 mb-3">
+                    🤳
+                  </div>
+                  <p className="text-xs text-stone-600 font-medium mb-3">
+                    Take a quick selfie or upload a photo of your face
+                  </p>
+
+                  {cameraError && (
+                    <div className="mx-auto mb-3 max-w-sm rounded-xl border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800 text-left flex items-start gap-2">
+                      <span className="text-sm shrink-0">⚠️</span>
+                      <p className="leading-snug">{cameraError}</p>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center justify-center gap-2">
                     <button
                       type="button"
-                      className="btn-outline text-xs"
+                      className="btn-primary text-xs py-2 px-4 shadow-sm"
+                      onClick={() => void startCamera()}
+                    >
+                      📷 Open Camera
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-outline text-xs py-2 px-3"
                       onClick={() => selfieFileRef.current?.click()}
                     >
-                      Or upload selfie file
+                      📁 Upload File
                     </button>
                   </div>
                   <input
@@ -774,7 +1059,12 @@ export default function ArtisanRegisterPage() {
                         const dataUrl = await fileToDataUrl(compressed);
                         setSelfie(compressed);
                         setSelfiePreview(dataUrl);
-                        setFaceResult('idle');
+                        if (idFront) {
+                          await triggerFaceMatch(compressed);
+                        } else {
+                          setFaceResult('idle');
+                          setFaceMessage('✓ Selfie attached. (Attach ID front to compare with face.)');
+                        }
                       }
                     }}
                   />
