@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { updateProduct, listCategories, logActivity, getProduct } from '@/lib/db';
+import { updateProduct, listCategories, logActivity, getProduct, addCategory } from '@/lib/db';
 
 // Full product edit — every field the create form offers (tutorial,
 // variations, materials included), ownership-enforced.
@@ -17,17 +17,23 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
 
   const b = (await req.json()) as Record<string, unknown>;
-  // Same curated-category rule as create: trim + case-insensitive match.
   let category: string | undefined;
   if (b.category !== undefined) {
     if (b.category === null || b.category === '') {
       return NextResponse.json({ status: 'error', message: 'Please select a category.' }, { status: 422 });
     }
-    const wanted = String(b.category).trim().toLowerCase();
+    const wanted = String(b.category).trim();
+    if (!wanted) {
+      return NextResponse.json({ status: 'error', message: 'Please select a category.' }, { status: 422 });
+    }
     const cats = await listCategories('product');
-    const hit = cats.find((c) => c.name.toLowerCase() === wanted);
-    if (!hit) return NextResponse.json({ status: 'error', message: 'That category is no longer available — please pick one from the list.' }, { status: 422 });
-    category = hit.name;
+    const hit = cats.find((c) => c.name.toLowerCase() === wanted.toLowerCase());
+    if (hit) {
+      category = hit.name;
+    } else {
+      await addCategory(wanted, 'product');
+      category = wanted;
+    }
   }
   await updateProduct(session.id, productId, {
     name: (b.name as string) ?? undefined,

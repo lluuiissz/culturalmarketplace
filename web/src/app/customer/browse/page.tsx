@@ -24,7 +24,11 @@ export default async function BrowsePage({ searchParams }: { searchParams: Promi
           <label className="text-sm font-medium text-stone-600">Filter by category</label>
           <select name="category" defaultValue={params.category ?? ''} className="input max-w-[200px]">
             <option value="">All categories</option>
-            {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+            {categories
+              .filter((c) => c.name.toLowerCase() !== 'other')
+              .map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
           </select>
           <button className="btn-outline" type="submit">Apply</button>
           {(params.q || params.category) && (

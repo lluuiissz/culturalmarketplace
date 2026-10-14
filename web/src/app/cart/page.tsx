@@ -35,8 +35,13 @@ export default async function CartPage() {
             if (i.purchase_type === 'workshop') {
               itemPrice = Number(i.product?.tutorial_price ?? i.product?.price ?? 0);
             } else if (i.selected_variant && i.product?.variations_data) {
-              const v = i.product.variations_data.find((x) => `${x.typeLabel}: ${x.name}` === i.selected_variant);
-              if (v && v.price > 0) itemPrice += Number(v.price);
+              const matching = i.product.variations_data.filter((x) =>
+                `${x.typeLabel}: ${x.name}` === i.selected_variant ||
+                (i.selected_variant && i.selected_variant.includes(`${x.typeLabel}: ${x.name}`))
+              );
+              matching.forEach((v) => {
+                if (v && v.price > 0) itemPrice += Number(v.price);
+              });
             }
             return {
               id: i.id,
@@ -47,6 +52,9 @@ export default async function CartPage() {
               variant: i.selected_variant,
               purchase_type: i.purchase_type,
               session: i.selected_session,
+              image_path: i.product?.image_path ?? null,
+              attendee_name: i.attendee_name ?? null,
+              attendee_for: i.attendee_for ?? null,
             };
           })}
         />

@@ -185,6 +185,7 @@ export interface OrderItem {
   artisan_id: number;
   product_name: string;
   purchase_type: 'product' | 'workshop' | 'bundle';
+  attendee_for?: 'self' | 'others' | string | null;
   attendee_name: string | null;
   selected_session: TutorialDate | null;
   ticket_code: string | null;
@@ -204,7 +205,10 @@ export interface CartItem {
   customer_id: number;
   product_id: number;
   purchase_type: 'product' | 'workshop' | 'bundle';
+  attendee_for?: 'self' | 'others' | null;
   attendee_name: string | null;
+  attendee_contact?: string | null;
+  attendee_note?: string | null;
   selected_session: TutorialDate | null;
   quantity: number;
   selected_variant: string | null;

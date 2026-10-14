@@ -49,7 +49,7 @@ export default async function Header() {
             ))}
           </nav>
           {session?.role === 'customer' && (
-            <Link href="/cart" prefetch={true} className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50" aria-label={`Cart, ${count} item${count === 1 ? '' : 's'}`}>
+            <Link href="/cart" prefetch={false} className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50" aria-label={`Cart, ${count} item${count === 1 ? '' : 's'}`}>
               <span aria-hidden className="text-xl leading-none">🛒</span>
               <span className="hidden sm:inline">Cart</span>
               {count > 0 && (

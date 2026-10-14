@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/Toast';
@@ -14,6 +14,9 @@ export interface CartRow {
   variant: string | null;
   purchase_type: string;
   session?: object | null;
+  image_path?: string | null;
+  attendee_name?: string | null;
+  attendee_for?: string | null;
 }
 
 // Last removed row, kept in memory so Undo can restore it without re-fetching.
@@ -21,12 +24,60 @@ let lastRemoved: CartRow | null = null;
 
 export default function CartClient({ initialItems }: { initialItems: CartRow[] }) {
   const router = useRouter();
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState<CartRow[]>(initialItems);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(
     () => new Set(initialItems.map((i) => i.id))
   );
   const [busy, setBusy] = useState(false);
   const toast = useToast();
+
+  // Real-time synchronization: guarantees the newly added product is visible immediately
+  // without needing a manual browser refresh even if router cache was delayed.
+  useEffect(() => {
+    let mounted = true;
+    async function syncCart() {
+      try {
+        const res = await fetch('/api/cart');
+        const data = await res.json();
+        if (mounted && data.status === 'success' && Array.isArray(data.cart)) {
+          const mapped: CartRow[] = data.cart.map((i: any) => {
+            let itemPrice = Number(i.product?.price ?? 0);
+            if (i.purchase_type === 'workshop') {
+              itemPrice = Number(i.product?.tutorial_price ?? i.product?.price ?? 0);
+            } else if (i.selected_variant && i.product?.variations_data) {
+              const v = i.product.variations_data.find((x: any) => `${x.typeLabel}: ${x.name}` === i.selected_variant);
+              if (v && v.price > 0) itemPrice += Number(v.price);
+            }
+            return {
+              id: i.id,
+              product_id: i.product_id,
+              quantity: i.quantity,
+              name: i.product?.name ?? 'Unknown product',
+              price: itemPrice,
+              variant: i.selected_variant,
+              purchase_type: i.purchase_type,
+              session: i.selected_session,
+              image_path: i.product?.image_path ?? null,
+              attendee_name: i.attendee_name ?? null,
+              attendee_for: i.attendee_for ?? null,
+            };
+          });
+          setItems(mapped);
+          setSelectedIds((prev) => {
+            const next = new Set<number>();
+            mapped.forEach((m) => {
+              if (prev.has(m.id) || prev.size === 0) next.add(m.id);
+            });
+            return next;
+          });
+        }
+      } catch {
+        // Fallback silently to initialItems
+      }
+    }
+    syncCart();
+    return () => { mounted = false; };
+  }, []);
 
   const isAllSelected = items.length > 0 && selectedIds.size === items.length;
   const selectedItems = items.filter((i) => selectedIds.has(i.id));
@@ -152,12 +203,31 @@ export default function CartClient({ initialItems }: { initialItems: CartRow[] }
                 onChange={() => toggleItem(i.id)}
               />
 
-              <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-brand-100 text-3xl shrink-0">
-                {i.purchase_type === 'workshop' ? '🧑‍🏫' : '🧶'}
-              </div>
+              <Link
+                href={`/customer/browse/${i.product_id}`}
+                className="relative flex h-16 w-16 items-center justify-center rounded-lg bg-brand-100 overflow-hidden text-3xl shrink-0 border border-stone-200 hover:opacity-90 transition group"
+                title="View original craft listing"
+              >
+                {i.image_path ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={i.image_path}
+                    alt={i.name}
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                  />
+                ) : (
+                  <span>{i.purchase_type === 'workshop' ? '🧑‍🏫' : '🧶'}</span>
+                )}
+              </Link>
 
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-stone-800 truncate">{i.name}</p>
+                <Link
+                  href={`/customer/browse/${i.product_id}`}
+                  className="font-semibold text-stone-800 hover:text-brand-700 hover:underline block truncate transition"
+                  title="Click to double check product listing"
+                >
+                  {i.name}
+                </Link>
                 <p className="text-xs text-stone-500 mt-0.5">
                   {i.variant ? `${i.variant} · ` : ''}
                   {i.purchase_type === 'workshop' ? (
@@ -166,7 +236,21 @@ export default function CartClient({ initialItems }: { initialItems: CartRow[] }
                     'Handcrafted Product'
                   )}
                 </p>
-                <p className="text-xs text-stone-400 mt-0.5">₱{i.price.toFixed(2)} each</p>
+                {i.attendee_name && (
+                  <p className="text-xs text-leaf-800 font-medium mt-0.5">
+                    👤 Attendee: {i.attendee_name}
+                  </p>
+                )}
+                <div className="flex items-center gap-2 mt-1">
+                  <Link
+                    href={`/customer/browse/${i.product_id}`}
+                    className="text-[11px] font-medium text-brand-600 hover:underline flex items-center gap-0.5"
+                  >
+                    <span>🔍 Double check item</span>
+                  </Link>
+                  <span className="text-stone-300">·</span>
+                  <span className="text-xs text-stone-400">₱{i.price.toFixed(2)} each</span>
+                </div>
               </div>
 
               <div className="flex items-center gap-2">

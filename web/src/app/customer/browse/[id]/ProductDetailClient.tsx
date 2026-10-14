@@ -8,9 +8,11 @@ import type { Product } from '@/lib/types';
 export default function ProductDetailClient({ product, loggedIn }: { product: Product; loggedIn: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<'product' | 'workshop' | 'bundle'>('product');
-  const [variant, setVariant] = useState('');
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, { name: string; price: number }>>({});
   const [session, setSession] = useState(0);
   const [qty, setQty] = useState(1);
+  const [attendeeFor, setAttendeeFor] = useState<'self' | 'others'>('self');
+  const [attendeeNames, setAttendeeNames] = useState<string[]>(['']);
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
   const toast = useToast();
@@ -21,7 +23,41 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
     return acc;
   }, {});
 
-  const currentVariantPrice = variations.find((v) => `${v.typeLabel}: ${v.name}` === variant)?.price ?? 0;
+  function toggleVariation(typeLabel: string, name: string, price: number) {
+    setSelectedVariants((prev) => {
+      const next = { ...prev };
+      if (next[typeLabel]?.name === name) {
+        delete next[typeLabel];
+      } else {
+        next[typeLabel] = { name, price };
+      }
+      return next;
+    });
+  }
+
+  function handleQtyChange(newQty: number) {
+    const validQty = Math.max(1, newQty);
+    setQty(validQty);
+    setAttendeeNames((prev) => {
+      const next = [...prev];
+      while (next.length < validQty) next.push('');
+      return next.slice(0, validQty);
+    });
+  }
+
+  function updateAttendeeName(index: number, name: string) {
+    setAttendeeNames((prev) => {
+      const next = [...prev];
+      next[index] = name;
+      return next;
+    });
+  }
+
+  const currentVariantPrice = Object.values(selectedVariants).reduce((sum, v) => sum + (v.price || 0), 0);
+  const formattedVariant = Object.entries(selectedVariants)
+    .map(([type, v]) => `${type}: ${v.name}`)
+    .join(' · ');
+
   const productPrice = Number(product.price) + currentVariantPrice;
   const workshopPrice = Number(product.tutorial_price ?? 0);
   const bundleUnitPrice = productPrice + workshopPrice;
@@ -31,8 +67,21 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
       router.push(`/auth/login?next=/customer/browse/${product.id}`);
       return;
     }
+
+    if (purchaseType !== 'product' && attendeeFor === 'others') {
+      const missing = attendeeNames.slice(0, qty).some((n) => !n.trim());
+      if (missing) {
+        setMsg(`Please enter the full name for all ${qty} attendee slot${qty > 1 ? 's' : ''}.`);
+        return;
+      }
+    }
+
     setBusy(true);
     setMsg('');
+    const attendeeString = purchaseType !== 'product' && attendeeFor === 'others'
+      ? attendeeNames.slice(0, qty).map((n) => n.trim()).filter(Boolean).join(', ')
+      : null;
+
     const res = await fetch('/api/cart', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -40,13 +89,16 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
         product_id: product.id,
         purchase_type: purchaseType,
         quantity: qty,
-        selected_variant: purchaseType !== 'workshop' ? variant || null : null,
+        selected_variant: purchaseType !== 'workshop' ? (formattedVariant || null) : null,
         selected_session: purchaseType !== 'product' ? product.tutorial_dates?.[session] ?? null : null,
+        attendee_for: purchaseType !== 'product' ? attendeeFor : 'self',
+        attendee_name: attendeeString,
       }),
     });
     const data = await res.json();
     setBusy(false);
     if (data.status === 'success') {
+      router.refresh();
       const label =
         purchaseType === 'bundle'
           ? 'Craft & Workshop bundle added to cart!'
@@ -161,22 +213,27 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
 
           {Object.entries(grouped).map(([label, opts]) => (
             <div key={label}>
-              <label className="mb-1 block text-xs font-medium text-stone-700">{label}</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold text-stone-700">{label}</label>
+                {selectedVariants[label] && (
+                  <span className="text-[11px] text-brand-700 font-medium">Selected: {selectedVariants[label].name}</span>
+                )}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {opts.map((v) => {
-                  const val = `${v.typeLabel}: ${v.name}`;
+                  const isSelected = selectedVariants[label]?.name === v.name;
                   return (
                     <button
                       key={v.name}
                       type="button"
-                      onClick={() => setVariant(val)}
+                      onClick={() => toggleVariation(v.typeLabel, v.name, Number(v.price) || 0)}
                       className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
-                        variant === val
-                          ? 'border-brand-600 bg-brand-500 text-white'
-                          : 'border-stone-300 bg-white text-stone-600 hover:border-brand-400'
+                        isSelected
+                          ? 'border-brand-600 bg-brand-600 text-white shadow-xs'
+                          : 'border-stone-300 bg-white text-stone-700 hover:border-brand-400'
                       }`}
                     >
-                      {v.name} {v.price > 0 ? `(+₱${v.price})` : ''}
+                      {v.name} {Number(v.price) > 0 ? `(+₱${v.price})` : ''}
                     </button>
                   );
                 })}
@@ -191,7 +248,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               min={1}
               max={Math.max(1, product.stock_quantity)}
               value={qty}
-              onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
+              onChange={(e) => handleQtyChange(Number(e.target.value))}
               className="input w-20 text-sm"
             />
           </div>
@@ -270,11 +327,76 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               min={1}
               max={product.tutorial_capacity ?? 10}
               value={qty}
-              onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
+              onChange={(e) => handleQtyChange(Number(e.target.value))}
               className="input w-20 text-sm"
             />
             {product.tutorial_capacity && (
               <span className="text-xs text-stone-400">max {product.tutorial_capacity} slots</span>
+            )}
+          </div>
+
+          {/* Attendee Booking Details (Self vs Others) */}
+          <div className="rounded-lg bg-white p-3 border border-stone-200 space-y-2">
+            <label className="text-xs font-bold uppercase text-stone-700 block">
+              Who is this workshop booking for?
+            </label>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <label
+                className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
+                  attendeeFor === 'self'
+                    ? 'border-leaf-600 bg-leaf-50/70 font-bold text-leaf-900 ring-1 ring-leaf-500'
+                    : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="attendee_for"
+                  className="accent-leaf-600"
+                  checked={attendeeFor === 'self'}
+                  onChange={() => setAttendeeFor('self')}
+                />
+                <span>👤 For Myself</span>
+              </label>
+
+              <label
+                className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
+                  attendeeFor === 'others'
+                    ? 'border-leaf-600 bg-leaf-50/70 font-bold text-leaf-900 ring-1 ring-leaf-500'
+                    : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="attendee_for"
+                  className="accent-leaf-600"
+                  checked={attendeeFor === 'others'}
+                  onChange={() => setAttendeeFor('others')}
+                />
+                <span>👥 For Someone Else</span>
+              </label>
+            </div>
+
+            {attendeeFor === 'others' && (
+              <div className="space-y-2 pt-2 border-t border-stone-100">
+                <p className="text-[11px] text-stone-500">
+                  Enter attendee name{qty > 1 ? 's' : ''}. The booking is registered under your account.
+                </p>
+                {Array.from({ length: qty }).map((_, idx) => (
+                  <div key={idx}>
+                    <label className="block text-[11px] font-semibold text-stone-700 mb-0.5">
+                      Attendee {qty > 1 ? `#${idx + 1} ` : ''}Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="input w-full text-xs"
+                      placeholder={`e.g. Maria Santos${qty > 1 ? ` (Attendee ${idx + 1})` : ''}`}
+                      value={attendeeNames[idx] || ''}
+                      onChange={(e) => updateAttendeeName(idx, e.target.value)}
+                      required
+                    />
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
@@ -323,22 +445,27 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
 
             {Object.entries(grouped).map(([label, opts]) => (
               <div key={label}>
-                <label className="mb-1 block text-xs font-medium text-stone-700">{label}</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-stone-700">{label}</label>
+                  {selectedVariants[label] && (
+                    <span className="text-[11px] text-amber-700 font-medium">Selected: {selectedVariants[label].name}</span>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {opts.map((v) => {
-                    const val = `${v.typeLabel}: ${v.name}`;
+                    const isSelected = selectedVariants[label]?.name === v.name;
                     return (
                       <button
                         key={v.name}
                         type="button"
-                        onClick={() => setVariant(val)}
+                        onClick={() => toggleVariation(v.typeLabel, v.name, Number(v.price) || 0)}
                         className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
-                          variant === val
-                            ? 'border-amber-600 bg-amber-600 text-white'
-                            : 'border-stone-300 bg-white text-stone-600 hover:border-amber-400'
+                          isSelected
+                            ? 'border-amber-600 bg-amber-600 text-white shadow-xs'
+                            : 'border-stone-300 bg-white text-stone-700 hover:border-amber-400'
                         }`}
                       >
-                        {v.name} {v.price > 0 ? `(+₱${v.price})` : ''}
+                        {v.name} {Number(v.price) > 0 ? `(+₱${v.price})` : ''}
                       </button>
                     );
                   })}
@@ -384,6 +511,71 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
             )}
           </div>
 
+          {/* 3. Attendee Booking Details (Self vs Others) */}
+          <div className="rounded-lg bg-white p-3 border border-stone-200 space-y-2">
+            <label className="text-xs font-bold uppercase text-stone-700 block">
+              3. Who is this workshop session for?
+            </label>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <label
+                className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
+                  attendeeFor === 'self'
+                    ? 'border-amber-600 bg-amber-50/70 font-bold text-amber-900 ring-1 ring-amber-500'
+                    : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="bundle_attendee_for"
+                  className="accent-amber-600"
+                  checked={attendeeFor === 'self'}
+                  onChange={() => setAttendeeFor('self')}
+                />
+                <span>👤 For Myself</span>
+              </label>
+
+              <label
+                className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
+                  attendeeFor === 'others'
+                    ? 'border-amber-600 bg-amber-50/70 font-bold text-amber-900 ring-1 ring-amber-500'
+                    : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="bundle_attendee_for"
+                  className="accent-amber-600"
+                  checked={attendeeFor === 'others'}
+                  onChange={() => setAttendeeFor('others')}
+                />
+                <span>👥 For Someone Else</span>
+              </label>
+            </div>
+
+            {attendeeFor === 'others' && (
+              <div className="space-y-2 pt-2 border-t border-stone-100">
+                <p className="text-[11px] text-stone-500">
+                  Enter attendee name{qty > 1 ? 's' : ''}. The booking is registered under your account.
+                </p>
+                {Array.from({ length: qty }).map((_, idx) => (
+                  <div key={idx}>
+                    <label className="block text-[11px] font-semibold text-stone-700 mb-0.5">
+                      Attendee {qty > 1 ? `#${idx + 1} ` : ''}Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="input w-full text-xs"
+                      placeholder={`e.g. Maria Santos${qty > 1 ? ` (Attendee ${idx + 1})` : ''}`}
+                      value={attendeeNames[idx] || ''}
+                      onChange={(e) => updateAttendeeName(idx, e.target.value)}
+                      required
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="flex items-center gap-3 pt-1">
             <label className="text-xs font-medium text-stone-700">Quantity / Seats:</label>
             <input
@@ -391,7 +583,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               min={1}
               max={Math.min(Math.max(1, product.stock_quantity), product.tutorial_capacity ?? 10)}
               value={qty}
-              onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
+              onChange={(e) => handleQtyChange(Number(e.target.value))}
               className="input w-20 text-sm"
             />
           </div>

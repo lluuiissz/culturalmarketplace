@@ -12,6 +12,7 @@ export interface CheckoutItem {
   purchase_type: string;
   product_id: number;
   artisan_id: number;
+  attendee_name?: string | null;
 }
 
 export interface SavedAddress {
@@ -452,12 +453,21 @@ export default function CheckoutClient({
           <div className="space-y-3 text-sm divide-y divide-stone-100">
             {items.map((i) => (
               <div key={i.cart_item_id} className="pt-2 flex justify-between gap-3 first:pt-0">
-                <div>
+                <div className="space-y-0.5">
                   <p className="font-semibold text-stone-800">{i.name}</p>
                   <p className="text-xs text-stone-500">
-                    {i.purchase_type === 'workshop' ? '🌿 Workshop Booking' : '📦 Handcrafted Item'}
-                    {i.variant ? ` · ${i.variant}` : ''} × {i.quantity}
+                    {i.purchase_type === 'workshop' ? '🌿 Workshop Booking' : '📦 Handcrafted Item'} × {i.quantity}
                   </p>
+                  {i.variant && (
+                    <p className="text-xs text-brand-700 font-medium">
+                      🎨 {i.variant}
+                    </p>
+                  )}
+                  {i.attendee_name && (
+                    <p className="text-xs text-leaf-800 font-medium">
+                      👤 Attendee(s): {i.attendee_name}
+                    </p>
+                  )}
                 </div>
                 <span className="font-bold text-stone-900 font-mono">
                   ₱{(i.price * i.quantity).toFixed(2)}

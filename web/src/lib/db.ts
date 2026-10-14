@@ -138,6 +138,21 @@ export async function findUserByEmail(email: string): Promise<(SessionUser & { p
   return { id: u.id, name: u.name, email: u.email, password: u.password, role: u.role, profile_picture: u.profile_picture ?? null };
 }
 
+export async function getUser(id: number): Promise<(SessionUser & { phone?: string | null; location?: string | null; bio?: string | null }) | null> {
+  if (usingPostgres) {
+    const rows = await sql`select id, name, email, role, profile_picture, phone, location, bio from users where id = ${id} limit 1`;
+    if (!rows.length) return null;
+    const r = rows[0] as Record<string, unknown>;
+    return {
+      id: num(r.id), name: String(r.name), email: String(r.email), role: String(r.role) as Role,
+      profile_picture: (r.profile_picture as string) ?? null,
+      phone: (r.phone as string) ?? null, location: (r.location as string) ?? null, bio: (r.bio as string) ?? null,
+    };
+  }
+  const u = store!.users.find((x) => x.id === id);
+  return u ? { ...u, phone: u.phone ?? null, location: u.location ?? null, bio: (u as any).bio ?? null } : null;
+}
+
 export async function createCustomer(input: { name: string; email: string; password: string; phone: string; location?: string }): Promise<number> {
   if (usingPostgres) {
     const rows = await sql`insert into users (name, email, password, role, phone, location, is_verified)
@@ -423,7 +438,10 @@ export async function getCart(customerId: number): Promise<Array<CartItem & { pr
     return (rows as unknown as Record<string, unknown>[]).map((r) => ({
       id: num(r.id), customer_id: num(r.customer_id), product_id: num(r.product_id),
       purchase_type: r.purchase_type as CartItem['purchase_type'],
+      attendee_for: (r.attendee_for as 'self' | 'others') ?? 'self',
       attendee_name: (r.attendee_name as string) ?? null,
+      attendee_contact: (r.attendee_contact as string) ?? null,
+      attendee_note: (r.attendee_note as string) ?? null,
       selected_session: (r.selected_session as CartItem['selected_session']) ?? null,
       quantity: num(r.quantity), selected_variant: (r.selected_variant as string) ?? null,
       product: r.product ? mapProduct(r.product as Record<string, unknown>) : null,
@@ -527,6 +545,7 @@ function mapOrderItem(r: Record<string, unknown>): OrderItem {
   return {
     id: num(r.id), order_id: num(r.order_id), product_id: num(r.product_id), artisan_id: num(r.artisan_id),
     product_name: String(r.product_name), purchase_type: r.purchase_type as OrderItem['purchase_type'],
+    attendee_for: (r.attendee_for as string) ?? null,
     attendee_name: (r.attendee_name as string) ?? null,
     selected_session: (r.selected_session as OrderItem['selected_session']) ?? null,
     ticket_code: (r.ticket_code as string) ?? null, quantity: num(r.quantity), price: num(r.price),
@@ -544,7 +563,7 @@ export async function createOrder(input: {
   shippingAddress: string; notes?: string; items: Array<{
     productId: number; artisanId: number; productName: string; purchaseType: CartItem['purchase_type'];
     quantity: number; price: number; selectedVariant?: string | null; selectedSession?: object | null;
-    attendeeName?: string | null;
+    attendeeFor?: string | null; attendeeName?: string | null;
   }>;
 }): Promise<number> {
   if (usingPostgres) {
@@ -553,25 +572,27 @@ export async function createOrder(input: {
       returning id`;
     const orderId = num(rows[0].id);
     for (const it of input.items) {
-      await sql`insert into order_items (order_id, product_id, artisan_id, product_name, purchase_type, quantity, price, selected_variant, selected_session, attendee_name, ticket_code, status)
+      await sql`insert into order_items (order_id, product_id, artisan_id, product_name, purchase_type, quantity, price, selected_variant, selected_session, attendee_for, attendee_name, ticket_code, status)
         values (${orderId}, ${it.productId}, ${it.artisanId}, ${it.productName}, ${it.purchaseType}, ${it.quantity}, ${it.price},
                 ${it.selectedVariant ?? null}, ${(it.selectedSession ?? null) as unknown as string | null},
-                ${it.attendeeName ?? null},
+                ${it.attendeeFor ?? 'self'}, ${it.attendeeName ?? null},
                 ${it.purchaseType !== 'product' ? 'TKT-' + Date.now() + '-' + it.productId : null},
                 ${input.status === 'awaiting_payment' ? 'awaiting_payment' : 'pending'})`;
       // Legacy parity (CheckoutController): workshop bookings never touch
       // physical stock; only product/bundle lines deduct on order creation.
       if (it.purchaseType !== 'workshop') {
         await sql`update products set stock_quantity = greatest(0, stock_quantity - ${it.quantity}) where id = ${it.productId}`;
-        // Variation-level stock: selected_variant is "<typeLabel>: <name>";
-        // decrement the matching entry inside the variations_data JSON.
+        // Variation-level stock: handles single or multi-attribute variation strings
         if (it.selectedVariant) {
           const vrows = await sql`select variations_data from products where id = ${it.productId}`;
           let variants: Array<{ name: string; stock: number; price: number; type: string; typeLabel: string }> | null = null;
           try { variants = typeof vrows[0].variations_data === 'string' ? JSON.parse(vrows[0].variations_data) : (vrows[0].variations_data as typeof variants); } catch { /* ignore */ }
-          const entry = variants?.find((v) => `${v.typeLabel}: ${v.name}` === it.selectedVariant);
-          if (entry) {
-            const updated = variants!.map((v) => (v === entry ? { ...v, stock: Math.max(0, v.stock - it.quantity) } : v));
+          const matchingEntries = variants?.filter((v) =>
+            `${v.typeLabel}: ${v.name}` === it.selectedVariant ||
+            (it.selectedVariant && it.selectedVariant.includes(`${v.typeLabel}: ${v.name}`))
+          );
+          if (matchingEntries && matchingEntries.length > 0) {
+            const updated = variants!.map((v) => (matchingEntries.includes(v) ? { ...v, stock: Math.max(0, v.stock - it.quantity) } : v));
             await sql`update products set variations_data = ${JSON.stringify(updated)}::jsonb where id = ${it.productId}`;
           }
         }
@@ -587,9 +608,9 @@ export async function createOrder(input: {
   });
   for (const it of input.items) {
     store!.order_items.push({
-      id: Math.max(0, ...store!.order_items.map((o) => o.id)) + 1,
+      id: Math.max(0, ...store!.order_items.map((i) => i.id)) + 1,
       order_id: orderId, product_id: it.productId, artisan_id: it.artisanId, product_name: it.productName,
-      purchase_type: it.purchaseType, attendee_name: it.attendeeName ?? null,
+      purchase_type: it.purchaseType, attendee_for: it.attendeeFor ?? 'self', attendee_name: it.attendeeName ?? null,
       selected_session: (it.selectedSession as OrderItem['selected_session']) ?? null,
       ticket_code: it.purchaseType !== 'product' ? `TKT-${Date.now()}-${it.productId}` : null,
       quantity: it.quantity, price: it.price, status: input.status === 'awaiting_payment' ? 'awaiting_payment' : 'pending',
@@ -599,10 +620,14 @@ export async function createOrder(input: {
       const p = store!.products.find((x) => x.id === it.productId);
       if (p) {
         p.stock_quantity = Math.max(0, p.stock_quantity - it.quantity);
-        // Variation-level deduction mirrors the Postgres path.
         if (it.selectedVariant && Array.isArray(p.variations_data)) {
-          const entry = p.variations_data.find((v) => `${v.typeLabel}: ${v.name}` === it.selectedVariant);
-          if (entry) entry.stock = Math.max(0, entry.stock - it.quantity);
+          const matching = p.variations_data.filter((v) =>
+            `${v.typeLabel}: ${v.name}` === it.selectedVariant ||
+            (it.selectedVariant && it.selectedVariant.includes(`${v.typeLabel}: ${v.name}`))
+          );
+          matching.forEach((entry) => {
+            entry.stock = Math.max(0, entry.stock - it.quantity);
+          });
         }
       }
     }

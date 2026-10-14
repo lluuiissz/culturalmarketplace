@@ -37,8 +37,13 @@ export default async function CheckoutPage({
       if (i.purchase_type === 'workshop') {
         itemPrice = Number(i.product!.tutorial_price ?? i.product!.price);
       } else if (i.selected_variant && i.product!.variations_data) {
-        const v = i.product!.variations_data.find((x) => `${x.typeLabel}: ${x.name}` === i.selected_variant);
-        if (v && v.price > 0) itemPrice += Number(v.price);
+        const matching = i.product!.variations_data.filter((x) =>
+          `${x.typeLabel}: ${x.name}` === i.selected_variant ||
+          (i.selected_variant && i.selected_variant.includes(`${x.typeLabel}: ${x.name}`))
+        );
+        matching.forEach((v) => {
+          if (v && v.price > 0) itemPrice += Number(v.price);
+        });
       }
       return {
         cart_item_id: i.id,
@@ -46,6 +51,7 @@ export default async function CheckoutPage({
         price: itemPrice,
         quantity: i.quantity,
         variant: i.selected_variant,
+        attendee_name: i.attendee_name ?? null,
         purchase_type: i.purchase_type,
         product_id: i.product_id,
         artisan_id: i.product!.artisan_id,

@@ -128,6 +128,7 @@ export async function POST(req: Request) {
         price: getUnitPrice(i),
         selectedVariant: i.selected_variant,
         selectedSession: i.selected_session ?? null,
+        attendeeFor: i.attendee_for ?? 'self',
         attendeeName: i.attendee_name || (i.purchase_type === 'workshop' ? session.name : null),
       })),
     });

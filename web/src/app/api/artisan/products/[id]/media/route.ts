@@ -63,28 +63,50 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 'error', message: 'Upload failed to produce a public URL.' }, { status: 500 });
     }
 
-    let image_path = product.image_path ?? null;
-    let product_gallery = product.product_gallery ?? null;
+    const { sql, usingPg } = await import('@/lib/dbPg');
+    const { invalidate } = await import('@/lib/cache');
+
+    // Fetch fresh database state directly to prevent stale cached image_path from overwriting main image
+    let currentRows = usingPg
+      ? await sql`select image_path, product_gallery from products where id = ${productId}`
+      : [{ image_path: product.image_path, product_gallery: product.product_gallery }];
+
+    let new_image_path = (currentRows[0]?.image_path as string) ?? null;
+    let new_gallery: string[] = Array.isArray(currentRows[0]?.product_gallery)
+      ? (currentRows[0].product_gallery as string[])
+      : [];
+
     if (kind === 'main') {
-      image_path = publicUrl;
+      new_image_path = publicUrl;
     } else {
-      const list = Array.isArray(product_gallery) ? [...product_gallery] : [];
-      if (!list.includes(publicUrl)) list.push(publicUrl);
-      product_gallery = list.slice(0, 8); // cap gallery at 8 images
+      if (!new_gallery.includes(publicUrl)) new_gallery.push(publicUrl);
+      new_gallery = new_gallery.slice(0, 20); // support up to 20 gallery images
     }
 
-    const { sql, usingPg } = await import('@/lib/dbPg');
     if (usingPg) {
-      await sql`update products set image_path = ${image_path}, product_gallery = ${product_gallery ?? null} where id = ${productId}`;
+      const updated = await sql`
+        update products
+        set image_path = ${new_image_path}, product_gallery = ${JSON.stringify(new_gallery)}::jsonb
+        where id = ${productId}
+        returning image_path, product_gallery
+      `;
+      new_image_path = (updated[0]?.image_path as string) ?? null;
+      new_gallery = Array.isArray(updated[0]?.product_gallery)
+        ? (updated[0].product_gallery as string[])
+        : [];
     } else {
       const { updateProductMediaDemo } = await import('@/lib/db');
-      updateProductMediaDemo(productId, image_path, product_gallery);
+      updateProductMediaDemo(productId, new_image_path, new_gallery);
     }
+
+    // Invalidate product caches so fresh images are immediately served everywhere
+    invalidate(`product:${productId}`);
+    invalidate('active_products*');
 
     return NextResponse.json({
       status: 'success',
-      image_path,
-      product_gallery,
+      image_path: new_image_path,
+      product_gallery: new_gallery,
       url: publicUrl,
     });
   } catch (e) {
@@ -115,23 +137,36 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ status: 'error', message: 'Not found.' }, { status: 404 });
   }
 
+  const { sql, usingPg } = await import('@/lib/dbPg');
+  const { invalidate } = await import('@/lib/cache');
+
+  let currentRows = usingPg
+    ? await sql`select image_path, product_gallery from products where id = ${productId}`
+    : [{ image_path: product.image_path, product_gallery: product.product_gallery }];
+
+  let new_image_path: string | null = (currentRows[0]?.image_path as string | null) ?? null;
+  let new_gallery: string[] = Array.isArray(currentRows[0]?.product_gallery)
+    ? (currentRows[0].product_gallery as string[])
+    : [];
+
   // kind=main-remove clears the main image; otherwise remove a gallery URL.
-  let image_path = product.image_path;
-  let gallery = product.product_gallery ?? [];
   if (kind === 'main-remove') {
-    image_path = null;
+    new_image_path = null;
   } else if (url) {
-    gallery = gallery.filter((g) => g !== url);
+    new_gallery = new_gallery.filter((g) => g !== url);
   } else {
     return NextResponse.json({ status: 'error', message: 'url or kind=main-remove required' }, { status: 400 });
   }
 
-  const { sql, usingPg } = await import('@/lib/dbPg');
   if (usingPg) {
-    await sql`update products set image_path = ${image_path}, product_gallery = ${gallery} where id = ${productId}`;
+    await sql`update products set image_path = ${new_image_path}, product_gallery = ${JSON.stringify(new_gallery)}::jsonb where id = ${productId}`;
   } else {
     const { updateProductMediaDemo } = await import('@/lib/db');
-    updateProductMediaDemo(productId, image_path, gallery);
+    updateProductMediaDemo(productId, new_image_path, new_gallery);
   }
-  return NextResponse.json({ status: 'success', image_path, product_gallery: gallery });
+
+  invalidate(`product:${productId}`);
+  invalidate('active_products*');
+
+  return NextResponse.json({ status: 'success', image_path: new_image_path, product_gallery: new_gallery });
 }

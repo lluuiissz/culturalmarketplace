@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   const session = await getSession();
   if (!session || session.role !== 'customer') return NextResponse.json({ status: 'error' }, { status: 401 });
 
-  const body = (await req.json()) as { name?: string; phone?: string; location?: string; bio?: string };
+  const body = (await req.json()) as { name?: string; phone?: string; location?: string; bio?: string; profile_picture?: string };
   await updateCustomerProfile(session.id, body);
   return NextResponse.json({ status: 'success' });
 }

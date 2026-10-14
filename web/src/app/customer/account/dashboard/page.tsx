@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
-import { listCustomerOrders, listNotifications, getCart, listCustomerBookings } from '@/lib/db';
+import { listCustomerOrders, listNotifications, getCart, listCustomerBookings, getUser } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,11 +9,12 @@ export default async function CustomerDashboard() {
   const session = await getSession();
   if (!session || session.role !== 'customer') redirect('/auth/login?next=/customer/account/dashboard');
 
-  const [orders, notifications, cart, bookings] = await Promise.all([
+  const [orders, notifications, cart, bookings, user] = await Promise.all([
     listCustomerOrders(session.id),
     listNotifications(session.id, 'customer'),
     getCart(session.id),
     listCustomerBookings(session.id),
+    getUser(session.id),
   ]);
   const unread = notifications.filter((n) => !n.is_read).length;
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
@@ -24,8 +25,23 @@ export default async function CustomerDashboard() {
   return (
     <>
       <main className="mx-auto max-w-5xl px-4 py-10">
-        <h1 className="font-serif text-3xl font-bold text-brand-900">Hi, {session.name} 👋</h1>
-        <p className="mt-1 text-stone-500">Track your orders and support local artisans.</p>
+        <div className="flex items-center gap-4">
+          {user?.profile_picture ? (
+            <img
+              src={user.profile_picture}
+              alt={session.name}
+              className="h-16 w-16 rounded-full object-cover border-2 border-brand-200 shadow-xs"
+            />
+          ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-700 to-amber-700 text-xl font-bold text-white shadow-xs">
+              {session.name.slice(0, 2).toUpperCase()}
+            </div>
+          )}
+          <div>
+            <h1 className="font-serif text-3xl font-bold text-brand-900">Hi, {session.name} 👋</h1>
+            <p className="mt-1 text-stone-500">Track your orders and support local artisans.</p>
+          </div>
+        </div>
 
         {nextBooking && (
           <div className="card mt-6 p-5 border-2 border-leaf-600/30 bg-gradient-to-r from-leaf-500/10 via-white to-brand-50 flex flex-wrap items-center justify-between gap-4 shadow-xs">

@@ -84,6 +84,8 @@ export default function ProductForm({
 
   const [hasVariations, setHasVariations] = useState(initialHasVariations ?? false);
   const [variations, setVariations] = useState<Variation[]>(initialVariations ?? []);
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
 
   const [tutorialDates, setTutorialDates] = useState<TutorialDate[]>(
     initialTutorialDates && initialTutorialDates.length > 0
@@ -151,8 +153,16 @@ export default function ProductForm({
       return;
     }
 
+    const effectiveCategory = isCustomCategory ? customCategory.trim() : form.category;
+    if (!effectiveCategory) {
+      setError('Please select or enter a category.');
+      setBusy(false);
+      return;
+    }
+
     const payload: Record<string, unknown> = {
       ...form,
+      category: effectiveCategory,
       price: Number(form.price) || 0,
       stock_quantity: Number(form.stock_quantity) || 0,
       tutorial_price:
@@ -228,15 +238,40 @@ export default function ProductForm({
           <div>
             <label className="mb-1 block text-sm font-medium text-stone-700">Category</label>
             <select
-              className={`input ${form.category ? 'border-leaf-500/60' : 'border-stone-300'}`}
-              value={form.category}
-              onChange={(e) => set('category', e.target.value)}
-              required
+              className={`input ${(form.category || isCustomCategory) ? 'border-leaf-500/60' : 'border-stone-300'}`}
+              value={isCustomCategory ? '__other__' : form.category}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '__other__') {
+                  setIsCustomCategory(true);
+                  set('category', '__other__');
+                } else {
+                  setIsCustomCategory(false);
+                  set('category', val);
+                }
+              }}
+              required={!isCustomCategory}
             >
               <option value="" disabled>Select a category…</option>
               {legacyCat && <option value={legacyCat}>{legacyCat} (legacy — please update)</option>}
               {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+              <option value="__other__">✏️ Other / + Add New Category…</option>
             </select>
+            {isCustomCategory && (
+              <div className="mt-2 space-y-1">
+                <input
+                  type="text"
+                  className="input text-sm border-brand-400 bg-brand-50/40"
+                  placeholder="Enter new category name…"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  required
+                />
+                <p className="text-[11px] text-brand-700 font-medium">
+                  ✨ This new category will be automatically saved to the marketplace for future use.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

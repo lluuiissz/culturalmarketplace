@@ -20,9 +20,13 @@ export async function POST(req: Request) {
     const body = (await req.json()) as {
       product_id?: number; purchase_type?: 'product' | 'workshop' | 'bundle';
       quantity?: number; selected_variant?: string | null; selected_session?: object | null;
+      attendee_for?: 'self' | 'others'; attendee_name?: string | null;
     };
     const product = await getProduct(Number(body.product_id));
     if (!product) return NextResponse.json({ status: 'error', message: 'Product not found.' }, { status: 404 });
+
+    const effectiveAttendeeFor = body.attendee_for ?? 'self';
+    const effectiveAttendeeName = body.attendee_for === 'others' && body.attendee_name ? body.attendee_name : session.name;
 
     if (body.purchase_type === 'bundle') {
       // Add physical handcrafted item
@@ -40,6 +44,8 @@ export async function POST(req: Request) {
         purchaseType: 'workshop',
         quantity: Math.max(1, Number(body.quantity) || 1),
         selectedSession: body.selected_session ?? null,
+        attendeeFor: effectiveAttendeeFor,
+        attendeeName: effectiveAttendeeName,
       });
       return NextResponse.json({ status: 'success', message: 'Craft and Workshop added to cart!' });
     }
@@ -52,6 +58,8 @@ export async function POST(req: Request) {
       quantity: Math.max(1, Number(body.quantity) || 1),
       selectedVariant: body.selected_variant ?? null,
       selectedSession: purchaseType === 'workshop' ? body.selected_session ?? null : null,
+      attendeeFor: purchaseType === 'workshop' ? effectiveAttendeeFor : undefined,
+      attendeeName: purchaseType === 'workshop' ? effectiveAttendeeName : undefined,
     });
     return NextResponse.json({ status: 'success' });
   } catch {

@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { createProduct, listCategories, logActivity, getArtisan } from '@/lib/db';
+import { createProduct, listCategories, logActivity, getArtisan, addCategory } from '@/lib/db';
 
-// Categories are curated (admin-managed). Free-text would fragment the browse
-// filter, so submissions must match an existing category (case-insensitive).
 async function resolveCategory(raw: unknown): Promise<{ value: string | null; error?: string }> {
   if (raw == null || raw === '') return { value: null, error: 'Please select a category.' };
-  const wanted = String(raw).trim().toLowerCase();
+  const wanted = String(raw).trim();
+  if (!wanted) return { value: null, error: 'Please select a category.' };
   const cats = await listCategories('product');
-  const hit = cats.find((c) => c.name.toLowerCase() === wanted);
-  return hit ? { value: hit.name } : { value: null, error: 'That category is no longer available — please pick one from the list.' };
+  const hit = cats.find((c) => c.name.toLowerCase() === wanted.toLowerCase());
+  if (hit) return { value: hit.name };
+  // Automatically save newly introduced category for future use
+  await addCategory(wanted, 'product');
+  return { value: wanted };
 }
 
 export async function POST(req: Request) {

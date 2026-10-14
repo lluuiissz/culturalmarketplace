@@ -380,7 +380,7 @@ export default function CustomerBookingsClient({
                     </button>
 
                     <Link
-                      href={`/order/success/${b.order_id}#venue-guide`}
+                      href={`/order/receipt/${b.order_id}#ticket-${b.order_item_id}`}
                       className="btn-outline px-3 py-1.5 text-xs font-semibold flex items-center gap-1 hover:bg-stone-50"
                     >
                       <span>🧾</span>

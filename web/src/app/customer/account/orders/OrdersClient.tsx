@@ -243,9 +243,9 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                 </span>
 
                 <Link
-                  href={`/order/success/${r.id}`}
+                  href={`/order/receipt/${r.id}`}
                   className="btn-outline px-3 py-1.5 text-xs font-semibold flex items-center gap-1 hover:bg-stone-50"
-                  title="View official printable receipt and ticket QR"
+                  title="View official printable receipt and ticket"
                 >
                   <span>🧾</span>
                   <span>Receipt {hasWorkshop ? '& Ticket' : ''}</span>
