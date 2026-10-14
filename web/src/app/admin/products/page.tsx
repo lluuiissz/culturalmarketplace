@@ -1,4 +1,4 @@
-import { listActiveProducts, getArtisan } from '@/lib/db';
+import { listAllProducts, getArtisan } from '@/lib/db';
 import { sql } from '@/lib/dbPg';
 import AdminProductsClient from './AdminProductsClient';
 
@@ -13,7 +13,7 @@ export default async function AdminProductsPage() {
       artisan: String(r.artisan_name ?? '—'), category: (r.category as string) ?? null,
     }));
   } else {
-    const all = await listActiveProducts();
+    const all = await listAllProducts();
     const withArtisans = await Promise.all(all.map(async (p) => ({
       id: p.id, name: p.name, price: Number(p.price), status: p.status,
       artisan: (await getArtisan(p.artisan_id))?.name ?? '—', category: p.category,

@@ -35,6 +35,8 @@ export default async function ArtisanOrdersPage() {
             payment: o.order?.payment_method ?? 'cash_on_delivery',
             status: o.status,
             purchase_type: o.purchase_type,
+            attendee_name: o.attendee_name ?? null,
+            attendee_for: o.attendee_for ?? null,
             tracking_number: trackings.get(o.id) ?? o.tracking_number ?? null,
           }))}
         />

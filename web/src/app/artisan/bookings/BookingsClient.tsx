@@ -12,6 +12,7 @@ export interface BookingRow {
   customer_phone: string | null;
   attendee: string | null;
   attendee_contact: string | null;
+  attendee_for?: string | null;
   session_date: string | null;
   session_time: string | null;
   session_location: string | null;
@@ -195,6 +196,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                 <td className="py-2 font-mono font-bold">{b.ticket || `OID-${b.order_item_id}`}</td>
                 <td className="py-2 font-semibold">
                   {b.attendee || b.customer}
+                  {b.attendee_for === 'others' && <span className="block text-[10px] text-amber-800 font-normal">Guest / Group</span>}
                   {b.attendee && b.attendee !== b.customer && <span className="block text-[10px] text-stone-500">by {b.customer}</span>}
                 </td>
                 <td className="py-2">{b.product} × {b.quantity}</td>
@@ -256,6 +258,11 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                     <span>👤 Attendee:</span>
                     <span className="underline decoration-stone-300">{b.attendee || b.customer}</span>
                   </span>
+                  {b.attendee_for === 'others' && (
+                    <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                      Guest / Group
+                    </span>
+                  )}
                   {b.attendee && b.attendee !== b.customer && (
                     <span className="text-stone-500">
                       (Booked by {b.customer})

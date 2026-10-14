@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 interface Row {
   order_item_id: number; order_id: number; customer: string; product: string; attendee: string | null;
+  attendee_for?: string | null;
   session: string | null; quantity: number; price: number; status: string; ticket: string | null;
 }
 
@@ -27,10 +28,17 @@ export default function BookingsClient({ initial }: { initial: Row[] }) {
       {rows.map((b) => (
         <div key={b.order_item_id} className="card flex flex-wrap items-center justify-between gap-3 p-4">
           <div>
-            <p className="font-semibold text-stone-800">
-              {b.product} × {b.quantity}
-              {b.ticket && <span className="ml-2 font-mono text-xs text-brand-700">🎟 {b.ticket}</span>}
-            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-semibold text-stone-800">
+                {b.product} × {b.quantity}
+                {b.ticket && <span className="ml-2 font-mono text-xs text-brand-700">🎟 {b.ticket}</span>}
+              </p>
+              {b.attendee_for === 'others' && (
+                <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                  Guest / Group
+                </span>
+              )}
+            </div>
             <p className="text-sm text-stone-500">
               Order #{b.order_id} · {b.customer}{b.attendee ? ` (attendee: ${b.attendee})` : ''}
               {b.session ? ` · 📅 ${b.session}` : ''} · ₱{b.price.toFixed(2)}

@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { getSession } from '@/lib/auth';
-import { getCartCount } from '@/lib/db';
+import { getCartCount, getUser } from '@/lib/db';
 import MobileMenu from './MobileMenu';
 import SearchBox from './SearchBox';
 
 export default async function Header() {
   const session = await getSession();
-  const count = session?.role === 'customer' ? await getCartCount(session.id) : 0;
+  const [count, user] = await Promise.all([
+    session?.role === 'customer' ? getCartCount(session.id) : 0,
+    session ? getUser(session.id) : null,
+  ]);
 
   const links = [
     { href: '/', label: 'Home' },
@@ -60,18 +63,51 @@ export default async function Header() {
             </Link>
           )}
           {session ? (
-            // Desktop keeps the visible Log out; mobile moves it into the menu
-            // (the header row is too narrow for logo + cart + logout + menu).
-            <form action="/api/auth/logout" method="post" className="hidden md:block">
-              <button className="btn-outline" type="submit">Log out</button>
-            </form>
+            <div className="hidden md:flex items-center gap-2.5">
+              <Link
+                href={
+                  session.role === 'customer'
+                    ? '/customer/account/dashboard'
+                    : session.role === 'artisan'
+                    ? '/artisan/dashboard'
+                    : '/admin/dashboard'
+                }
+                className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2.5 hover:bg-brand-50 border border-stone-200 transition"
+                title={`Signed in as ${session.name}`}
+              >
+                {user?.profile_picture ? (
+                  <img
+                    src={user.profile_picture}
+                    alt={session.name}
+                    className="h-7 w-7 rounded-full object-cover border border-brand-200"
+                  />
+                ) : (
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-[11px] font-bold text-white">
+                    {session.name.slice(0, 2).toUpperCase()}
+                  </span>
+                )}
+                <span className="text-xs font-semibold text-stone-700 max-w-[110px] truncate">
+                  {session.name.split(' ')[0]}
+                </span>
+              </Link>
+              <form action="/api/auth/logout" method="post">
+                <button className="btn-outline text-xs px-2.5 py-1 text-stone-600 hover:text-red-700" type="submit">
+                  Log out
+                </button>
+              </form>
+            </div>
           ) : (
             <>
               <Link href="/auth/login" className="btn-outline hidden md:inline-flex">Sign in</Link>
               <Link href="/auth/register" className="btn-primary hidden md:inline-flex">Join</Link>
             </>
           )}
-          <MobileMenu links={links} loggedIn={Boolean(session)} name={session?.name ?? null} />
+          <MobileMenu
+            links={links}
+            loggedIn={Boolean(session)}
+            name={session?.name ?? null}
+            avatar={user?.profile_picture ?? null}
+          />
         </div>
       </div>
       {/* Mobile: search stays at the very top as its own row */}

@@ -14,7 +14,7 @@ export default async function AdminBookingsPage() {
       <BookingsClient
         initial={bookings.map((b) => ({
           order_item_id: b.order_item_id, order_id: b.order_id, customer: b.customer_name,
-          product: b.product_name, attendee: b.attendee_name,
+          product: b.product_name, attendee: b.attendee_name, attendee_for: b.attendee_for ?? 'self',
           session: b.selected_session ? `${b.selected_session.date} ${b.selected_session.time_start}–${b.selected_session.time_end}` : null,
           quantity: b.quantity, price: b.price, status: b.status, ticket: b.ticket_code,
         }))}

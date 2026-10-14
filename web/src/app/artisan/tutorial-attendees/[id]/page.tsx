@@ -22,8 +22,12 @@ export default async function TutorialAttendeesPage({ params }: { params: Promis
         <h1 className="font-serif text-3xl font-bold text-brand-900 mt-2">Attendees — {product.name}</h1>
         <AttendeesClient
           initial={attendees.map((b) => ({
-            order_item_id: b.order_item_id, customer: b.customer_name,
-            attendee: b.attendee_name, ticket: b.ticket_code, status: b.status,
+            order_item_id: b.order_item_id,
+            customer: b.customer_name,
+            attendee: b.attendee_name,
+            attendee_for: b.attendee_for ?? 'self',
+            ticket: b.ticket_code,
+            status: b.status,
           }))}
         />
       </main>

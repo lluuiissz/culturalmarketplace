@@ -42,6 +42,7 @@ export interface ExperienceBooking {
   product_id: number;
   product_name: string;
   attendee_name: string | null;
+  attendee_for?: 'self' | 'others' | string | null;
   attendee_contact: string | null;
   selected_session: (TutorialDate & { location?: string }) | null;
   selected_variant?: string | null;

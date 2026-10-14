@@ -52,6 +52,7 @@ export default async function CheckoutPage({
         quantity: i.quantity,
         variant: i.selected_variant,
         attendee_name: i.attendee_name ?? null,
+        attendee_for: i.attendee_for ?? null,
         purchase_type: i.purchase_type,
         product_id: i.product_id,
         artisan_id: i.product!.artisan_id,

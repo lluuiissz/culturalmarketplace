@@ -196,7 +196,25 @@ export default function OfficialReceiptTicketView({
                               </p>
                             )}
                             {i.attendee_name && (
-                              <p>👤 Registered Attendee: <span className="font-semibold">{i.attendee_name}</span></p>
+                              <div className="pt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span className="text-stone-500">👤 Attendee(s):</span>
+                                {i.attendee_name.includes(',') ? (
+                                  <span className="inline-flex flex-wrap gap-1 align-middle">
+                                    {i.attendee_name.split(',').map((name, idx) => (
+                                      <span key={idx} className="rounded bg-stone-100 border border-stone-200 px-1.5 py-0.2 font-semibold text-stone-800 text-[11px]">
+                                        {name.trim()}
+                                      </span>
+                                    ))}
+                                  </span>
+                                ) : (
+                                  <span className="font-semibold text-stone-800">{i.attendee_name}</span>
+                                )}
+                                {i.attendee_for === 'others' && (
+                                  <span className="rounded bg-leaf-200/70 px-1.5 py-0.5 text-[10px] font-bold text-leaf-900">
+                                    Guest / Group
+                                  </span>
+                                )}
+                              </div>
                             )}
                           </div>
                         )}
@@ -355,18 +373,35 @@ export default function OfficialReceiptTicketView({
                   {/* Registered Attendees & Passes */}
                   <div className="flex flex-wrap items-center justify-between gap-4 border-t border-b border-stone-200 py-3 text-sm">
                     <div className="space-y-1">
-                      <p className="text-xs text-stone-500 uppercase tracking-wider font-semibold">
-                        Registered Attendee(s)
-                      </p>
-                      <p className="font-bold text-stone-900 text-base flex items-center gap-2">
-                        <span>👤</span>
-                        <span>{item.attendee_name || customer.name}</span>
-                        {item.selected_variant && (
-                          <span className="text-xs font-normal text-stone-500">
-                            (Variant: {item.selected_variant})
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-stone-500 uppercase tracking-wider font-semibold">
+                          Registered Attendee(s)
+                        </p>
+                        {item.attendee_for === 'others' && (
+                          <span className="rounded bg-leaf-100 text-leaf-800 px-1.5 py-0.5 text-[10px] font-bold border border-leaf-200">
+                            Booked for Others / Group
                           </span>
                         )}
-                      </p>
+                      </div>
+                      {item.attendee_name && item.attendee_name.includes(',') ? (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {item.attendee_name.split(',').map((name, i) => (
+                            <span key={i} className="inline-flex items-center gap-1 rounded-md bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-800 border border-stone-200">
+                              <span>👤</span> {name.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="font-bold text-stone-900 text-base flex items-center gap-2">
+                          <span>👤</span>
+                          <span>{item.attendee_name || customer.name}</span>
+                          {item.selected_variant && (
+                            <span className="text-xs font-normal text-stone-500">
+                              (Variant: {item.selected_variant})
+                            </span>
+                          )}
+                        </p>
+                      )}
                       <p className="text-xs text-stone-500">
                         Booking Contact / Buyer: {customer.name} ({customer.email})
                       </p>

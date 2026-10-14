@@ -326,6 +326,14 @@ async function queryActiveProducts(opts?: { category?: string; search?: string; 
   return list;
 }
 
+export async function listAllProducts(): Promise<Product[]> {
+  if (usingPostgres) {
+    const rows = await sql`select * from products order by created_at desc`;
+    return (rows as unknown as Record<string, unknown>[]).map(mapProduct);
+  }
+  return [...store!.products].sort((a, b) => b.id - a.id);
+}
+
 export async function getProduct(id: number): Promise<Product | null> {
   return cached(`product:${id}`, async () => {
     if (usingPostgres) {
@@ -722,6 +730,7 @@ export interface CustomerBooking {
     location?: string;
   } | null;
   attendee_name: string | null;
+  attendee_for?: 'self' | 'others' | string | null;
   attendee_contact: string | null;
   ticket_code: string | null;
   status: string;
@@ -739,7 +748,7 @@ export async function listCustomerBookings(customerId: number): Promise<Customer
     const rows = await sql`
       select oi.id as order_item_id, oi.order_id, oi.product_id, oi.artisan_id, oi.product_name,
              oi.purchase_type, oi.quantity, oi.price, oi.selected_variant, oi.selected_session,
-             oi.attendee_name, oi.attendee_contact, oi.ticket_code, oi.status,
+             oi.attendee_for, oi.attendee_name, oi.attendee_contact, oi.ticket_code, oi.status,
              o.status as order_status, o.payment_method, o.created_at,
              a.name as artisan_name, a.phone as artisan_phone,
              p.tutorial_location, p.tutorial_lat, p.tutorial_lng, p.image_path
@@ -763,6 +772,7 @@ export async function listCustomerBookings(customerId: number): Promise<Customer
       price: num(r.price),
       selected_variant: (r.selected_variant as string) ?? null,
       selected_session: parseJsonish<CustomerBooking['selected_session']>(r.selected_session),
+      attendee_for: (r.attendee_for as string) ?? 'self',
       attendee_name: (r.attendee_name as string) ?? null,
       attendee_contact: (r.attendee_contact as string) ?? null,
       ticket_code: (r.ticket_code as string) ?? null,
@@ -796,6 +806,7 @@ export async function listCustomerBookings(customerId: number): Promise<Customer
         price: num(oi.price),
         selected_variant: oi.selected_variant ?? null,
         selected_session: oi.selected_session as CustomerBooking['selected_session'],
+        attendee_for: oi.attendee_for ?? 'self',
         attendee_name: oi.attendee_name ?? null,
         attendee_contact: (oi as unknown as { attendee_contact?: string }).attendee_contact ?? null,
         ticket_code: oi.ticket_code ?? null,

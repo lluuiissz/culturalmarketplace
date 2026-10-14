@@ -53,6 +53,7 @@ export default async function ArtisanBookingsPage() {
             customer_phone: b.customer_phone ?? null,
             attendee: b.attendee_name,
             attendee_contact: b.attendee_contact ?? b.customer_phone ?? null,
+            attendee_for: b.attendee_for ?? 'self',
             session_date: b.selected_session?.date ?? null,
             session_time: b.selected_session ? `${b.selected_session.time_start}–${b.selected_session.time_end}` : null,
             session_location: b.selected_session?.location ?? null,

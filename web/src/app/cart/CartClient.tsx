@@ -237,8 +237,13 @@ export default function CartClient({ initialItems }: { initialItems: CartRow[] }
                   )}
                 </p>
                 {i.attendee_name && (
-                  <p className="text-xs text-leaf-800 font-medium mt-0.5">
-                    👤 Attendee: {i.attendee_name}
+                  <p className="text-xs text-leaf-800 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                    <span>👤 Attendee: {i.attendee_name}</span>
+                    {i.attendee_for === 'others' && (
+                      <span className="rounded-full bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800">
+                        Guest / Group
+                      </span>
+                    )}
                   </p>
                 )}
                 <div className="flex items-center gap-2 mt-1">

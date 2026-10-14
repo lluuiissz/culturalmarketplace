@@ -309,13 +309,28 @@ export default function CustomerBookingsClient({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-stone-600 pt-1">
-                      <p>
-                        👤 Attendee:{' '}
-                        <span className="font-semibold text-stone-800">
-                          {b.attendee_name || customerName}
-                        </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-stone-500">👤 Attendee(s): </span>
+                        {b.attendee_name && b.attendee_name.includes(',') ? (
+                          <span className="inline-flex flex-wrap gap-1 align-middle">
+                            {b.attendee_name.split(',').map((name, idx) => (
+                              <span key={idx} className="rounded bg-stone-100 border border-stone-200 px-1.5 py-0.2 font-semibold text-stone-800 text-[11px]">
+                                {name.trim()}
+                              </span>
+                            ))}
+                          </span>
+                        ) : (
+                          <span className="font-semibold text-stone-800">
+                            {b.attendee_name || customerName}
+                          </span>
+                        )}
+                        {b.attendee_for === 'others' && (
+                          <span className="rounded bg-leaf-100 text-leaf-800 text-[10px] font-bold px-1.5 py-0.5 border border-leaf-200">
+                            Guest / Group
+                          </span>
+                        )}
                         {b.attendee_contact && <span className="text-stone-400"> ({b.attendee_contact})</span>}
-                      </p>
+                      </div>
                       {b.selected_variant && (
                         <p>
                           🎨 Variant:{' '}

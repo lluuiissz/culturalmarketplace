@@ -201,7 +201,7 @@ export async function listBookings(artisanId?: number): Promise<ExperienceBookin
   if (usingPg) {
     const rows = await sql`
       select oi.id as order_item_id, oi.order_id, oi.product_id, oi.artisan_id, oi.product_name,
-             oi.attendee_name, oi.attendee_contact, oi.selected_session, oi.quantity, oi.price,
+             oi.attendee_name, oi.attendee_contact, oi.attendee_for, oi.selected_session, oi.quantity, oi.price,
              oi.status, oi.ticket_code, oi.selected_variant, oi.purchase_type,
              o.customer_id, u.name as customer_name, u.phone as customer_phone,
              o.notes as order_notes, o.payment_method
@@ -217,6 +217,7 @@ export async function listBookings(artisanId?: number): Promise<ExperienceBookin
       customer_phone: (r.customer_phone as string) ?? null,
       id: n(r.product_id), product_name: String(r.product_name),
       attendee_name: (r.attendee_name as string) ?? null, attendee_contact: (r.attendee_contact as string) ?? null,
+      attendee_for: (r.attendee_for as string) ?? null,
       selected_session: (r.selected_session as ExperienceBooking['selected_session']) ?? null,
       selected_variant: (r.selected_variant as string) ?? null,
       purchase_type: (r.purchase_type as string) ?? 'workshop',
@@ -237,6 +238,7 @@ export async function listBookings(artisanId?: number): Promise<ExperienceBookin
         customer_phone: cust?.phone ?? null,
         product_name: x.product_name, attendee_name: x.attendee_name,
         attendee_contact: (x as unknown as { attendee_contact?: string }).attendee_contact ?? cust?.phone ?? null,
+        attendee_for: (x as unknown as { attendee_for?: string }).attendee_for ?? null,
         selected_session: x.selected_session as ExperienceBooking['selected_session'],
         selected_variant: (x as unknown as { selected_variant?: string }).selected_variant ?? null,
         purchase_type: x.purchase_type,

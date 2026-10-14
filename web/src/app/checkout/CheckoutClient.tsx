@@ -13,6 +13,7 @@ export interface CheckoutItem {
   product_id: number;
   artisan_id: number;
   attendee_name?: string | null;
+  attendee_for?: string | null;
 }
 
 export interface SavedAddress {
@@ -335,14 +336,34 @@ export default function CheckoutClient({
           /* Workshop Only Contact Form */
           <div className="card p-5 space-y-3">
             <h2 className="font-serif text-lg font-bold text-brand-900">
-              Workshop Attendee Information
+              Workshop Booking Contact
             </h2>
             <p className="text-xs text-stone-500">
-              Your workshop ticket will be registered under this contact.
+              Your official workshop admission ticket and receipt will be issued to this contact.
             </p>
+            {items.some((i) => i.attendee_name) && (
+              <div className="rounded-lg bg-leaf-50/80 p-3 text-xs text-leaf-900 border border-leaf-200/80 space-y-1">
+                <p className="font-bold flex items-center gap-1.5">
+                  <span>👥</span> Registered Workshop Attendees:
+                </p>
+                <div className="space-y-0.5 pl-5">
+                  {items.filter((i) => i.attendee_name).map((i) => (
+                    <div key={i.cart_item_id} className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-medium text-stone-700">{i.name}:</span>{' '}
+                      <span className="font-bold text-leaf-950">{i.attendee_name}</span>
+                      {i.attendee_for === 'others' && (
+                        <span className="rounded-full bg-amber-100 border border-amber-300 px-1.5 py-0.2 text-[10px] font-bold text-amber-900">
+                          Guest / Group
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-xs font-medium text-stone-700">Attendee Name *</label>
+                <label className="mb-1 block text-xs font-medium text-stone-700">Buyer / Contact Name *</label>
                 <input
                   className="input"
                   value={fullName}
@@ -464,9 +485,14 @@ export default function CheckoutClient({
                     </p>
                   )}
                   {i.attendee_name && (
-                    <p className="text-xs text-leaf-800 font-medium">
-                      👤 Attendee(s): {i.attendee_name}
-                    </p>
+                    <div className="text-xs text-leaf-800 font-medium flex items-center gap-1.5 flex-wrap">
+                      <span>👤 Attendee(s): {i.attendee_name}</span>
+                      {i.attendee_for === 'others' && (
+                        <span className="rounded-full bg-amber-50 border border-amber-200 px-1.5 py-0.2 text-[10px] font-semibold text-amber-800">
+                          Guest / Group
+                        </span>
+                      )}
+                    </div>
                   )}
                 </div>
                 <span className="font-bold text-stone-900 font-mono">
