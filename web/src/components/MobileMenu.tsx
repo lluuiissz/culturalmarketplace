@@ -29,23 +29,29 @@ export default function MobileMenu({
           <div className="fixed inset-0 z-30 bg-black/20" onClick={() => setOpen(false)} />
           <nav className="absolute right-2 top-16 z-40 w-60 rounded-xl border border-brand-100 bg-white py-2 shadow-lg">
             {loggedIn && name && (
-              <div className="flex items-center gap-2.5 border-b border-brand-50 px-4 pb-2.5 pt-1">
+              <Link
+                href="/customer/account/dashboard"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 border-b border-brand-50 px-4 pb-2.5 pt-1 hover:bg-brand-50/60 transition group"
+                title="View your account dashboard"
+              >
                 {avatar ? (
                   <img
                     src={avatar}
                     alt={name}
-                    className="h-8 w-8 rounded-full object-cover border border-brand-200"
+                    className="h-8 w-8 rounded-full object-cover border border-brand-200 shrink-0"
                   />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-xs font-bold text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-xs font-bold text-white shrink-0">
                     {name.slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] text-stone-400">Signed in as</p>
-                  <p className="text-xs font-bold text-stone-800 truncate">{name}</p>
+                  <p className="text-xs font-bold text-stone-800 truncate group-hover:text-brand-700">{name}</p>
                 </div>
-              </div>
+                <span className="text-xs text-stone-400 group-hover:text-brand-600">→</span>
+              </Link>
             )}
             {links.map((l) => (
               <Link

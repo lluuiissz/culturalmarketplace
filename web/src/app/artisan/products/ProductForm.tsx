@@ -30,6 +30,7 @@ interface FormState {
   tutorial_location: string;
   tutorial_lat: number | null;
   tutorial_lng: number | null;
+  materials_used: string;
 }
 
 const STANDARD_VARIATION_TYPES = [
@@ -79,6 +80,7 @@ export default function ProductForm({
     tutorial_location: '',
     tutorial_lat: 8.1752,
     tutorial_lng: 125.9934,
+    materials_used: '',
     ...initial,
   });
 
@@ -179,6 +181,7 @@ export default function ProductForm({
       tutorial_dates: form.has_tutorial ? tutorialDates : null,
       has_variations: hasVariations,
       variations_data: validVariations,
+      materials_used: form.materials_used ? form.materials_used.trim() : null,
     };
 
     if (mode === 'create') {
@@ -225,6 +228,20 @@ export default function ProductForm({
         <div>
           <label className="mb-1 block text-sm font-medium text-stone-700">Description</label>
           <textarea className="input h-24" value={form.description} onChange={(e) => set('description', e.target.value)} />
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-stone-700">
+            Materials Used <span className="text-xs text-stone-400 font-normal">(optional — e.g. Abaca fiber, Natural dyes, Bamboo, Uway vine)</span>
+          </label>
+          <input
+            className="input"
+            value={form.materials_used}
+            onChange={(e) => set('materials_used', e.target.value)}
+            placeholder="e.g. Abaca fiber, Uway vine, Natural plant pigments"
+          />
+          <p className="mt-1 text-xs text-stone-500">
+            Highlights the authentic, indigenous materials used in this handcrafted cultural work.
+          </p>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div>

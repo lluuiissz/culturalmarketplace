@@ -1255,8 +1255,8 @@ export async function createProduct(artisanId: number, p: Partial<Product>): Pro
   invalidate('products:active:default');
   invalidate('admin:stats');
   if (usingPostgres) {
-    const rows = await sql`insert into products (artisan_id, name, description, price, stock_quantity, category, has_tutorial, tutorial_title, tutorial_description, tutorial_price, tutorial_capacity, tutorial_location, tutorial_lat, tutorial_lng, tutorial_dates, tutorial_fee_type, has_variations, variations_data)
-      values (${artisanId}, ${p.name!}, ${p.description ?? null}, ${p.price ?? 0}, ${p.stock_quantity ?? 0}, ${p.category ?? null},
+    const rows = await sql`insert into products (artisan_id, name, description, price, stock_quantity, category, materials_used, has_tutorial, tutorial_title, tutorial_description, tutorial_price, tutorial_capacity, tutorial_location, tutorial_lat, tutorial_lng, tutorial_dates, tutorial_fee_type, has_variations, variations_data)
+      values (${artisanId}, ${p.name!}, ${p.description ?? null}, ${p.price ?? 0}, ${p.stock_quantity ?? 0}, ${p.category ?? null}, ${p.materials_used ?? null},
               ${p.has_tutorial ?? false}, ${p.tutorial_title ?? null}, ${p.tutorial_description ?? null}, ${p.tutorial_price ?? null},
               ${p.tutorial_capacity ?? null}, ${p.tutorial_location ?? null}, ${p.tutorial_lat ?? null}, ${p.tutorial_lng ?? null},
               ${(p.tutorial_dates ? JSON.stringify(p.tutorial_dates) : null) as unknown as string | null}, ${p.tutorial_fee_type ?? null},
@@ -1274,7 +1274,7 @@ export async function createProduct(artisanId: number, p: Partial<Product>): Pro
     tutorial_capacity: p.tutorial_capacity ?? null, tutorial_location: p.tutorial_location ?? null,
     tutorial_lat: p.tutorial_lat ?? null, tutorial_lng: p.tutorial_lng ?? null,
     tutorial_fee_type: p.tutorial_fee_type ?? null,
-    tutorial_learnings: null, tutorial_status: null, materials_used: null, has_variations: p.has_variations ?? false,
+    tutorial_learnings: null, tutorial_status: null, materials_used: p.materials_used ?? null, has_variations: p.has_variations ?? false,
     variation_pricing: p.variation_pricing ?? false, variations_data: (p.variations_data as Product['variations_data']) ?? null,
     created_at: new Date().toISOString(),
   });

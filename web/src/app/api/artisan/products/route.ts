@@ -29,6 +29,7 @@ export async function POST(req: Request) {
     }
     const b = (await req.json()) as {
       name?: string; description?: string; price?: number; stock_quantity?: number; category?: string;
+      materials_used?: string;
       has_tutorial?: boolean; tutorial_title?: string; tutorial_description?: string; tutorial_price?: number;
       tutorial_capacity?: number; tutorial_dates?: object[]; tutorial_fee_type?: 'paid' | 'free';
       tutorial_location?: string; tutorial_lat?: number; tutorial_lng?: number;
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
       price: Number(b.price) || 0,
       stock_quantity: Number(b.stock_quantity) || 0,
       category: cat.value,
+      materials_used: b.materials_used ? String(b.materials_used).trim() : null,
       has_tutorial: Boolean(b.has_tutorial),
       tutorial_title: b.tutorial_title ?? null,
       tutorial_description: b.tutorial_description ?? null,

@@ -85,15 +85,17 @@ export async function POST(req: Request) {
       selfieEmbedding = verify.data.selfie_embedding;
       if (!verify.data.match) {
         await logFaceAttempt({ email: d.email, result: 'no_match', distance: verify.data.distance, confidence: verify.data.confidence, detail: { step: 'verify' } });
-        return NextResponse.json({ status: 'error', message: 'Face verification failed: your selfie does not match your ID photo. Retake in better lighting, facing the camera.' }, { status: 422 });
+        notes.push(`Face auto-match score ${Math.round(verify.data.confidence * 100)}% (distance ${verify.data.distance}) — submitted for manual admin review.`);
+        warnings.push('Automatic face check did not reach the confidence threshold; an admin will review your photos manually.');
+      } else {
+        await logFaceAttempt({ email: d.email, result: 'match', distance: verify.data.distance, confidence: verify.data.confidence, detail: { step: 'verify' } });
       }
-      await logFaceAttempt({ email: d.email, result: 'match', distance: verify.data.distance, confidence: verify.data.confidence, detail: { step: 'verify' } });
     } else if (verify.status === 'error') {
       await logFaceAttempt({ email: d.email, result: 'error', detail: { step: 'verify', message: verify.message } });
-      notes.push('Face service unreachable - submitted for manual admin review.');
-      warnings.push('Automatic face check could not run; an admin will verify your documents manually.');
+      notes.push(`Face check issue (${verify.message}) — submitted for manual admin review.`);
+      warnings.push('Automatic face check could not complete; an admin will verify your documents manually.');
     } else {
-      notes.push('Face service not configured - submitted for manual admin review.');
+      notes.push('Face service not configured — submitted for manual admin review.');
     }
 
     // ---- 3. Duplicate-face check against existing artisans ----

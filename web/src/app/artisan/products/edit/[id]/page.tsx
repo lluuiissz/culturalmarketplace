@@ -103,6 +103,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               price: String(Number(product.price)),
               stock_quantity: String(product.stock_quantity),
               category: product.category ?? '',
+              materials_used: product.materials_used ?? '',
               has_tutorial: product.has_tutorial,
               tutorial_title: product.tutorial_title ?? '',
               tutorial_description: product.tutorial_description ?? '',
