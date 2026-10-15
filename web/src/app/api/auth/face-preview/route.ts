@@ -13,11 +13,14 @@ export async function POST(req: Request) {
 
     const result = await verifyFace(await idImage.arrayBuffer(), await selfie.arrayBuffer());
     if (result.status === 'ok') {
+      const pct = Math.round(result.data.confidence * 100);
       return NextResponse.json({
         match: Boolean(result.data.match),
         confidence: result.data.confidence,
         distance: result.data.distance,
-        message: result.data.match ? 'Face matched your ID photo.' : 'Face did not match ID photo.',
+        message: result.data.match
+          ? `Face matched your ID photo (${pct}% confidence).`
+          : `Face did not match ID photo (${pct}% match score). You can retake or proceed with manual review.`,
       });
     }
     if (result.status === 'skipped') {
@@ -34,9 +37,9 @@ export async function POST(req: Request) {
     return NextResponse.json({
       match: false,
       no_face: isNoFace,
-      message: isNoFace
+      message: result.message || (isNoFace
         ? 'No face was detected in one or both images. Ensure your face and ID photo are clearly visible and well-lit.'
-        : (result.message || 'Face comparison service error.'),
+        : 'Face comparison service error.'),
     });
   } catch (err) {
     return NextResponse.json({ match: false, message: 'Face check failed. Admin will review manually.' }, { status: 500 });

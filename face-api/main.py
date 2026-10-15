@@ -41,33 +41,59 @@ def _download(url: str, dest: str) -> None:
     os.replace(tmp, dest)
 
 
-def _models():
+def _models(score_threshold: float = 0.45):
     global _yunet, _sface
     if _yunet is None:
         if not os.path.exists(YUNET_PATH):
             _download(YUNET_URL, YUNET_PATH)
         if not os.path.exists(SFACE_PATH):
             _download(SFACE_URL, SFACE_PATH)
-        _yunet = cv2.FaceDetectorYN.create(YUNET_PATH, "", (320, 320), score_threshold=0.6)
+        _yunet = cv2.FaceDetectorYN.create(YUNET_PATH, "", (320, 320), score_threshold=score_threshold)
         _sface = cv2.FaceRecognizerSF.create(SFACE_PATH, "")
+    else:
+        _yunet.setScoreThreshold(score_threshold)
     return _yunet, _sface
 
 
-def _encoding(image_bytes: bytes) -> np.ndarray:
-    """First face embedding in an image, or HTTP 422 if none found."""
-    yunet, sface = _models()
+def _detect_best_face(img: np.ndarray, yunet):
+    h, w = img.shape[:2]
+    yunet.setInputSize((w, h))
+    ok, faces = yunet.detect(img)
+    if ok and faces is not None and len(faces) > 0:
+        return max(faces, key=lambda f: float(f[-1]))
+    return None
+
+
+def _encoding(image_bytes: bytes, label: str = "image") -> np.ndarray:
+    """Extract 128-d face embedding from image bytes with adaptive sensitivity."""
     buf = np.frombuffer(image_bytes, dtype=np.uint8)
     img = cv2.imdecode(buf, cv2.IMREAD_COLOR)
     if img is None:
-        raise HTTPException(status_code=422, detail={"error": "Image could not be decoded."})
+        raise HTTPException(status_code=422, detail={"error": f"{label.capitalize()} could not be decoded."})
+
     h, w = img.shape[:2]
     if h < 20 or w < 20:
-        raise HTTPException(status_code=422, detail={"error": "Image too small to contain a face."})
-    yunet.setInputSize((w, h))
-    ok, faces = yunet.detect(img)
-    if not ok or faces is None or len(faces) == 0:
-        raise HTTPException(status_code=422, detail={"error": "No face found in image."})
-    aligned = sface.alignCrop(img, faces[0])
+        raise HTTPException(status_code=422, detail={"error": f"{label.capitalize()} is too small to contain a face."})
+
+    # Scale down very high-res photos (e.g. 12MP phone camera) to ensure fast and accurate YuNet detection
+    max_dim = max(h, w)
+    if max_dim > 1280:
+        scale = 1280.0 / max_dim
+        img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
+
+    # 1. Primary detection pass with standard threshold (0.45)
+    yunet, sface = _models(score_threshold=0.45)
+    best_face = _detect_best_face(img, yunet)
+
+    # 2. Fallback pass with more sensitive threshold (0.35) for ID cards with small portrait cutouts
+    if best_face is None:
+        yunet.setScoreThreshold(0.35)
+        best_face = _detect_best_face(img, yunet)
+
+    if best_face is None:
+        raise HTTPException(status_code=422, detail={"error": f"No face found in {label.lower()}."})
+
+    aligned = sface.alignCrop(img, best_face)
     feat = sface.feature(aligned).flatten()  # 128-d, L2-normalized by SFace
     return feat.astype(float)
 
@@ -92,8 +118,8 @@ async def verify(
     selfie: UploadFile = File(...),
 ):
     """Selfie vs ID photo. Returns match, distance, confidence, selfie_embedding."""
-    id_enc = _encoding(await id_image.read())
-    selfie_enc = _encoding(await selfie.read())
+    id_enc = _encoding(await id_image.read(), label="ID photo")
+    selfie_enc = _encoding(await selfie.read(), label="live selfie")
 
     distance = _cosine_to_dlib_distance(id_enc, selfie_enc)
     match = distance <= VERIFY_THRESHOLD

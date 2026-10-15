@@ -13,6 +13,14 @@ export async function registerNode(): Promise<void> {
     // already fails open per-upload.
   });
 
+  // Ensure face verification daemon is supervised in the background
+  try {
+    const { ensureFaceDaemon } = await import('./lib/faceVerify');
+    ensureFaceDaemon();
+  } catch {
+    // Non-fatal, CLI runner acts as fallback
+  }
+
   // Keep the Supabase connection pool warm (LCP): open the first connection
   // at boot so the first user navigation doesn't pay the ~650ms TCP+TLS+auth
   // handshake to Supabase, then ping every 30s (unref'd — never blocks
