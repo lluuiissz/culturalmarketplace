@@ -85,27 +85,27 @@ export default function OfficialReceiptTicketView({
       )}
 
       {/* 2. Official Customer Receipt */}
-      <div className="card p-5 sm:p-8 print:shadow-none print:border-none print:m-0 print:p-2 bg-white border border-stone-300 shadow-md">
+      <div className="card p-5 sm:p-8 print:shadow-none print:border-none print:m-0 print:p-2 bg-white border border-abaca-300 shadow-md relative overflow-hidden">
         {/* Receipt Header */}
-        <div className="flex flex-wrap items-start justify-between border-b-2 border-brand-900/20 pb-5 gap-4">
+        <div className="flex flex-wrap items-start justify-between border-b-2 border-charcoal-900/10 pb-5 gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl print:text-xl">🧶</span>
-              <span className="font-serif text-2xl font-bold text-brand-900 print:text-xl">
+              <span className="text-2xl text-ochre-500">☀️</span>
+              <span className="font-sculpted text-2xl font-bold text-charcoal-900 print:text-xl">
                 Cultural Marketplace
               </span>
             </div>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-ochre-800 font-medium">
               Preserving Cultural Heritage · Agusan del Sur, Philippines
             </p>
-            <p className="text-xs text-stone-400">registry@culturalmarketplace.local</p>
+            <p className="text-[11px] text-stone-400">registry@culturalmarketplace.local</p>
           </div>
 
           <div className="text-right sm:text-right">
-            <span className="inline-block rounded bg-brand-100 px-2.5 py-1 text-xs font-bold text-brand-800 uppercase tracking-wider print:border print:border-stone-300">
-              Official Customer Receipt
+            <span className="inline-block rounded-lg bg-ochre-50 border border-ochre-300 px-3 py-1 text-xs font-bold text-ochre-900 uppercase tracking-wider print:border print:border-stone-300">
+              Official Patron Receipt
             </span>
-            <p className="mt-2 text-base font-mono font-bold text-stone-800">
+            <p className="mt-2 text-base font-mono font-bold text-charcoal-900">
               {receiptNumber}
             </p>
             <p className="text-xs text-stone-500">Date: {formattedDate}</p>
@@ -252,24 +252,24 @@ export default function OfficialReceiptTicketView({
               <span>Shipping / Booking Fee:</span>
               <span className="text-leaf-700 font-medium">Included / Free</span>
             </div>
-            <div className="border-t border-stone-200 pt-2 flex justify-between text-base font-bold text-brand-900">
+            <div className="border-t border-abaca-200 pt-2 flex justify-between text-base font-bold text-charcoal-900">
               <span>Grand Total:</span>
-              <span className="font-mono text-xl">₱{Number(order.total_amount).toFixed(2)}</span>
+              <span className="font-mono text-xl text-crimson-700">₱{Number(order.total_amount).toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {/* Cultural Heritage Authenticity Seal */}
-        <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-center text-xs text-amber-900 space-y-1">
-          <div className="flex items-center justify-center gap-1.5 font-serif font-bold text-sm text-brand-900">
+        <div className="mt-8 rounded-2xl border border-ochre-300 bg-ochre-50/70 p-5 text-center text-xs text-charcoal-900 space-y-1">
+          <div className="flex items-center justify-center gap-2 font-sculpted font-bold text-sm text-charcoal-900">
             <span>🛡️</span>
             <span>Cultural Heritage Authenticity Seal</span>
           </div>
-          <p className="font-medium">
+          <p className="font-bold text-ochre-900">
             ✔ Certified Authentic Agusan del Sur Handicraft & Indigenous Cultural Heritage
           </p>
           <p className="text-[11px] text-stone-500">
-            Official receipt issued by the Cultural Marketplace Registry. Supporting indigenous artisans & preservation of cultural arts.
+            Official receipt issued by the Cultural Marketplace Registry. Supporting indigenous artisans & preservation of ancestral arts.
           </p>
         </div>
       </div>

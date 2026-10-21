@@ -677,11 +677,27 @@ export async function updateArtisanProfile(id: number, p: { name?: string; phone
       craft_type = coalesce(${p.craft_type ?? null}, craft_type),
       profile_picture = coalesce(${p.profile_picture ?? null}, profile_picture)
       where id = ${id}`;
+    try {
+      await sql`update users set
+        name = coalesce(${p.name ?? null}, name),
+        phone = coalesce(${p.phone ?? null}, phone),
+        location = coalesce(${p.location ?? null}, location),
+        profile_picture = coalesce(${p.profile_picture ?? null}, profile_picture)
+        where id = ${id} and role = 'artisan'`;
+    } catch { /* best-effort mirror */ }
     invalidate('artisans*');
+    invalidate('users*');
     return;
   }
   const a = store().artisans.find((x) => x.id === id);
   if (a) Object.assign(a, Object.fromEntries(Object.entries(p).filter(([, v]) => v !== undefined)));
+  const u = store().users.find((x) => x.id === id || (x.email === a?.email && x.role === 'artisan'));
+  if (u) {
+    if (p.name !== undefined) u.name = p.name;
+    if (p.phone !== undefined) u.phone = p.phone;
+    if (p.location !== undefined) u.location = p.location;
+    if (p.profile_picture !== undefined) u.profile_picture = p.profile_picture;
+  }
 }
 
 // ---------------------------------------------------------------------------

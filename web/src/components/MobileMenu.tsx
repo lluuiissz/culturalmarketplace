@@ -5,9 +5,6 @@ import { useState } from 'react';
 
 export interface NavLink { href: string; label: string }
 
-// Mobile menu: hamburger + visible "Menu" label (never an icon alone).
-// Auth actions live INSIDE the menu on mobile — the header row is too narrow
-// for logo + cart + logout + menu without overflowing on small phones.
 export default function MobileMenu({
   links, loggedIn, name, avatar,
 }: { links: NavLink[]; loggedIn: boolean; name?: string | null; avatar?: string | null }) {
@@ -18,66 +15,85 @@ export default function MobileMenu({
       <button
         aria-label="Menu"
         aria-expanded={open}
-        className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50"
+        className="flex items-center gap-1.5 rounded-xl border border-abaca-300 bg-white/80 px-2.5 py-1.5 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 transition"
         onClick={() => setOpen((o) => !o)}
       >
-        <span aria-hidden className="text-xl leading-none">{open ? '✕' : '☰'}</span>
+        <span aria-hidden className="text-base leading-none">{open ? '✕' : '☰'}</span>
         <span>Menu</span>
       </button>
+
       {open && (
         <>
-          <div className="fixed inset-0 z-30 bg-black/20" onClick={() => setOpen(false)} />
-          <nav className="absolute right-2 top-16 z-40 w-60 rounded-xl border border-brand-100 bg-white py-2 shadow-lg">
+          <div className="fixed inset-0 z-30 bg-charcoal-950/40 backdrop-blur-2xs" onClick={() => setOpen(false)} />
+          <nav className="absolute right-3 top-16 z-40 w-64 rounded-2xl border border-abaca-200 bg-white p-2 shadow-xl">
+            {/* Top weave accent */}
+            <div className="weave-divider-diamond opacity-40 h-1 mb-2" />
+
             {loggedIn && name && (
               <Link
                 href="/customer/account/dashboard"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 border-b border-brand-50 px-4 pb-2.5 pt-1 hover:bg-brand-50/60 transition group"
+                className="flex items-center gap-2.5 rounded-xl bg-canvas p-2.5 hover:bg-ochre-50 transition group border border-abaca-200/60 mb-2"
                 title="View your account dashboard"
               >
                 {avatar ? (
                   <img
                     src={avatar}
                     alt={name}
-                    className="h-8 w-8 rounded-full object-cover border border-brand-200 shrink-0"
+                    className="h-8 w-8 rounded-full object-cover border border-ochre-300 shrink-0"
                   />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-xs font-bold text-white shrink-0">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal-900 text-xs font-bold text-ochre-300 shrink-0">
                     {name.slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] text-stone-400">Signed in as</p>
-                  <p className="text-xs font-bold text-stone-800 truncate group-hover:text-brand-700">{name}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-ochre-700 font-semibold">Signed in as</p>
+                  <p className="text-xs font-bold text-charcoal-900 truncate group-hover:text-crimson-700">{name}</p>
                 </div>
-                <span className="text-xs text-stone-400 group-hover:text-brand-600">→</span>
+                <span className="text-xs text-ochre-600 group-hover:translate-x-0.5 transition-transform">→</span>
               </Link>
             )}
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="block px-4 py-2.5 text-sm font-medium text-stone-700 hover:bg-brand-50 hover:text-brand-700"
-                onClick={() => setOpen(false)}
-              >
-                {l.label}
-              </Link>
-            ))}
-            {/* Auth actions, mobile-only (desktop shows them in the header) */}
-            <div className="mt-1 border-t border-brand-50 pt-2">
+
+            <div className="space-y-0.5">
+              {links.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="block rounded-xl px-3 py-2 text-sm font-medium text-charcoal-800 hover:bg-ochre-50 hover:text-crimson-700 transition"
+                  onClick={() => setOpen(false)}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Auth actions, mobile-only */}
+            <div className="mt-2 border-t border-abaca-200/60 pt-2 space-y-1">
               {loggedIn ? (
                 <form action="/api/auth/logout" method="post">
-                  <button type="submit" className="block w-full px-4 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50">
+                  <button
+                    type="submit"
+                    className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition"
+                  >
                     Log out
                   </button>
                 </form>
               ) : (
                 <>
-                  <Link href="/auth/login" className="block px-4 py-2.5 text-sm font-medium text-stone-700 hover:bg-brand-50" onClick={() => setOpen(false)}>
+                  <Link
+                    href="/auth/login"
+                    className="block rounded-xl px-3 py-2 text-sm font-medium text-charcoal-800 hover:bg-ochre-50"
+                    onClick={() => setOpen(false)}
+                  >
                     Sign in
                   </Link>
-                  <Link href="/auth/register" className="block px-4 py-2.5 text-sm font-semibold text-brand-700 hover:bg-brand-50" onClick={() => setOpen(false)}>
-                    Create an account
+                  <Link
+                    href="/auth/register"
+                    className="block rounded-xl bg-crimson-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-crimson-700 transition"
+                    onClick={() => setOpen(false)}
+                  >
+                    Become Part of Gathering
                   </Link>
                 </>
               )}

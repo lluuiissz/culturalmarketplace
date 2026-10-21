@@ -12,56 +12,90 @@ export default async function Header() {
     session ? getUser(session.id) : null,
   ]);
 
-  const links = [
+  const desktopLinks = [
     { href: '/', label: 'Home' },
-    { href: '/customer/browse', label: 'Browse crafts' },
-    { href: '/artisans', label: 'Artisans' },
-    ...(session?.role === 'customer' ? [{ href: '/customer/account/dashboard', label: 'My account' }] : []),
-    ...(session?.role === 'artisan' ? [{ href: '/artisan/dashboard', label: 'Artisan portal' }] : []),
-    ...(session?.role === 'admin' ? [{ href: '/admin/dashboard', label: 'Admin' }] : []),
+    { href: '/customer/browse', label: 'Discover Crafts' },
+    { href: '/artisans', label: 'Master Artisans' },
+  ];
+
+  const mobileLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/customer/browse', label: 'Discover Crafts' },
+    { href: '/artisans', label: 'Master Artisans' },
+    ...(session?.role === 'customer' ? [{ href: '/customer/account/dashboard', label: 'My Account' }] : []),
+    ...(session?.role === 'artisan' ? [{ href: '/artisan/dashboard', label: 'Artisan Atelier' }] : []),
+    ...(session?.role === 'admin' ? [{ href: '/admin/dashboard', label: 'Curator Admin' }] : []),
   ];
 
   const searchForm = (
-    <form action="/customer/browse" method="get" role="search" className="flex w-full items-center gap-2">
-      <div className="relative flex-1">
-        <span aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-stone-400">🔍</span>
+    <form action="/customer/browse" method="get" role="search" className="flex w-full items-center gap-1.5">
+      <div className="relative flex-1 min-w-0">
+        <span aria-hidden className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ochre-700/60">🔍</span>
         <Suspense fallback={
-          <input type="search" name="q" placeholder="Search crafts, e.g. woven basket…" aria-label="Search crafts"
-            className="input w-full rounded-full" style={{ paddingLeft: '2.25rem' }} />
+          <input
+            type="search"
+            name="q"
+            placeholder="Search traditional crafts…"
+            aria-label="Search traditional crafts"
+            className="w-full rounded-full border border-abaca-300 bg-white/95 text-xs sm:text-sm pl-9 pr-3 py-1.5 text-charcoal-900 shadow-2xs"
+          />
         }>
           <SearchBox />
         </Suspense>
       </div>
-      <button type="submit" className="btn-outline shrink-0">Search</button>
+      <button type="submit" className="btn-outline shrink-0 py-1.5 px-3 text-xs font-semibold whitespace-nowrap">
+        Search
+      </button>
     </form>
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand-100 bg-white/95 backdrop-blur">
-      {/* Row 1: logo (left) · nav (right) — standard, predictable layout */}
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4">
-        <Link href="/" className="shrink-0 font-serif text-xl font-bold text-brand-900" aria-label="Cultural Marketplace — home">
-          <span aria-hidden>🧶</span>{' '}<span className="hidden min-[440px]:inline">Cultural </span>Marketplace
+    <header className="sticky top-0 z-40 border-b border-abaca-200/90 bg-white/95 backdrop-blur-md shadow-xs">
+      {/* Row 1: Logo & Nav & User Actions */}
+      <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-3 px-4 sm:gap-6">
+        <Link href="/" className="shrink-0 flex items-center gap-2.5 group" aria-label="Cultural Marketplace — home">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-ochre-500 to-crimson-700 text-white shadow-xs group-hover:scale-105 transition-transform">
+            <span className="text-xl">☀️</span>
+          </div>
+          <div>
+            <span className="block font-sculpted text-lg font-bold text-charcoal-900 group-hover:text-crimson-700 transition-colors leading-tight">
+              Cultural Marketplace
+            </span>
+            <span className="block text-[10px] font-sans font-semibold tracking-widest uppercase text-ochre-700">
+              Agusan del Sur Heritage
+            </span>
+          </div>
         </Link>
-        {/* Desktop: global search sits at the very top, center */}
-        <div className="hidden min-w-0 flex-1 justify-center px-4 lg:flex">{searchForm}</div>
-        <div className="flex items-center gap-2">
-          <nav className="hidden items-center gap-5 text-sm font-medium text-stone-600 md:flex">
-            {links.map((l) => (
-              <Link key={l.href} className="hover:text-brand-700" href={l.href} prefetch={true}>{l.label}</Link>
+
+        {/* Desktop: global search sits at the center with dedicated space */}
+        <div className="hidden min-w-[220px] max-w-xs xl:max-w-sm flex-1 justify-center px-3 lg:flex">{searchForm}</div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <nav className="hidden items-center gap-4 xl:gap-6 text-sm font-medium text-charcoal-800 md:flex">
+            {desktopLinks.map((l) => (
+              <Link key={l.href} className="transition-colors hover:text-crimson-600 font-medium whitespace-nowrap shrink-0" href={l.href} prefetch={true}>
+                {l.label}
+              </Link>
             ))}
           </nav>
+
           {session?.role === 'customer' && (
-            <Link href="/cart" prefetch={false} className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50" aria-label={`Cart, ${count} item${count === 1 ? '' : 's'}`}>
-              <span aria-hidden className="text-xl leading-none">🛒</span>
-              <span className="hidden sm:inline">Cart</span>
+            <Link
+              href="/cart"
+              prefetch={false}
+              className="flex items-center gap-1.5 rounded-xl border border-abaca-200 bg-canvas/80 px-3 py-2 text-sm font-medium text-charcoal-900 transition hover:bg-ochre-50 hover:border-ochre-400"
+              aria-label={`Artisan Basket, ${count} item${count === 1 ? '' : 's'}`}
+            >
+              <span aria-hidden className="text-base leading-none">🧺</span>
+              <span className="hidden sm:inline font-semibold">Basket</span>
               {count > 0 && (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1 text-[11px] font-bold text-white">
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-crimson-600 px-1 text-[11px] font-bold text-white shadow-xs">
                   {count}
                 </span>
               )}
             </Link>
           )}
+
           {session ? (
             <div className="hidden md:flex items-center gap-2.5">
               <Link
@@ -72,46 +106,57 @@ export default async function Header() {
                     ? '/artisan/dashboard'
                     : '/admin/dashboard'
                 }
-                className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2.5 hover:bg-brand-50 border border-stone-200 transition"
+                className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 hover:bg-ochre-50/70 border border-abaca-300 transition"
                 title={`Signed in as ${session.name}`}
               >
                 {user?.profile_picture ? (
                   <img
                     src={user.profile_picture}
                     alt={session.name}
-                    className="h-7 w-7 rounded-full object-cover border border-brand-200"
+                    className="h-7 w-7 rounded-full object-cover border border-ochre-300"
                   />
                 ) : (
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-[11px] font-bold text-white">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-charcoal-900 text-[11px] font-bold text-ochre-300">
                     {session.name.slice(0, 2).toUpperCase()}
                   </span>
                 )}
-                <span className="text-xs font-semibold text-stone-700 max-w-[110px] truncate">
+                <span className="text-xs font-semibold text-charcoal-900 max-w-[110px] truncate">
                   {session.name.split(' ')[0]}
                 </span>
               </Link>
               <form action="/api/auth/logout" method="post">
-                <button className="btn-outline text-xs px-2.5 py-1 text-stone-600 hover:text-red-700" type="submit">
+                <button className="rounded-xl border border-abaca-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-600 transition hover:border-red-300 hover:text-red-700" type="submit">
                   Log out
                 </button>
               </form>
             </div>
           ) : (
             <>
-              <Link href="/auth/login" className="btn-outline hidden md:inline-flex">Sign in</Link>
-              <Link href="/auth/register" className="btn-primary hidden md:inline-flex">Join</Link>
+              <Link href="/auth/login" className="btn-outline hidden md:inline-flex py-1.5 px-3.5 text-xs font-semibold">
+                Sign in
+              </Link>
+              <Link href="/auth/register" className="btn-primary hidden md:inline-flex py-1.5 px-3.5 text-xs font-semibold">
+                Join Gathering
+              </Link>
             </>
           )}
+
           <MobileMenu
-            links={links}
+            links={mobileLinks}
             loggedIn={Boolean(session)}
             name={session?.name ?? null}
             avatar={user?.profile_picture ?? null}
           />
         </div>
       </div>
-      {/* Mobile: search stays at the very top as its own row */}
-      <div className="border-t border-brand-50 px-4 pb-3 pt-2 md:hidden">{searchForm}</div>
+
+      {/* Mobile search row */}
+      <div className="border-t border-abaca-200/60 bg-canvas/60 px-4 pb-3 pt-2 md:hidden">
+        {searchForm}
+      </div>
+
+      {/* Bottom subtle geometric accent */}
+      <div className="weave-divider-diamond opacity-25 h-1" />
     </header>
   );
 }

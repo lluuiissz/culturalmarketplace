@@ -4,19 +4,17 @@ import PortalSidebar, { type NavSection } from '@/components/PortalSidebar';
 
 export const dynamic = 'force-dynamic';
 
-// Customer account navigation — only "my stuff" pages. Shopping itself
-// (browse, cart, checkout) stays in the public storefront header.
 const SECTIONS: NavSection[] = [
   {
-    title: 'My account',
+    title: 'Patron Record',
     items: [
-      { href: '/customer/account/dashboard', label: 'Dashboard', icon: '🏠' },
-      { href: '/customer/account/orders', label: 'My orders', icon: '🧾' },
-      { href: '/customer/account/bookings', label: 'My workshops & bookings', icon: '🎟️' },
-      { href: '/customer/account/messages', label: 'Messages', icon: '💬' },
-      { href: '/customer/account/addresses', label: 'Address book', icon: '📍' },
-      { href: '/customer/account/report', label: 'Report an issue', icon: '🚩' },
-      { href: '/customer/account/profile', label: 'Profile', icon: '👤' },
+      { href: '/customer/account/dashboard', label: 'Patron Logbook', icon: '🏠' },
+      { href: '/customer/account/orders', label: 'Craft Orders & History', icon: '🧾' },
+      { href: '/customer/account/bookings', label: 'Workshop Passes & Schedules', icon: '🎟️' },
+      { href: '/customer/account/messages', label: 'Artisan Messages', icon: '💬' },
+      { href: '/customer/account/addresses', label: 'Delivery Addresses', icon: '📍' },
+      { href: '/customer/account/report', label: 'Cultural Helpdesk & Reports', icon: '🚩' },
+      { href: '/customer/account/profile', label: 'Patron Profile', icon: '👤' },
     ],
   },
 ];
@@ -26,15 +24,15 @@ export default async function CustomerAccountLayout({ children }: { children: Re
   if (!session || session.role !== 'customer') redirect('/auth/login?next=/customer/account/dashboard');
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex min-h-screen flex-col md:flex-row bg-canvas">
       <PortalSidebar
         sections={SECTIONS}
         portalHome="/customer/account/dashboard"
-        portalLabel="My account"
+        portalLabel="Patron Account"
         userName={session.name}
-        backLabel="Keep shopping"
+        backLabel="Keep exploring crafts"
       />
-      <main className="min-w-0 flex-1 bg-brand-50/50 p-4 md:p-6">{children}</main>
+      <main className="min-w-0 flex-1 bg-canvas p-4 md:p-8">{children}</main>
     </div>
   );
 }

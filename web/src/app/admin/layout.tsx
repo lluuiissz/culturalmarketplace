@@ -4,55 +4,53 @@ import PortalSidebar, { type NavSection } from '@/components/PortalSidebar';
 
 export const dynamic = 'force-dynamic';
 
-// Admin-only navigation — grouped by responsibility. Distinct from the
-// artisan portal and the public storefront.
 const SECTIONS: NavSection[] = [
   {
-    title: 'Overview',
+    title: 'Cultural Directorate',
     items: [
-      { href: '/admin/dashboard', label: 'Dashboard', icon: '🏠' },
-      { href: '/admin/analytics', label: 'Analytics & demographics', icon: '📊' },
-      { href: '/admin/activity', label: 'Activity logs', icon: '🕘' },
+      { href: '/admin/dashboard', label: 'Curator Dashboard', icon: '🏠' },
+      { href: '/admin/analytics', label: 'Analytics & Provenance', icon: '📊' },
+      { href: '/admin/activity', label: 'Activity Logs', icon: '🕘' },
     ],
   },
   {
-    title: 'People',
+    title: 'Artisans & Patrons',
     items: [
-      { href: '/admin/artisans', label: 'Artisans', icon: '🎨' },
-      { href: '/admin/customers', label: 'Customers', icon: '🛒' },
+      { href: '/admin/artisans', label: 'Master Artisans & KYC', icon: '🎨' },
+      { href: '/admin/customers', label: 'Patron Registry', icon: '🛒' },
     ],
   },
   {
-    title: 'Marketplace content',
+    title: 'Heritage Catalog',
     items: [
-      { href: '/admin/products', label: 'Products', icon: '📦' },
-      { href: '/admin/categories', label: 'Categories', icon: '🏷️' },
-      { href: '/admin/reviews', label: 'Reviews', icon: '⭐' },
-      { href: '/admin/homepage', label: 'Homepage editor', icon: '🖼️' },
+      { href: '/admin/products', label: 'Craft Listings', icon: '📦' },
+      { href: '/admin/categories', label: 'Weave Categories', icon: '🏷️' },
+      { href: '/admin/reviews', label: 'Reviews & Feedback', icon: '⭐' },
+      { href: '/admin/homepage', label: 'Homepage Showcase', icon: '🖼️' },
     ],
   },
   {
-    title: 'Trust & safety',
+    title: 'Trust & Authenticity',
     items: [
-      { href: '/admin/moderation', label: 'Moderation queue', icon: '🛡️' },
-      { href: '/admin/reports', label: 'Reports', icon: '🚩' },
-      { href: '/admin/nfc', label: 'NFC tags', icon: '📡' },
+      { href: '/admin/moderation', label: 'Moderation Queue', icon: '🛡️' },
+      { href: '/admin/reports', label: 'Cultural Reports', icon: '🚩' },
+      { href: '/admin/nfc', label: 'Sacred NFC Registry', icon: '📡' },
     ],
   },
   {
-    title: 'Transactions',
+    title: 'Exchanges & Bookings',
     items: [
       { href: '/admin/orders', label: 'Orders', icon: '🧾' },
-      { href: '/admin/payments', label: 'Payment verification', icon: '💳' },
-      { href: '/admin/shipments', label: 'Shipments', icon: '🚚' },
-      { href: '/admin/bookings', label: 'Bookings', icon: '🎟️' },
+      { href: '/admin/payments', label: 'Payment Verification', icon: '💳' },
+      { href: '/admin/shipments', label: 'Shipments (J&T)', icon: '🚚' },
+      { href: '/admin/bookings', label: 'Workshop Bookings', icon: '🎟️' },
     ],
   },
   {
-    title: 'System',
+    title: 'System Settings',
     items: [
-      { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
-      { href: '/admin/profile', label: 'My profile', icon: '👤' },
+      { href: '/admin/settings', label: 'Platform Settings', icon: '⚙️' },
+      { href: '/admin/profile', label: 'Curator Profile', icon: '👤' },
     ],
   },
 ];
@@ -62,16 +60,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session || session.role !== 'admin') redirect('/auth/login?next=/admin/dashboard');
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex min-h-screen flex-col md:flex-row bg-canvas">
       <PortalSidebar
         sections={SECTIONS}
         portalHome="/admin/dashboard"
-        portalLabel="Admin panel"
+        portalLabel="Curator Directorate"
         userName={session.name}
-        backLabel="View storefront"
+        backLabel="View Storefront"
       />
-      {/* min-w-0 lets main shrink so wide tables scroll inside, not the page */}
-      <main className="min-w-0 flex-1 bg-brand-50/50 p-4 md:p-6">{children}</main>
+      <main className="min-w-0 flex-1 bg-canvas p-4 md:p-8">{children}</main>
     </div>
   );
 }

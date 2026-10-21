@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import WeaveDivider from '@/components/WeaveDivider';
 import { getSession } from '@/lib/auth';
 import { getCart, getUserPhone } from '@/lib/db';
 import { listAddresses } from '@/lib/adminDb';
@@ -70,36 +71,56 @@ export default async function CheckoutPage({
   }));
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-canvas">
       <Header />
-      <main className="mx-auto max-w-4xl px-4 py-10">
-        <div className="flex items-center justify-between">
-          <h1 className="font-serif text-3xl font-bold text-brand-900">Checkout</h1>
-          <Link href="/cart" className="text-sm font-medium text-brand-600 hover:underline">
-            ← Back to cart
+
+      <main className="mx-auto max-w-4xl px-4 py-8 flex-1 w-full">
+        {/* Breadcrumb Navigation */}
+        <div className="mb-4 flex items-center gap-2 text-xs text-stone-500">
+          <Link href="/cart" className="hover:text-crimson-700">Artisan Basket</Link>
+          <span>/</span>
+          <span className="font-semibold text-charcoal-900">Secure Artisan Exchange</span>
+        </div>
+
+        <div className="flex items-center justify-between border-b border-abaca-200 pb-4">
+          <div>
+            <h1 className="font-sculpted text-2xl sm:text-3xl font-bold text-charcoal-900">
+              Secure Artisan Exchange
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-stone-600">
+              Confirm your delivery address and preferred settlement method.
+            </p>
+          </div>
+          <Link href="/cart" className="text-xs font-semibold text-crimson-700 hover:underline">
+            ← Return to Basket
           </Link>
         </div>
 
         {items.length === 0 ? (
-          <div className="card mt-8 p-10 text-center">
-            <div className="text-5xl">🛒</div>
-            <h2 className="mt-4 font-serif text-xl font-bold text-stone-800">No items selected for checkout</h2>
-            <p className="mt-2 text-stone-500">
-              Please mark at least one item in your shopping cart before checking out.
+          <div className="my-12 rounded-3xl border border-abaca-200 bg-white p-10 text-center shadow-xs max-w-md mx-auto">
+            <div className="text-4xl mb-3">🧺</div>
+            <h2 className="font-sculpted text-lg font-bold text-charcoal-900">
+              No items selected for exchange
+            </h2>
+            <p className="mt-2 text-xs text-stone-500">
+              Please choose at least one handcrafted item or workshop pass in your artisan basket.
             </p>
-            <Link className="btn-primary mt-6 inline-flex" href="/cart">
-              ← Return to Cart
+            <Link className="btn-primary mt-6 text-xs px-5 py-2.5 font-semibold inline-flex" href="/cart">
+              ← Return to Artisan Basket
             </Link>
           </div>
         ) : (
-          <CheckoutClient
-            items={items}
-            profile={{ name: session.name, phone: profilePhone ?? '' }}
-            addresses={addressRows}
-          />
+          <div className="mt-6">
+            <CheckoutClient
+              items={items}
+              profile={{ name: session.name, phone: profilePhone ?? '' }}
+              addresses={addressRows}
+            />
+          </div>
         )}
       </main>
+
       <Footer />
-    </>
+    </div>
   );
 }

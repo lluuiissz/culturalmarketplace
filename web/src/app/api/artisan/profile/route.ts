@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   if (!session || session.role !== 'artisan') return NextResponse.json({ status: 'error' }, { status: 401 });
 
   const body = (await req.json()) as {
-    name?: string; phone?: string; location?: string; bio?: string; business_name?: string; craft_type?: string;
+    name?: string; phone?: string; location?: string; bio?: string; business_name?: string; craft_type?: string; profile_picture?: string;
   };
   await updateArtisanProfile(session.id, body);
   return NextResponse.json({ status: 'success' });

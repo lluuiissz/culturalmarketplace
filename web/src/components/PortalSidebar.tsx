@@ -4,12 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-// Role-based portal navigation: grouped sections per role, active-link
-// highlighting, identity + Log out pinned at the bottom. The PUBLIC site
-// navigation (browse/cart/home) stays in the public Header — the portal
-// shell links back to the storefront instead, keeping "shop" and "manage"
-// visually and mentally separate.
-
 export interface NavSection {
   title: string;
   items: Array<{ href: string; label: string; icon?: string }>;
@@ -17,13 +11,15 @@ export interface NavSection {
 
 function isActive(pathname: string, href: string): boolean {
   if (href === pathname) return true;
-  // Section parents (e.g. /artisan/products) highlight for sub-paths too,
-  // but never steal from an exact sibling match.
   return pathname.startsWith(href + '/');
 }
 
 export default function PortalSidebar({
-  sections, portalHome, portalLabel, userName, backLabel = '← Storefront',
+  sections,
+  portalHome,
+  portalLabel,
+  userName,
+  backLabel = '← Storefront',
 }: {
   sections: NavSection[];
   portalHome: string;
@@ -34,20 +30,49 @@ export default function PortalSidebar({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const content = (
-    <>
-      <div className="flex items-center justify-between">
-        <Link href={portalHome} className="font-serif text-lg font-bold text-brand-900">
-          🧶 <span className="hidden min-[400px]:inline">Cultural Marketplace</span><span className="min-[400px]:hidden">CM</span>
-        </Link>
-        <button type="button" className="rounded-lg px-2 py-1 text-xl leading-none hover:bg-brand-50 md:hidden" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
-      </div>
-      <p className="mt-1 text-xs uppercase tracking-wider text-stone-400">{portalLabel}</p>
+  const roleTitle = portalLabel.toLowerCase().includes('admin')
+    ? 'Curator Administrator'
+    : portalLabel.toLowerCase().includes('artisan')
+    ? 'Master Artisan'
+    : 'Active Patron';
 
-      <nav className="mt-5 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pr-1 text-sm font-medium text-stone-600" aria-label={`${portalLabel} navigation`}>
+  const content = (
+    <div className="flex h-full max-h-full flex-col min-h-0 overflow-hidden">
+      {/* 1. Header (Fixed top) */}
+      <div className="shrink-0 flex items-center justify-between pb-3.5 border-b border-charcoal-800">
+        <Link href={portalHome} className="flex items-center gap-2.5 group">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-ochre-500 to-crimson-700 text-white shadow-2xs">
+            <span className="text-base">☀️</span>
+          </div>
+          <div>
+            <span className="block font-sculpted text-sm font-bold text-white group-hover:text-ochre-300 transition-colors leading-tight">
+              Cultural Marketplace
+            </span>
+            <span className="inline-block mt-0.5 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-ochre-500/20 text-ochre-300 border border-ochre-500/30">
+              {portalLabel}
+            </span>
+          </div>
+        </Link>
+        <button
+          type="button"
+          className="rounded-lg p-1.5 text-base text-stone-400 hover:text-white hover:bg-charcoal-800 md:hidden"
+          aria-label="Close menu"
+          onClick={() => setOpen(false)}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* 2. Navigation Sections (Scrollable middle container) */}
+      <nav
+        className="my-3 flex-1 min-h-0 overflow-y-auto pr-1 space-y-4 text-xs font-medium [scrollbar-width:thin] [scrollbar-color:#23272F_transparent]"
+        aria-label={`${portalLabel} navigation`}
+      >
         {sections.map((section) => (
           <div key={section.title}>
-            <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-stone-400">{section.title}</p>
+            <p className="px-2.5 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-ochre-400 font-sculpted">
+              {section.title}
+            </p>
             <div className="flex flex-col gap-0.5">
               {section.items.map((item) => {
                 const active = isActive(pathname, item.href);
@@ -57,10 +82,18 @@ export default function PortalSidebar({
                     href={item.href}
                     prefetch={true}
                     aria-current={active ? 'page' : undefined}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 transition ${active ? 'bg-brand-500 text-white shadow-sm' : 'hover:bg-brand-50 hover:text-brand-700'}`}
+                    className={`flex items-center gap-2.5 rounded-xl px-3 py-2 transition-all ${
+                      active
+                        ? 'bg-crimson-600 text-white font-semibold shadow-xs'
+                        : 'hover:bg-charcoal-800 hover:text-white text-stone-300 font-medium'
+                    }`}
                     onClick={() => setOpen(false)}
                   >
-                    {item.icon && <span aria-hidden className="w-5 text-center text-base leading-none">{item.icon}</span>}
+                    {item.icon && (
+                      <span aria-hidden className="w-4 text-center text-sm leading-none opacity-90">
+                        {item.icon}
+                      </span>
+                    )}
                     <span className="truncate">{item.label}</span>
                   </Link>
                 );
@@ -70,53 +103,73 @@ export default function PortalSidebar({
         ))}
       </nav>
 
-      <div className="mt-3 shrink-0 border-t border-stone-100 pt-3">
-        <Link href="/" prefetch={true} className="block rounded-lg px-3 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50">
-          🛍️ {backLabel}
+      {/* 3. Footer (Fixed bottom) */}
+      <div className="shrink-0 border-t border-charcoal-800 pt-3 space-y-2">
+        <Link
+          href="/"
+          prefetch={true}
+          className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold text-ochre-300 hover:bg-charcoal-800 hover:text-ochre-200 transition"
+        >
+          <span>🛍️</span>
+          <span>{backLabel}</span>
         </Link>
-        <p className="mt-1 px-3 text-xs text-stone-400">
-          Signed in as<br /><span className="font-semibold text-stone-600">{userName}</span>
-        </p>
-        <form action="/api/auth/logout" method="post" className="mt-2">
-          <button type="submit" className="w-full rounded-lg border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50">
+
+        <div className="rounded-xl bg-charcoal-900 p-2.5 border border-charcoal-800">
+          <p className="text-[10px] text-ochre-400/90 uppercase tracking-wider font-bold">
+            {roleTitle}
+          </p>
+          <p className="font-bold text-xs text-white truncate mt-0.5">{userName}</p>
+        </div>
+
+        <form action="/api/auth/logout" method="post">
+          <button
+            type="submit"
+            className="w-full rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-1.5 text-xs font-semibold text-red-300 transition hover:bg-red-900/40 hover:text-red-200"
+          >
             Log out
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 
   return (
     <>
-      {/* Mobile top bar: hamburger sits LEFT — directly above where the
-          desktop sidebar (and this drawer) appear, so the control lives
-          where the thing it opens lives (Gmail/Notion dashboard pattern). */}
-      <div className="sticky top-0 z-40 border-b border-brand-100 bg-white md:hidden">
-        <div className="flex h-14 items-center gap-2 px-3">
-          <button
-            type="button"
-            aria-label="Menu"
-            aria-expanded={open}
-            className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-brand-50"
-            onClick={() => setOpen((o) => !o)}
-          >
-            <span aria-hidden className="text-xl leading-none">{open ? '✕' : '☰'}</span>
-            <span>Menu</span>
-          </button>
-          <Link href={portalHome} className="min-w-0 truncate font-serif text-lg font-bold text-brand-900">🧶 {portalLabel}</Link>
+      {/* Mobile Top Bar */}
+      <div className="sticky top-0 z-40 border-b border-abaca-200/90 bg-white/95 backdrop-blur-md md:hidden">
+        <div className="flex h-14 items-center justify-between px-3">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Menu"
+              aria-expanded={open}
+              className="flex shrink-0 items-center gap-1 rounded-xl border border-abaca-300 bg-white px-2.5 py-1 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50"
+              onClick={() => setOpen((o) => !o)}
+            >
+              <span aria-hidden className="text-base leading-none">{open ? '✕' : '☰'}</span>
+              <span>Menu</span>
+            </button>
+            <Link href={portalHome} className="min-w-0 truncate font-sculpted text-sm font-bold text-charcoal-900">
+              ☀️ {portalLabel}
+            </Link>
+          </div>
+          <Link href="/" className="text-xs font-semibold text-crimson-700 hover:underline">
+            Storefront →
+          </Link>
         </div>
+
         {open && (
           <>
-            <div className="fixed inset-0 z-30 bg-black/20" onClick={() => setOpen(false)} />
-            <div className="fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-brand-100 bg-white p-4 shadow-xl md:hidden">
+            <div className="fixed inset-0 z-30 bg-charcoal-950/50 backdrop-blur-2xs" onClick={() => setOpen(false)} />
+            <div className="fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-charcoal-950 p-4 shadow-2xl md:hidden border-r border-charcoal-800 h-full max-h-screen overflow-hidden">
               {content}
             </div>
           </>
         )}
       </div>
 
-      {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-brand-100 bg-white p-4 md:sticky md:top-0 md:flex md:h-screen">
+      {/* Desktop Sidebar */}
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-charcoal-800 bg-charcoal-950 p-4 text-canvas md:sticky md:top-0 md:flex md:h-screen md:max-h-screen overflow-hidden shadow-lg">
         {content}
       </aside>
     </>

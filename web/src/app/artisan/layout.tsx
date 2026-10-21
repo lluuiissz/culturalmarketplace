@@ -4,44 +4,42 @@ import PortalSidebar, { type NavSection } from '@/components/PortalSidebar';
 
 export const dynamic = 'force-dynamic';
 
-// Artisan-only navigation — distinct from the public storefront header and
-// from the admin panel. Grouped by task so the purpose of each area is clear.
 const SECTIONS: NavSection[] = [
   {
     title: 'Overview',
     items: [
-      { href: '/artisan/dashboard', label: 'Dashboard', icon: '🏠' },
-      { href: '/artisan/analytics', label: 'My statistics', icon: '📈' },
+      { href: '/artisan/dashboard', label: 'Atelier Dashboard', icon: '🏠' },
+      { href: '/artisan/analytics', label: 'Studio Statistics', icon: '📈' },
     ],
   },
   {
-    title: 'Selling',
+    title: 'Heritage Crafting',
     items: [
-      { href: '/artisan/products', label: 'My products', icon: '📦' },
-      { href: '/artisan/products/new', label: 'Add a product', icon: '➕' },
-      { href: '/artisan/experiences', label: 'Workshops & experiences', icon: '🧺' },
+      { href: '/artisan/products', label: 'My Creations', icon: '📦' },
+      { href: '/artisan/products/new', label: 'Add New Craft', icon: '➕' },
+      { href: '/artisan/experiences', label: 'Workshops & Experiences', icon: '🧺' },
     ],
   },
   {
-    title: 'Orders & delivery',
+    title: 'Orders & Delivery',
     items: [
-      { href: '/artisan/orders', label: 'Orders', icon: '🧾' },
+      { href: '/artisan/orders', label: 'Patron Orders', icon: '🧾' },
       { href: '/artisan/shipments', label: 'Shipments (J&T)', icon: '🚚' },
-      { href: '/artisan/bookings', label: 'Workshop bookings', icon: '🎟️' },
+      { href: '/artisan/bookings', label: 'Workshop Bookings', icon: '🎟️' },
     ],
   },
   {
-    title: 'Customers',
+    title: 'Community',
     items: [
-      { href: '/artisan/messages', label: 'Messages', icon: '💬' },
-      { href: '/artisan/reviews', label: 'Reviews', icon: '⭐' },
+      { href: '/artisan/messages', label: 'Patron Messages', icon: '💬' },
+      { href: '/artisan/reviews', label: 'Patron Reviews', icon: '⭐' },
       { href: '/artisan/notifications', label: 'Notifications', icon: '🔔' },
     ],
   },
   {
-    title: 'Account',
+    title: 'Atelier Identity',
     items: [
-      { href: '/artisan/profile', label: 'My profile', icon: '👤' },
+      { href: '/artisan/profile', label: 'Master Profile', icon: '👤' },
     ],
   },
 ];
@@ -51,16 +49,15 @@ export default async function ArtisanLayout({ children }: { children: React.Reac
   if (!session || session.role !== 'artisan') redirect('/auth/login?next=/artisan/dashboard');
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex min-h-screen flex-col md:flex-row bg-canvas">
       <PortalSidebar
         sections={SECTIONS}
         portalHome="/artisan/dashboard"
-        portalLabel="Artisan portal"
+        portalLabel="Artisan Atelier"
         userName={session.name}
         backLabel="Browse the marketplace"
       />
-      {/* min-w-0 lets the content column shrink so wide tables scroll inside */}
-      <main className="min-w-0 flex-1 bg-brand-50/50 p-4 md:p-6">{children}</main>
+      <main className="min-w-0 flex-1 bg-canvas p-4 md:p-8">{children}</main>
     </div>
   );
 }

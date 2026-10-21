@@ -554,12 +554,22 @@ export default function ArtisanRegisterPage() {
 
   return (
     <main className="mx-auto max-w-xl px-4 py-10">
-      <h1 className="font-serif text-3xl font-bold text-brand-900">Become an artisan</h1>
-      <p className="mt-2 text-sm text-stone-600">Sell your crafts and workshops. Verification keeps the marketplace authentic.</p>
+      <div className="mb-2">
+        <Link href="/" className="text-xs font-semibold text-stone-500 hover:text-crimson-700">
+          ← Return to Storefront
+        </Link>
+      </div>
+
+      <h1 className="font-sculpted text-3xl font-bold text-charcoal-900">
+        Enroll as a Master Artisan
+      </h1>
+      <p className="mt-2 text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
+        Join the cultural custodians of Agusan del Sur. Showcase your living heritage, traditional weaves, and hands-on workshops with patrons worldwide.
+      </p>
 
       {/* Accidental Refresh Recovery Banner */}
       {draftRestored && (
-        <div className="mt-4 flex items-center justify-between rounded-xl bg-brand-50 p-3.5 border border-brand-200 text-xs text-brand-900">
+        <div className="mt-4 flex items-center justify-between rounded-2xl bg-ochre-50 p-3.5 border border-ochre-200 text-xs text-charcoal-900">
           <div className="flex items-center gap-2">
             <span>📋</span>
             <span><b>Draft restored:</b> Your previous progress and uploaded photos were recovered.</span>
@@ -567,7 +577,7 @@ export default function ArtisanRegisterPage() {
           <button
             type="button"
             onClick={clearDraft}
-            className="text-brand-700 underline font-medium hover:text-brand-900 ml-2 whitespace-nowrap"
+            className="text-ochre-800 underline font-semibold hover:text-crimson-700 ml-2 whitespace-nowrap"
           >
             Start fresh
           </button>
@@ -576,11 +586,17 @@ export default function ArtisanRegisterPage() {
 
       {/* Progress Steps */}
       <div className="mt-6 flex items-center gap-2 text-xs">
-        <span className={`badge ${step === 'details' ? 'bg-brand-600 text-white' : 'bg-brand-100 text-brand-700'}`}>1. Details & ID</span>
+        <span className={`badge ${step === 'details' ? 'bg-crimson-600 text-white font-bold' : 'bg-ochre-100 text-ochre-800'}`}>
+          1. Lineage & ID
+        </span>
         <span className="text-stone-300">→</span>
-        <span className={`badge ${step === 'verify' ? 'bg-brand-600 text-white' : 'bg-stone-100 text-stone-400'}`}>2. Face & Crafts</span>
+        <span className={`badge ${step === 'verify' ? 'bg-crimson-600 text-white font-bold' : 'bg-stone-100 text-stone-400'}`}>
+          2. Biometrics & Craft
+        </span>
         <span className="text-stone-300">→</span>
-        <span className={`badge ${step === 'done' ? 'bg-leaf-500 text-white' : 'bg-stone-100 text-stone-400'}`}>3. Submitted</span>
+        <span className={`badge ${step === 'done' ? 'bg-forest-600 text-white font-bold' : 'bg-stone-100 text-stone-400'}`}>
+          3. Curated Review
+        </span>
       </div>
 
       {step === 'details' && (

@@ -1,21 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --brand: #b4651e;
+  --brand: #9E2A2B;
+  --font-cinzel: 'Cinzel', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --weave-kalinga: url("data:image/svg+xml,%3Csvg width='24' height='12' viewBox='0 0 24 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 6 L6 0 L12 6 L18 0 L24 6 L18 12 L12 6 L6 12 Z' fill='%23C5832B' fill-opacity='0.3'/%3E%3C/svg%3E");
+  --weave-diamond: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='10,1 19,10 10,19 1,10' fill='none' stroke='%239E2A2B' stroke-width='1.5' stroke-opacity='0.35'/%3E%3Cpolygon points='10,5 15,10 10,15 5,10' fill='%23C5832B' fill-opacity='0.25'/%3E%3C/svg%3E");
+  --abaca-pattern: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h16v1H0zM16 16h16v1H16zM0 8h32v1H0zM0 24h32v1H0zM8 0v32h1V0zM24 0v32h1V0z' fill='%23B89972' fill-opacity='0.035'/%3E%3C/svg%3E");
 }
 
 body {
-  @apply bg-brand-50 text-stone-800 antialiased;
+  @apply bg-canvas text-charcoal-900 font-sans antialiased;
+  background-image: var(--abaca-pattern);
+  background-repeat: repeat;
 }
 
-.btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors;
+/* Woodcarving Sculpted Typography */
+.font-sculpted {
+  font-family: var(--font-cinzel), Georgia, serif;
+  letter-spacing: -0.015em;
 }
-.btn-primary { @apply btn bg-brand-500 text-white hover:bg-brand-600; }
-.btn-outline { @apply btn border border-brand-500 text-brand-700 hover:bg-brand-100; }
-.btn-danger { @apply btn bg-red-600 text-white hover:bg-red-700; }
-.card { @apply rounded-xl border border-brand-100 bg-white shadow-sm; }
-.input { @apply w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none; }
-.badge { @apply inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+
+/* Tactical Weave Section Dividers */
+.weave-divider {
+  height: 12px;
+  width: 100%;
+  background-image: var(--weave-kalinga);
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+.weave-divider-diamond {
+  height: 20px;
+  width: 100%;
+  background-image: var(--weave-diamond);
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+.weave-border-t {
+  border-top: 4px solid transparent;
+  border-image: var(--weave-kalinga) 4 repeat;
+}
+
+.weave-border-b {
+  border-bottom: 4px solid transparent;
+  border-image: var(--weave-kalinga) 4 repeat;
+}
+
+/* Tribal Buttons */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 active:scale-[0.98];
+}
+.btn-primary {
+  @apply btn bg-crimson-600 text-white shadow-sm hover:bg-crimson-700 hover:shadow;
+}
+.btn-secondary {
+  @apply btn bg-ochre-600 text-white shadow-sm hover:bg-ochre-700 hover:shadow;
+}
+.btn-outline {
+  @apply btn border border-ochre-600/70 text-charcoal-900 bg-white/70 hover:bg-ochre-50 hover:border-ochre-700;
+}
+.btn-dark {
+  @apply btn bg-charcoal-900 text-canvas hover:bg-charcoal-800 shadow-sm;
+}
+.btn-danger {
+  @apply btn bg-red-600 text-white hover:bg-red-700;
+}
+
+/* Card with subtle warm canvas background and abaca rim */
+.card {
+  @apply rounded-2xl border border-abaca-200/80 bg-white/95 p-6 shadow-[0_2px_12px_rgba(22,27,38,0.04)] backdrop-blur-sm;
+}
+
+.card-tactile {
+  @apply card border-ochre-500/30 bg-gradient-to-b from-white to-canvas/80;
+}
+
+/* Textured Inputs */
+.input {
+  @apply w-full rounded-xl border border-abaca-300 bg-white px-3.5 py-2.5 text-sm text-charcoal-900 placeholder:text-stone-400 transition-colors focus:border-ochre-600 focus:ring-1 focus:ring-ochre-600 focus:outline-none;
+}
+
+/* Heritage Badges */
+.badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide;
+}
+.badge-authentic {
+  @apply badge bg-ochre-50 text-ochre-700 border border-ochre-200;
+}
+.badge-workshop {
+  @apply badge bg-forest-50 text-forest-700 border border-forest-100;
+}
+.badge-crimson {
+  @apply badge bg-crimson-50 text-crimson-700 border border-crimson-100;
+}

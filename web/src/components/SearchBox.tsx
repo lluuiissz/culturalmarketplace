@@ -47,10 +47,9 @@ export default function SearchBox() {
       name="q"
       value={val}
       onChange={handleChange}
-      placeholder="Search crafts, e.g. woven basket…"
-      aria-label="Search crafts"
-      className="input w-full rounded-full"
-      style={{ paddingLeft: '2.25rem' }}
+      placeholder="Search traditional crafts…"
+      aria-label="Search traditional crafts"
+      className="w-full rounded-full border border-abaca-300 bg-white/95 text-xs sm:text-sm pl-9 pr-3 py-1.5 text-charcoal-900 placeholder:text-stone-400 focus:border-ochre-600 focus:outline-none focus:ring-1 focus:ring-ochre-600 shadow-2xs"
     />
   );
 }
