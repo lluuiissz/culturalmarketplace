@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface NavSection {
   title: string;
@@ -29,6 +30,22 @@ export default function PortalSidebar({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   const roleTitle = portalLabel.toLowerCase().includes('admin')
     ? 'Curator Administrator'
@@ -159,13 +176,14 @@ export default function PortalSidebar({
           </Link>
         </div>
 
-        {open && (
-          <>
-            <div className="fixed inset-0 z-30 bg-charcoal-950/50 backdrop-blur-2xs" onClick={() => setOpen(false)} />
-            <div className="fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-charcoal-950 p-4 shadow-2xl md:hidden border-r border-charcoal-800 h-full max-h-screen overflow-hidden">
+        {open && mounted && createPortal(
+          <div className="fixed inset-0 z-[100] flex justify-start md:hidden">
+            <div className="fixed inset-0 bg-charcoal-950/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
+            <div className="relative z-50 flex h-full w-72 sm:w-80 flex-col bg-charcoal-950 p-4 shadow-2xl border-r border-charcoal-800 overflow-hidden animate-in slide-in-from-left duration-200">
               {content}
             </div>
-          </>
+          </div>,
+          document.body
         )}
       </div>
 

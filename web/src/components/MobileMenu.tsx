@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface NavLink { href: string; label: string }
 
@@ -9,33 +10,38 @@ export default function MobileMenu({
   links, loggedIn, name, avatar,
 }: { links: NavLink[]; loggedIn: boolean; name?: string | null; avatar?: string | null }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="md:hidden">
-      <button
-        aria-label="Toggle navigation menu"
-        aria-expanded={open}
-        className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-xl border border-abaca-300 bg-white/90 px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100 transition"
-        onClick={() => setOpen((o) => !o)}
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const drawerContent = (
+    <div className="fixed inset-0 z-[100] flex justify-start">
+      {/* Backdrop overlay */}
+      <div
+        className="fixed inset-0 bg-charcoal-950/60 backdrop-blur-sm transition-opacity"
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Drawer container: slides out from the left */}
+      <nav
+        className="relative z-50 flex h-full w-72 sm:w-80 flex-col justify-between bg-white p-5 shadow-2xl border-r border-abaca-200 overflow-y-auto animate-in slide-in-from-left duration-200"
+        aria-label="Mobile navigation menu"
       >
-        <span aria-hidden className="text-base leading-none">{open ? '✕' : '☰'}</span>
-        <span>Menu</span>
-      </button>
-
-      {open && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          {/* Backdrop overlay */}
-          <div
-            className="fixed inset-0 bg-charcoal-950/60 backdrop-blur-sm transition-opacity"
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
-
-          {/* Drawer container */}
-          <nav
-            className="relative z-50 flex h-full w-72 sm:w-80 flex-col justify-between bg-white p-5 shadow-2xl border-l border-abaca-200 overflow-y-auto"
-            aria-label="Mobile navigation menu"
-          >
             <div>
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-3 border-b border-abaca-200">
@@ -135,7 +141,22 @@ export default function MobileMenu({
             </div>
           </nav>
         </div>
-      )}
+      );
+
+  return (
+    <div className="md:hidden">
+      <button
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-expanded={open}
+        className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-xl border border-abaca-300 bg-white/95 px-2.5 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100 transition shrink-0"
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span aria-hidden className="text-base leading-none font-bold">{open ? '✕' : '☰'}</span>
+        <span className="hidden xs:inline">Menu</span>
+      </button>
+
+      {open && mounted && createPortal(drawerContent, document.body)}
     </div>
   );
 }
