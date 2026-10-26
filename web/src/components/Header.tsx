@@ -89,12 +89,12 @@ export default async function Header() {
             ))}
           </nav>
 
-          {session?.role === 'customer' && (
+          {(session?.role === 'customer' || !session) && (
             <Link
               href="/cart"
               prefetch={false}
               className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-xl border border-abaca-200 bg-canvas/80 px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-medium text-charcoal-900 transition hover:bg-ochre-50 hover:border-ochre-400"
-              aria-label={`Artisan Basket, ${count} item${count === 1 ? '' : 's'}`}
+              aria-label={`Artisan Basket${count > 0 ? `, ${count} items` : ''}`}
             >
               <span aria-hidden className="text-base leading-none">🧺</span>
               <span className="hidden sm:inline font-semibold">Basket</span>
@@ -135,17 +135,18 @@ export default async function Header() {
                 </span>
               </Link>
               <form action="/api/auth/logout" method="post" className="hidden md:block">
-                <button className="rounded-xl border border-abaca-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-600 transition hover:border-red-300 hover:text-red-700" type="submit">
+                <button className="min-h-[44px] rounded-xl border border-abaca-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-600 transition hover:border-red-300 hover:text-red-700" type="submit">
                   Log out
                 </button>
               </form>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Link href="/auth/login" className="btn-outline min-h-[40px] flex items-center py-1.5 px-3 text-xs font-semibold">
+            /* Desktop only: Sign in & Join Gathering are in Row 1 on desktop (hidden on mobile to prevent overlap) */
+            <div className="hidden md:flex items-center gap-2">
+              <Link href="/auth/login" className="btn-outline min-h-[38px] flex items-center py-1.5 px-3.5 text-xs font-semibold">
                 Sign in
               </Link>
-              <Link href="/auth/register" className="btn-primary min-h-[40px] hidden sm:inline-flex items-center py-1.5 px-3.5 text-xs font-semibold">
+              <Link href="/auth/register" className="btn-primary min-h-[38px] flex items-center py-1.5 px-3.5 text-xs font-bold">
                 Join Gathering
               </Link>
             </div>
@@ -153,9 +154,27 @@ export default async function Header() {
         </div>
       </div>
 
-      {/* Mobile search row */}
-      <div className="border-t border-abaca-200/60 bg-canvas/60 px-4 pb-3 pt-2 md:hidden">
+      {/* Row 2 (Mobile only): Search bar + Guest Action Buttons */}
+      <div className="border-t border-abaca-200/60 bg-canvas/60 px-3.5 pb-3 pt-2 md:hidden space-y-2">
         {searchForm}
+
+        {/* If guest (not signed in), place Sign In and Join Gathering clearly below search without any overlap */}
+        {!session && (
+          <div className="flex items-center gap-2 pt-0.5">
+            <Link
+              href="/auth/login"
+              className="flex-1 min-h-[40px] flex items-center justify-center rounded-xl border border-abaca-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100 transition"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/auth/register"
+              className="flex-1 min-h-[40px] flex items-center justify-center rounded-xl bg-crimson-600 px-3 py-2 text-xs font-bold text-white shadow-xs hover:bg-crimson-700 active:bg-crimson-800 transition"
+            >
+              Join Gathering
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Bottom subtle geometric accent */}
