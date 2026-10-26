@@ -154,13 +154,11 @@ export default async function Header() {
         </div>
       </div>
 
-      {/* Row 2 (Mobile only): Search bar + Guest Action Buttons */}
-      <div className="border-t border-abaca-200/60 bg-canvas/60 px-3.5 pb-3 pt-2 md:hidden space-y-2">
-        {searchForm}
-
-        {/* If guest (not signed in), place Sign In and Join Gathering clearly below search without any overlap */}
+      {/* Mobile only: Guest Action Buttons (above search bar) + Search Bar */}
+      <div className="border-t border-abaca-200/60 bg-canvas/60 px-3.5 pb-2.5 pt-2 md:hidden space-y-2">
+        {/* If guest (not signed in), place Sign In and Join Gathering clearly above the search bar */}
         {!session && (
-          <div className="flex items-center gap-2 pt-0.5">
+          <div className="flex items-center gap-2 pb-0.5">
             <Link
               href="/auth/login"
               className="flex-1 min-h-[40px] flex items-center justify-center rounded-xl border border-abaca-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100 transition"
@@ -175,6 +173,8 @@ export default async function Header() {
             </Link>
           </div>
         )}
+
+        {searchForm}
       </div>
 
       {/* Bottom subtle geometric accent */}
