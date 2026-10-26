@@ -22,7 +22,12 @@ export default async function Header() {
     { href: '/', label: 'Home' },
     { href: '/customer/browse', label: 'Discover Crafts' },
     { href: '/artisans', label: 'Master Artisans' },
-    ...(session?.role === 'customer' ? [{ href: '/customer/account/dashboard', label: 'My Account' }] : []),
+    ...(session?.role === 'customer'
+      ? [
+          { href: '/cart', label: count > 0 ? `🧺 Artisan Basket (${count})` : '🧺 Artisan Basket' },
+          { href: '/customer/account/dashboard', label: 'Patron Account' },
+        ]
+      : []),
     ...(session?.role === 'artisan' ? [{ href: '/artisan/dashboard', label: 'Artisan Atelier' }] : []),
     ...(session?.role === 'admin' ? [{ href: '/admin/dashboard', label: 'Curator Admin' }] : []),
   ];
@@ -89,7 +94,7 @@ export default async function Header() {
             ))}
           </nav>
 
-          {(session?.role === 'customer' || !session) && (
+          {session?.role === 'customer' && (
             <Link
               href="/cart"
               prefetch={false}
