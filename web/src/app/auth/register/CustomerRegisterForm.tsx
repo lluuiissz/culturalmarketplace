@@ -15,13 +15,13 @@ function mark(v: string, ok: boolean): FieldState {
 
 const RING: Record<FieldState, string> = {
   empty: '',
-  valid: 'border-leaf-500 focus:border-leaf-500 focus:ring-leaf-500',
-  invalid: 'border-red-400 focus:border-red-500 focus:ring-red-500',
+  valid: 'border-ochre-500 focus:border-ochre-500 focus:ring-ochre-500',
+  invalid: 'border-crimson-400 focus:border-crimson-500 focus:ring-crimson-500',
 };
 const HINT: Record<FieldState, string> = {
   empty: 'text-stone-500',
-  valid: 'text-leaf-700',
-  invalid: 'text-red-600',
+  valid: 'text-ochre-800 font-semibold',
+  invalid: 'text-crimson-600 font-medium',
 };
 const ICON: Record<FieldState, string> = { empty: '', valid: ' ✓', invalid: ' ✕' };
 
@@ -117,18 +117,18 @@ export default function CustomerRegisterForm() {
       <form onSubmit={verifyOtp} className="mt-6 space-y-4">
         {/* Honest status: email sent vs. code shown — no jargon, no false promises */}
         {otpDelivered && !devOtp && (
-          <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+          <p className="rounded-lg bg-ochre-50 border border-ochre-200 px-3 py-2 text-sm text-charcoal-900 font-medium">
             📧 We emailed a 6-digit code to <b>{form.email}</b>. It may take a minute to arrive.
           </p>
         )}
         {devOtp && (
-          <div className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <div className="rounded-lg bg-ochre-50 border border-ochre-300 px-3 py-2 text-sm text-ochre-900">
             Email delivery isn&apos;t available right now, so here is your code directly:
             <b className="ml-1 text-base tracking-widest">{devOtp}</b>
           </div>
         )}
         {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-        {info && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{info}</p>}
+        {info && <p className="rounded-lg bg-ochre-50 border border-ochre-200 px-3 py-2 text-sm text-ochre-900 font-medium">{info}</p>}
         <div>
           <label className="mb-1 block text-sm font-medium text-stone-700">6-digit code</label>
           <input

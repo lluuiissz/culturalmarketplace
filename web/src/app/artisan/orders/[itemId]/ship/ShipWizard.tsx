@@ -111,11 +111,11 @@ export default function ShipWizard({ orderItemId, item, shippingAddress, custome
       <ol className="flex items-center gap-2">
         {STEPS.map((label, i) => (
           <li key={label} className="flex flex-1 items-center gap-2">
-            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${i < step ? 'bg-leaf-500 text-white' : i === step ? 'bg-brand-600 text-white' : 'bg-stone-200 text-stone-500'}`}>
+            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${i < step ? 'bg-ochre-500 text-charcoal-950' : i === step ? 'bg-crimson-600 text-white' : 'bg-stone-200 text-stone-500'}`}>
               {i < step ? '✓' : i + 1}
             </span>
-            <span className={`hidden text-sm sm:block ${i === step ? 'font-semibold text-brand-700' : 'text-stone-400'}`}>{label}</span>
-            {i < 3 && <span className={`h-0.5 flex-1 ${i < step ? 'bg-leaf-500' : 'bg-stone-200'}`} />}
+            <span className={`hidden text-sm sm:block ${i === step ? 'font-semibold text-crimson-700' : 'text-stone-400'}`}>{label}</span>
+            {i < 3 && <span className={`h-0.5 flex-1 ${i < step ? 'bg-ochre-400' : 'bg-stone-200'}`} />}
           </li>
         ))}
       </ol>

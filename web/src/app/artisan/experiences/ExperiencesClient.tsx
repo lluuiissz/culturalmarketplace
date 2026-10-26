@@ -87,7 +87,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                     {r.name}
                   </h2>
                   {isFree ? (
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800 border border-emerald-300">
+                    <span className="rounded-full bg-ochre-100 px-2.5 py-0.5 text-xs font-bold text-ochre-900 border border-ochre-300">
                       ✨ FREE Workshop
                     </span>
                   ) : (
@@ -112,8 +112,8 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                       <span
                         className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
                           isFull
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-leaf-100 text-leaf-800'
+                            ? 'bg-crimson-100 text-crimson-800 border border-crimson-200'
+                            : 'bg-ochre-100 text-ochre-900 border border-ochre-300'
                         }`}
                       >
                         {isFull ? 'Sold Out' : `${seatsLeft} seats left`}
@@ -292,8 +292,8 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
               <div>
                 {statusMsg?.message && (
                   <p
-                    className={`text-xs font-medium ${
-                      statusMsg.type === 'success' ? 'text-leaf-700' : 'text-red-600'
+                    className={`text-xs font-semibold ${
+                      statusMsg.type === 'success' ? 'text-ochre-800' : 'text-crimson-600'
                     }`}
                   >
                     {statusMsg.message}

@@ -63,12 +63,12 @@ function TrackingCard({ tracking, courier, status }: { tracking: string; courier
             <li key={s} className="flex flex-1 items-center last:flex-none">
               <span
                 className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                  i <= idx ? 'bg-leaf-500 text-white' : 'bg-stone-200 text-stone-400'
+                  i <= idx ? 'bg-crimson-600 text-white' : 'bg-stone-200 text-stone-400'
                 }`}
               >
                 {i <= idx ? '✓' : i + 1}
               </span>
-              {i < 3 && <span className={`h-0.5 flex-1 ${i < idx ? 'bg-leaf-500' : 'bg-stone-200'}`} />}
+              {i < 3 && <span className={`h-0.5 flex-1 ${i < idx ? 'bg-crimson-600' : 'bg-stone-200'}`} />}
             </li>
           ))}
         </ol>
@@ -189,7 +189,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
         <div
           className={`rounded-xl p-4 text-sm font-medium ${
             msg.type === 'success'
-              ? 'bg-leaf-50 text-leaf-800 border border-leaf-300'
+              ? 'bg-ochre-50 text-charcoal-900 border border-ochre-300'
               : 'bg-red-50 text-red-800 border border-red-300'
           }`}
         >
@@ -216,7 +216,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                 <div className="flex items-center gap-2">
                   <p className="font-bold text-stone-900 text-base">Order #{r.id}</p>
                   {hasWorkshop && (
-                    <span className="badge bg-leaf-100 text-leaf-800 text-[10px] font-bold">
+                    <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
                       🌿 Cultural Workshop
                     </span>
                   )}
@@ -231,9 +231,9 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                 <span
                   className={`badge uppercase font-bold text-[10px] tracking-wider px-2.5 py-1 ${
                     r.status === 'received' || r.status === 'completed'
-                      ? 'bg-leaf-100 text-leaf-800'
+                      ? 'bg-charcoal-900 text-ochre-300'
                       : r.status === 'shipped'
-                      ? 'bg-sky-100 text-sky-800'
+                      ? 'bg-ochre-100 text-ochre-800 border border-ochre-300'
                       : r.status === 'cancelled'
                       ? 'bg-red-100 text-red-700'
                       : 'bg-amber-100 text-amber-800'
@@ -305,8 +305,8 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
 
                         {/* Scheduled Workshop Session Info */}
                         {i.selected_session && (
-                          <div className="rounded-lg bg-leaf-50/70 p-2.5 text-xs text-stone-700 border border-leaf-200 space-y-1">
-                            <p className="font-semibold text-leaf-900 flex items-center gap-1">
+                          <div className="rounded-lg bg-ochre-50/70 p-2.5 text-xs text-charcoal-900 border border-ochre-200 space-y-1">
+                            <p className="font-semibold text-charcoal-900 flex items-center gap-1">
                               <span>📅 Scheduled Session:</span>
                               <span>{i.selected_session.date} ({i.selected_session.time_start}–{i.selected_session.time_end})</span>
                             </p>

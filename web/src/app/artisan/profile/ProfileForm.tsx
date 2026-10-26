@@ -158,7 +158,7 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
               <span>{uploadingPhoto ? 'Processing…' : currentDisplayPhoto ? 'Change Artisan Photo' : 'Upload Artisan Photo'}</span>
             </button>
             {photoPreview && (
-              <span className="text-[11px] text-forest-700 font-semibold flex items-center gap-1">
+              <span className="text-[11px] text-ochre-800 font-semibold flex items-center gap-1">
                 <span>✓</span> Portrait updated
               </span>
             )}
@@ -275,7 +275,7 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
               className={`text-xs font-semibold rounded-lg px-3 py-1.5 ${
                 msg.error
                   ? 'bg-red-50 text-crimson-700 border border-red-200'
-                  : 'bg-forest-50 text-forest-700 border border-forest-200'
+                  : 'bg-ochre-50 text-charcoal-900 border border-ochre-300'
               }`}
             >
               {msg.text}

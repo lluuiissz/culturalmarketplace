@@ -48,11 +48,11 @@ export default function ArtisanOrdersClient({ initial }: { initial: Row[] }) {
             <p className="font-semibold text-stone-800">{r.product_name} × {r.quantity}{r.variant ? ` (${r.variant})` : ''}</p>
             <p className="text-sm text-stone-500">Order #{r.order_id} · {r.customer} · {r.payment === 'gcash' ? 'GCash' : 'COD'}</p>
             {r.attendee_name && (
-              <div className="text-xs text-leaf-800 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+              <div className="text-xs text-charcoal-800 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
                 <span>👤 Attendee:</span>
                 <span className="font-semibold text-stone-800">{r.attendee_name}</span>
                 {r.attendee_for === 'others' && (
-                  <span className="rounded-full bg-amber-50 border border-amber-200 px-1.5 py-0.2 text-[10px] font-semibold text-amber-800">
+                  <span className="rounded-full bg-ochre-100 border border-ochre-300 px-1.5 py-0.2 text-[10px] font-semibold text-ochre-900">
                     Guest / Group
                   </span>
                 )}

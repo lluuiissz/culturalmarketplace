@@ -44,10 +44,10 @@ export default async function CustomerDashboard() {
         </div>
 
         {nextBooking && (
-          <div className="card mt-6 p-5 border-2 border-leaf-600/30 bg-gradient-to-r from-leaf-500/10 via-white to-brand-50 flex flex-wrap items-center justify-between gap-4 shadow-xs">
+          <div className="card mt-6 p-5 border-2 border-ochre-400/50 bg-gradient-to-r from-ochre-50/80 via-white to-brand-50/40 flex flex-wrap items-center justify-between gap-4 shadow-xs">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="badge bg-leaf-700 text-white text-xs font-bold">🌿 Upcoming Workshop</span>
+                <span className="badge bg-ochre-500 text-charcoal-950 border border-ochre-600 text-xs font-bold">✨ Upcoming Workshop</span>
                 {nextBooking.ticket_code && (
                   <span className="font-mono text-xs font-bold text-brand-800">🎟️ {nextBooking.ticket_code}</span>
                 )}

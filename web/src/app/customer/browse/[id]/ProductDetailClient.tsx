@@ -247,7 +247,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
             <label className="text-xs font-bold uppercase tracking-wider text-charcoal-700">
               Select Experience Option:
             </label>
-            <span className="text-[11px] font-semibold text-forest-700">
+            <span className="text-[11px] font-semibold text-ochre-800">
               🌿 Live Workshop Available
             </span>
           </div>
@@ -278,15 +278,15 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               onClick={() => setMode('workshop')}
               className={`flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl font-semibold transition text-center relative ${
                 mode === 'workshop'
-                  ? 'bg-white text-forest-900 shadow-sm border border-forest-500 ring-2 ring-forest-500/25'
-                  : 'text-charcoal-600 hover:text-forest-900 hover:bg-white/60'
+                  ? 'bg-white text-charcoal-900 shadow-sm border border-ochre-500 ring-2 ring-ochre-500/25'
+                  : 'text-charcoal-600 hover:text-charcoal-900 hover:bg-white/60'
               }`}
             >
               <div className="flex items-center gap-1.5 font-bold">
                 <span>🌿</span>
                 <span>Live Workshop</span>
               </div>
-              <span className="text-[11px] font-bold text-forest-700">
+              <span className="text-[11px] font-bold text-ochre-800">
                 {product.tutorial_fee_type === 'free' ? 'FREE PASS' : `₱${workshopPrice.toFixed(2)}`}
               </span>
             </button>
@@ -413,12 +413,12 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
 
       {/* PANEL 2: Book Cultural Experience Mode (Visible workshop booking with prominent button) */}
       {mode === 'workshop' && product.has_tutorial && (
-        <div className="space-y-5 rounded-2xl border-2 border-forest-300 bg-forest-50/25 p-5 shadow-xs">
-          <div className="flex items-center justify-between border-b border-forest-200 pb-3">
+        <div className="space-y-5 rounded-2xl border-2 border-ochre-400 bg-ochre-50/25 p-5 shadow-xs">
+          <div className="flex items-center justify-between border-b border-ochre-200 pb-3">
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl">🌿</span>
-                <p className="text-sm font-bold text-forest-900 font-sculpted">
+                <p className="text-sm font-bold text-charcoal-900 font-sculpted">
                   {product.tutorial_title || 'Living Cultural Workshop Session'}
                 </p>
               </div>
@@ -426,7 +426,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
                 Hands-on masterclass in Agusan del Sur with Master Custodian
               </p>
             </div>
-            <span className="badge bg-forest-700 text-white font-bold py-1 px-2.5 text-xs">
+            <span className="badge bg-charcoal-900 text-ochre-300 border border-ochre-500 font-bold py-1 px-2.5 text-xs">
               {product.tutorial_fee_type === 'free' ? 'FREE PASS' : `₱${workshopPrice.toFixed(2)} / attendee`}
             </span>
           </div>
@@ -443,14 +443,14 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
                     key={i}
                     className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer text-xs transition ${
                       session === i
-                        ? 'border-forest-600 bg-white ring-2 ring-forest-500/20 shadow-xs'
+                        ? 'border-ochre-500 bg-white ring-2 ring-ochre-500/20 shadow-xs'
                         : 'border-abaca-200 bg-white/70 hover:bg-white'
                     }`}
                   >
                     <input
                       type="radio"
                       name="session"
-                      className="mt-1 accent-forest-700"
+                      className="mt-1 accent-crimson-600"
                       checked={session === i}
                       onChange={() => setSession(i)}
                     />
@@ -460,7 +460,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
                       {d.location && <p className="text-stone-500 text-[11px] mt-0.5 truncate">📍 {d.location}</p>}
                     </div>
                     {session === i && (
-                      <span className="text-[10px] font-bold text-forest-700 bg-forest-50 px-2 py-0.5 rounded border border-forest-200">
+                      <span className="text-[10px] font-bold text-ochre-900 bg-ochre-100 px-2 py-0.5 rounded border border-ochre-300">
                         Selected
                       </span>
                     )}
@@ -493,14 +493,14 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               <label
                 className={`flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer transition ${
                   attendeeFor === 'self'
-                    ? 'border-forest-600 bg-forest-50/70 font-bold text-forest-900 ring-1 ring-forest-500'
+                    ? 'border-crimson-600 bg-crimson-50/80 font-bold text-crimson-900 ring-1 ring-crimson-500'
                     : 'border-abaca-200 text-charcoal-700 hover:bg-stone-50'
                 }`}
               >
                 <input
                   type="radio"
                   name="attendee_for"
-                  className="accent-forest-700"
+                  className="accent-crimson-600"
                   checked={attendeeFor === 'self'}
                   onChange={() => setAttendeeFor('self')}
                 />
@@ -510,14 +510,14 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               <label
                 className={`flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer transition ${
                   attendeeFor === 'others'
-                    ? 'border-forest-600 bg-forest-50/70 font-bold text-forest-900 ring-1 ring-forest-500'
+                    ? 'border-crimson-600 bg-crimson-50/80 font-bold text-crimson-900 ring-1 ring-crimson-500'
                     : 'border-abaca-200 text-charcoal-700 hover:bg-stone-50'
                 }`}
               >
                 <input
                   type="radio"
                   name="attendee_for"
-                  className="accent-forest-700"
+                  className="accent-crimson-600"
                   checked={attendeeFor === 'others'}
                   onChange={() => setAttendeeFor('others')}
                 />
@@ -553,7 +553,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               type="button"
-              className="btn bg-forest-700 hover:bg-forest-800 text-white flex-1 py-3.5 text-xs font-bold uppercase tracking-wider shadow-md rounded-xl transition flex items-center justify-center gap-2"
+              className="btn bg-crimson-600 hover:bg-crimson-700 text-white flex-1 py-3.5 text-xs font-bold uppercase tracking-wider shadow-md rounded-xl transition flex items-center justify-center gap-2"
               disabled={busy}
               onClick={() => addToCart('workshop')}
             >

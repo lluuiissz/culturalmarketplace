@@ -8,7 +8,7 @@ export default async function AdminBookingsPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-serif text-2xl font-bold text-brand-900">Bookings</h1>
+        <h1 className="font-sculpted text-2xl font-bold text-charcoal-900">Bookings</h1>
         <a className="btn-outline" href="/api/admin/bookings/export" download>⬇ Export CSV</a>
       </div>
       <BookingsClient

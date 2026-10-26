@@ -23,7 +23,7 @@ export default async function ArtisanDashboard() {
             <h1 className="font-serif text-3xl font-bold text-brand-900">Artisan portal</h1>
             <p className="mt-1 text-stone-500">
               {profile?.business_name ?? profile?.name ?? session.name}
-              {profile?.verification_status === 'approved' && <span className="badge ml-2 bg-leaf-500/10 text-leaf-700">✔ Verified</span>}
+              {profile?.verification_status === 'approved' && <span className="badge ml-2 bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold">✔ Verified</span>}
             </p>
           </div>
           <Link className="btn-primary" href="/artisan/products/new">+ Add product</Link>

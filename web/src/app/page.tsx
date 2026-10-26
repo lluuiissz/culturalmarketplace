@@ -107,10 +107,10 @@ export default async function HomePage() {
 
         {/* Living Cultural Workshops Spotlight */}
         {workshopCrafts.length > 0 && (
-          <section className="mb-16 rounded-3xl border border-forest-100 bg-gradient-to-br from-forest-50/70 via-white to-canvas p-6 sm:p-10 shadow-xs relative overflow-hidden">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-forest-100/70 pb-6">
+          <section className="mb-16 rounded-3xl border border-ochre-300 bg-gradient-to-br from-ochre-50/50 via-white to-canvas p-6 sm:p-10 shadow-xs relative overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-ochre-200/80 pb-6">
               <div>
-                <span className="badge bg-forest-700 text-white font-bold text-xs py-1 px-3">
+                <span className="badge bg-charcoal-900 text-ochre-300 border border-ochre-500 font-bold text-xs py-1 px-3">
                   🌿 Living Cultural Workshops
                 </span>
                 <h2 className="mt-2 font-sculpted text-2xl sm:text-3xl font-bold text-charcoal-900">
@@ -120,16 +120,16 @@ export default async function HomePage() {
                   Participate in live hands-on tutorials. Weave, carve, and preserve ancestral skills guided step-by-step by master artisans.
                 </p>
               </div>
-              <Link href="/customer/browse" className="btn bg-forest-700 text-white hover:bg-forest-600 font-semibold text-xs px-5 py-2.5 shrink-0">
+              <Link href="/customer/browse" className="btn bg-crimson-600 text-white hover:bg-crimson-700 font-semibold text-xs px-5 py-2.5 shrink-0 shadow-xs">
                 Explore All Workshops →
               </Link>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
               {workshopCrafts.map((w) => (
-                <div key={w.id} className="rounded-2xl border border-abaca-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
+                <div key={w.id} className="rounded-2xl border border-abaca-200 bg-white p-5 shadow-2xs flex flex-col justify-between hover:border-ochre-400 transition">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-forest-700">Hands-on Experience</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-ochre-800">Hands-on Experience</span>
                     <h3 className="font-sculpted text-base font-bold text-charcoal-900 mt-1 line-clamp-1">{w.tutorial_title || w.name}</h3>
                     <p className="text-xs text-stone-500 mt-1 line-clamp-2">{w.tutorial_description || w.description}</p>
                     {w.tutorial_location && (
@@ -137,7 +137,7 @@ export default async function HomePage() {
                     )}
                   </div>
                   <div className="mt-4 pt-3 border-t border-abaca-100 flex items-center justify-between">
-                    <span className="text-xs font-bold text-forest-700">
+                    <span className="text-xs font-bold text-charcoal-900 font-mono">
                       {w.tutorial_fee_type === 'free' ? 'FREE Workshop' : `₱${Number(w.tutorial_price ?? w.price).toFixed(2)} / attendee`}
                     </span>
                     <Link href={`/customer/browse/${w.id}`} className="text-xs font-semibold text-crimson-700 hover:underline">

@@ -42,7 +42,7 @@ export default function AttendeesClient({ initial }: { initial: Row[] }) {
             <p className="text-sm text-stone-500">booked by {r.customer}{r.ticket ? ` · 🎟 ${r.ticket}` : ''}</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`badge capitalize ${r.status === 'attended' ? 'bg-leaf-500/10 text-leaf-700' : r.status === 'no_show' ? 'bg-red-100 text-red-700' : 'bg-stone-100 text-stone-600'}`}>
+            <span className={`badge capitalize ${r.status === 'attended' ? 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold' : r.status === 'no_show' ? 'bg-crimson-100 text-crimson-800 border border-crimson-200' : 'bg-stone-100 text-stone-600'}`}>
               {r.status.replace(/_/g, ' ')}
             </span>
             <button className="btn-outline px-3 py-1 text-xs" disabled={busy} onClick={() => mark(r.order_item_id, true)}>Present</button>

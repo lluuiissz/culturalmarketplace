@@ -66,7 +66,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   </span>
                 )}
                 {product.has_tutorial && (
-                  <span className="badge bg-forest-50 text-forest-700 border border-forest-200 text-[11px] font-semibold">
+                  <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[11px] font-semibold">
                     🌿 Workshop Included
                   </span>
                 )}
@@ -131,7 +131,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
               {/* NFC Verification Seal */}
               {product.nfc_tag_id && (
-                <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-forest-700 bg-forest-50 border border-forest-200/80 rounded-xl px-3 py-2">
+                <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-charcoal-900 bg-ochre-50 border border-ochre-300 rounded-xl px-3 py-2">
                   <span>✔</span>
                   <span>Sacred Seal of Authenticity: NFC Verified Genuine Artisan Work</span>
                 </div>
@@ -140,12 +140,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
             {/* Cultural Workshop Experience Module */}
             {product.has_tutorial && (
-              <section className="rounded-2xl border-2 border-forest-200 bg-gradient-to-br from-forest-50/50 via-white to-canvas p-5 shadow-xs space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-forest-100 pb-3">
+              <section className="rounded-2xl border-2 border-ochre-300 bg-gradient-to-br from-ochre-50/40 via-white to-canvas p-5 shadow-xs space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ochre-200/80 pb-3">
                   <div className="flex items-center gap-2.5">
                     <span className="text-2xl">🌿</span>
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-forest-700 block">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-ochre-800 block">
                         Living Cultural Experience
                       </span>
                       <h2 className="font-sculpted text-lg font-bold text-charcoal-900 leading-tight">
@@ -155,17 +155,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   </div>
                   <div className="flex items-center gap-2">
                     {product.tutorial_fee_type === 'free' ? (
-                      <span className="badge bg-forest-700 text-white font-bold text-xs py-1 px-2.5">
+                      <span className="badge bg-charcoal-900 text-ochre-300 border border-ochre-500 font-bold text-xs py-1 px-2.5">
                         FREE PASS
                       </span>
                     ) : product.tutorial_price != null ? (
-                      <span className="font-bold text-forest-800 bg-white px-2.5 py-1 rounded-lg text-xs border border-forest-200 shadow-2xs">
+                      <span className="font-bold text-charcoal-900 bg-white px-2.5 py-1 rounded-lg text-xs border border-ochre-300 shadow-2xs font-mono">
                         ₱{Number(product.tutorial_price).toFixed(2)} / person
                       </span>
                     ) : null}
                     <a
                       href="#workshop-booking"
-                      className="btn bg-forest-700 hover:bg-forest-800 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition inline-flex items-center gap-1.5"
+                      className="btn bg-crimson-600 hover:bg-crimson-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition inline-flex items-center gap-1.5"
                     >
                       <span>🌿</span>
                       <span>Book Workshop</span>
@@ -200,7 +200,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                           </div>
                           <a
                             href={`#session-${i}`}
-                            className="rounded-lg border border-forest-300 bg-forest-50 px-2.5 py-1.5 text-[11px] font-bold text-forest-800 hover:bg-forest-700 hover:text-white transition shrink-0 shadow-2xs whitespace-nowrap"
+                            className="rounded-lg border border-ochre-400 bg-ochre-50 px-2.5 py-1.5 text-[11px] font-bold text-ochre-900 hover:bg-ochre-600 hover:text-white transition shrink-0 shadow-2xs whitespace-nowrap"
                           >
                             Book Date →
                           </a>
@@ -221,14 +221,14 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Direct Booking CTA Banner */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-forest-100">
-                  <div className="text-xs text-forest-900">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-ochre-200">
+                  <div className="text-xs text-charcoal-900">
                     <span className="font-bold block">Reserve your hands-on masterclass seat</span>
                     <span className="text-[11px] text-stone-500">Live instruction by master custodian in Agusan del Sur</span>
                   </div>
                   <a
                     href="#workshop-booking"
-                    className="btn bg-forest-700 hover:bg-forest-800 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-xs transition inline-flex items-center gap-1.5"
+                    className="btn bg-crimson-600 hover:bg-crimson-700 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-xs transition inline-flex items-center gap-1.5"
                   >
                     <span>🌿</span>
                     <span>Book Workshop Session Now</span>

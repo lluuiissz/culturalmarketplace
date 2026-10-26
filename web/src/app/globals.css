@@ -93,11 +93,34 @@ body {
   @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide;
 }
 .badge-authentic {
-  @apply badge bg-ochre-50 text-ochre-700 border border-ochre-200;
+  @apply badge bg-ochre-50 text-ochre-900 border border-ochre-300;
 }
 .badge-workshop {
-  @apply badge bg-forest-50 text-forest-700 border border-forest-100;
+  @apply badge bg-ochre-100 text-ochre-950 border border-ochre-300;
 }
 .badge-crimson {
-  @apply badge bg-crimson-50 text-crimson-700 border border-crimson-100;
+  @apply badge bg-crimson-50 text-crimson-700 border border-crimson-200;
+}
+.badge-dark {
+  @apply badge bg-charcoal-950 text-ochre-300 border border-charcoal-800;
+}
+
+/* Mobile Touch & Scroll Utilities */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Horizontal Touch Scroll for mobile tables */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #C5832B transparent;
+}
+.touch-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.touch-scroll::-webkit-scrollbar-thumb {
+  background: #C5832B;
+  border-radius: 4px;
 }

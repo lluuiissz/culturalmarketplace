@@ -34,7 +34,7 @@ export default function BookingsClient({ initial }: { initial: Row[] }) {
                 {b.ticket && <span className="ml-2 font-mono text-xs text-brand-700">🎟 {b.ticket}</span>}
               </p>
               {b.attendee_for === 'others' && (
-                <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                <span className="rounded-full bg-ochre-100 border border-ochre-300 px-2 py-0.5 text-[10px] font-semibold text-ochre-900">
                   Guest / Group
                 </span>
               )}
@@ -45,7 +45,7 @@ export default function BookingsClient({ initial }: { initial: Row[] }) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`badge ${b.status === 'cancelled' || b.status === 'no_show' ? 'bg-red-100 text-red-700' : b.status === 'attended' ? 'bg-leaf-500/10 text-leaf-700' : 'bg-stone-100 text-stone-600'} capitalize`}>
+            <span className={`badge ${b.status === 'cancelled' || b.status === 'no_show' ? 'bg-red-100 text-red-700' : b.status === 'attended' ? 'bg-charcoal-900 text-ochre-300' : 'bg-stone-100 text-stone-600'} capitalize`}>
               {b.status.replace(/_/g, ' ')}
             </span>
             {b.status !== 'cancelled' && b.status !== 'attended' && (

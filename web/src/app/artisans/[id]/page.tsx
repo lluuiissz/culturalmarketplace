@@ -51,7 +51,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
                   {artisan.name}
                 </h1>
                 {artisan.verification_status === 'approved' && (
-                  <span className="badge bg-forest-50 text-forest-700 border border-forest-200 text-xs font-bold">
+                  <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-xs font-bold">
                     ✔ Verified Cultural Custodian
                   </span>
                 )}

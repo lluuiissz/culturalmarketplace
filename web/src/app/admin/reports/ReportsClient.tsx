@@ -47,7 +47,7 @@ export default function ReportsClient({ initial }: { initial: Row[] }) {
               </p>
               <p className="text-xs text-stone-400">by {r.reporter} · {r.created}</p>
             </div>
-            <span className={`badge ${r.status === 'resolved' ? 'bg-leaf-500/10 text-leaf-700' : r.status === 'investigating' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+            <span className={`badge ${r.status === 'resolved' ? 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold' : r.status === 'investigating' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-crimson-100 text-crimson-800 border border-crimson-200'}`}>
               {r.status}
             </span>
           </div>

@@ -151,8 +151,8 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
             onClick={() => setStatusFilter('attended')}
             className={`rounded-lg px-3 py-1.5 font-medium transition ${
               statusFilter === 'attended'
-                ? 'bg-leaf-600 text-white shadow-xs'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                ? 'bg-charcoal-900 text-ochre-300 shadow-xs'
+                : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'
             }`}
           >
             ✅ Checked In / Attended ({counts.attended})
@@ -224,7 +224,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
               key={b.order_item_id}
               className={`card flex flex-col md:flex-row md:items-start justify-between gap-4 p-4 border transition ${
                 isAttended
-                  ? 'border-leaf-300 bg-leaf-50/20'
+                  ? 'border-ochre-300 bg-ochre-50/20'
                   : isCancelled || isNoShow
                   ? 'border-stone-200 bg-stone-50/70 opacity-80'
                   : 'border-stone-200 bg-white hover:border-brand-300 shadow-xs'
@@ -289,7 +289,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                     </span>
                   )}
                   {b.session_location && (
-                    <span className="flex items-center gap-1 text-leaf-800 font-medium truncate max-w-md">
+                    <span className="flex items-center gap-1 text-charcoal-900 font-semibold truncate max-w-md">
                       <span>📍</span>
                       <span>{b.session_location}</span>
                     </span>
@@ -317,7 +317,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                 <span
                   className={`badge uppercase font-bold text-[10px] tracking-wider px-2.5 py-1 ${
                     isAttended
-                      ? 'bg-leaf-100 text-leaf-800 border border-leaf-300'
+                      ? 'bg-charcoal-900 text-ochre-300 border border-ochre-400'
                       : isCancelled
                       ? 'bg-red-100 text-red-800'
                       : isNoShow
@@ -335,7 +335,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                       type="button"
                       disabled={isBusy}
                       onClick={() => setStatus(b.order_item_id, 'attended')}
-                      className="btn-primary text-xs px-3 py-1.5 font-bold shadow-xs bg-leaf-600 hover:bg-leaf-700 text-white"
+                      className="btn-primary text-xs px-3 py-1.5 font-bold shadow-xs bg-crimson-600 hover:bg-crimson-700 text-white"
                       title="Mark attendee as checked in and present at the workshop"
                     >
                       {isBusy ? 'Checking in…' : '✅ Check In (Present)'}

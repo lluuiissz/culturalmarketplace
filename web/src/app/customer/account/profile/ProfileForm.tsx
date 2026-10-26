@@ -146,7 +146,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitialData }
               <span>{uploadingPhoto ? 'Uploading…' : currentDisplayPhoto ? 'Change Photo' : 'Upload Photo'}</span>
             </button>
             {photoPreview && (
-              <span className="text-[11px] text-leaf-700 font-medium">✓ New photo selected</span>
+              <span className="text-[11px] text-ochre-800 font-semibold">✓ New photo selected</span>
             )}
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitialData }
             {busy ? 'Saving…' : 'Save Profile Changes'}
           </button>
           {msg && (
-            <p className={`text-xs font-medium ${msg.error ? 'text-red-600' : 'text-leaf-700'}`}>
+            <p className={`text-xs font-medium ${msg.error ? 'text-crimson-600' : 'text-ochre-800'}`}>
               {msg.text}
             </p>
           )}

@@ -56,7 +56,7 @@ export default async function ArtisansPage() {
                   )}
 
                   <div className="min-w-0 flex-1">
-                    <span className="badge bg-forest-50 text-forest-700 border border-forest-200 text-[10px] font-bold">
+                    <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
                       ✔ Verified Master
                     </span>
                     <h2 className="mt-1 font-sculpted text-lg font-bold text-charcoal-900 group-hover:text-crimson-700 transition-colors truncate">

@@ -25,9 +25,9 @@ interface Props {
 
 const RULE_MARK = { pass: '✓', warn: '⚠', fail: '✗' } as const;
 const RULE_STYLE = {
-  pass: 'bg-leaf-50 text-leaf-700',
-  warn: 'bg-amber-50 text-amber-700',
-  fail: 'bg-red-50 text-red-700',
+  pass: 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold',
+  warn: 'bg-amber-50 text-amber-800 border border-amber-200',
+  fail: 'bg-crimson-50 text-crimson-800 border border-crimson-200',
 } as const;
 
 export default function ArtisanReviewClient({ artisan, productCount, rules, ruleSummary, evidence }: Props) {
@@ -100,7 +100,7 @@ export default function ArtisanReviewClient({ artisan, productCount, rules, rule
         <div className="card p-5">
           <div className="flex items-center justify-between">
             <h2 className="font-serif text-lg font-bold text-brand-900">Verification checklist</h2>
-            <span className={`badge ${ruleSummary.canApprove ? 'bg-leaf-50 text-leaf-700' : 'bg-red-50 text-red-700'}`}>
+            <span className={`badge ${ruleSummary.canApprove ? 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold' : 'bg-crimson-50 text-crimson-800 border border-crimson-200'}`}>
               {ruleSummary.canApprove ? 'Rules satisfied' : 'Incomplete'}
             </span>
           </div>

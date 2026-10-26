@@ -91,7 +91,7 @@ export default function CustomerBookingsClient({
           className={`rounded-xl p-4 text-sm font-medium border flex items-center justify-between shadow-xs ${
             actionMsg.error
               ? 'bg-red-50 text-red-800 border-red-200'
-              : 'bg-leaf-50 text-leaf-800 border-leaf-200'
+              : 'bg-ochre-50 text-charcoal-900 border-ochre-300'
           }`}
         >
           <span>{actionMsg.text}</span>
@@ -111,9 +111,9 @@ export default function CustomerBookingsClient({
           <p className="text-xs uppercase font-semibold tracking-wider text-stone-500">All Bookings</p>
           <p className="mt-1 font-serif text-2xl font-bold text-brand-900">{bookings.length}</p>
         </div>
-        <div className="card p-4 border border-leaf-200 bg-leaf-50/50">
-          <p className="text-xs uppercase font-semibold tracking-wider text-leaf-700">Upcoming / Confirmed</p>
-          <p className="mt-1 font-serif text-2xl font-bold text-leaf-800">{upcomingCount}</p>
+        <div className="card p-4 border border-ochre-300 bg-ochre-50/50">
+          <p className="text-xs uppercase font-semibold tracking-wider text-ochre-800">Upcoming / Confirmed</p>
+          <p className="mt-1 font-serif text-2xl font-bold text-charcoal-900">{upcomingCount}</p>
         </div>
         <div className="card p-4 border border-stone-200 bg-white">
           <p className="text-xs uppercase font-semibold tracking-wider text-stone-500">Attended</p>
@@ -144,7 +144,7 @@ export default function CustomerBookingsClient({
             onClick={() => setFilter('upcoming')}
             className={`rounded-lg px-3 py-1.5 transition ${
               filter === 'upcoming'
-                ? 'bg-leaf-700 text-white shadow-xs'
+                ? 'bg-ochre-700 text-white shadow-xs'
                 : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'
             }`}
           >
@@ -205,7 +205,7 @@ export default function CustomerBookingsClient({
               className={`rounded-2xl border transition-all overflow-hidden ${
                 isCancelled
                   ? 'border-stone-200 bg-stone-50/70 opacity-75'
-                  : 'border-leaf-300/80 bg-white shadow-xs hover:border-leaf-400 hover:shadow-md'
+                  : 'border-ochre-300 bg-white shadow-xs hover:border-ochre-500 hover:shadow-md'
               }`}
             >
               {/* Top Banner (Ticket Header) */}
@@ -230,10 +230,10 @@ export default function CustomerBookingsClient({
                   <span
                     className={`badge uppercase font-bold text-[10px] tracking-wider px-2.5 py-1 ${
                       isAttended
-                        ? 'bg-blue-100 text-blue-800'
+                        ? 'bg-charcoal-900 text-ochre-300'
                         : isCancelled
                         ? 'bg-red-100 text-red-700'
-                        : 'bg-leaf-100 text-leaf-800 border border-leaf-200'
+                        : 'bg-ochre-100 text-ochre-900 border border-ochre-300'
                     }`}
                   >
                     {isCancelled ? 'Cancelled' : isAttended ? 'Attended ✓' : 'Confirmed Booking'}
@@ -282,8 +282,8 @@ export default function CustomerBookingsClient({
 
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-xs">
                       {/* Session Date & Time */}
-                      <div className="rounded-lg bg-leaf-50/70 p-2.5 border border-leaf-200/60">
-                        <p className="font-bold text-leaf-900 flex items-center gap-1">
+                      <div className="rounded-lg bg-ochre-50/70 p-2.5 border border-ochre-200/60">
+                        <p className="font-bold text-charcoal-900 flex items-center gap-1">
                           <span>📅 Scheduled Session</span>
                         </p>
                         <p className="mt-0.5 text-stone-700 font-medium">
@@ -325,7 +325,7 @@ export default function CustomerBookingsClient({
                           </span>
                         )}
                         {b.attendee_for === 'others' && (
-                          <span className="rounded bg-leaf-100 text-leaf-800 text-[10px] font-bold px-1.5 py-0.5 border border-leaf-200">
+                          <span className="rounded bg-ochre-100 text-ochre-900 text-[10px] font-bold px-1.5 py-0.5 border border-ochre-300">
                             Guest / Group
                           </span>
                         )}
@@ -347,7 +347,7 @@ export default function CustomerBookingsClient({
 
                 {/* Interactive Venue Pathfinding Drawer */}
                 {isMapOpen && (
-                  <div className="rounded-xl border-2 border-leaf-600/30 bg-white p-4 shadow-sm space-y-3 animate-in fade-in duration-200">
+                  <div className="rounded-xl border-2 border-ochre-400/50 bg-white p-4 shadow-sm space-y-3 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xl">🧭</span>
@@ -386,8 +386,8 @@ export default function CustomerBookingsClient({
                       onClick={() => setExpandedMapId(isMapOpen ? null : b.order_item_id)}
                       className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition shadow-xs ${
                         isMapOpen
-                          ? 'bg-leaf-800 text-white'
-                          : 'bg-leaf-600 text-white hover:bg-leaf-700'
+                          ? 'bg-charcoal-900 text-white'
+                          : 'bg-ochre-500 text-charcoal-950 hover:bg-ochre-600 border border-ochre-600'
                       }`}
                     >
                       <span>🧭</span>

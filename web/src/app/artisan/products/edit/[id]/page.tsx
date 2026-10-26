@@ -69,7 +69,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           <span
             className={`badge uppercase font-bold text-xs px-3 py-1 ${
               product.status === 'active'
-                ? 'bg-leaf-100 text-leaf-800 border border-leaf-300'
+                ? 'bg-ochre-100 text-ochre-900 border border-ochre-300'
                 : 'bg-stone-100 text-stone-600'
             }`}
           >

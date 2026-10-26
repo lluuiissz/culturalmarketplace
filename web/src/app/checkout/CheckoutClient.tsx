@@ -210,7 +210,7 @@ export default function CheckoutClient({
                             <span className="badge bg-brand-200 text-brand-800 text-[10px]">Default</span>
                           )}
                           {isChecked && (
-                            <span className="badge bg-leaf-500 text-white text-[10px]">Selected</span>
+                            <span className="badge bg-crimson-600 text-white text-[10px]">Selected</span>
                           )}
                         </div>
                         <p className="mt-1 font-medium text-stone-800">
@@ -342,7 +342,7 @@ export default function CheckoutClient({
               Your official workshop admission ticket and receipt will be issued to this contact.
             </p>
             {items.some((i) => i.attendee_name) && (
-              <div className="rounded-lg bg-leaf-50/80 p-3 text-xs text-leaf-900 border border-leaf-200/80 space-y-1">
+              <div className="rounded-lg bg-ochre-50/80 p-3 text-xs text-charcoal-900 border border-ochre-200/80 space-y-1">
                 <p className="font-bold flex items-center gap-1.5">
                   <span>👥</span> Registered Workshop Attendees:
                 </p>
@@ -350,9 +350,9 @@ export default function CheckoutClient({
                   {items.filter((i) => i.attendee_name).map((i) => (
                     <div key={i.cart_item_id} className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-medium text-stone-700">{i.name}:</span>{' '}
-                      <span className="font-bold text-leaf-950">{i.attendee_name}</span>
+                      <span className="font-bold text-charcoal-950">{i.attendee_name}</span>
                       {i.attendee_for === 'others' && (
-                        <span className="rounded-full bg-amber-100 border border-amber-300 px-1.5 py-0.2 text-[10px] font-bold text-amber-900">
+                        <span className="rounded-full bg-ochre-100 border border-ochre-300 px-1.5 py-0.2 text-[10px] font-bold text-ochre-900">
                           Guest / Group
                         </span>
                       )}
@@ -402,11 +402,11 @@ export default function CheckoutClient({
         <div className="card p-5 space-y-3">
           <h2 className="font-serif text-base font-bold text-brand-900">Payment method</h2>
           {total === 0 ? (
-            <div className="rounded-xl border border-leaf-300 bg-leaf-50/70 p-4">
-              <p className="font-bold text-leaf-900 flex items-center gap-1.5">
+            <div className="rounded-xl border border-ochre-300 bg-ochre-50/70 p-4">
+              <p className="font-bold text-charcoal-900 flex items-center gap-1.5">
                 <span>✨</span> Free Workshop Registration (₱0.00)
               </p>
-              <p className="text-xs text-leaf-800 mt-1">
+              <p className="text-xs text-charcoal-800 mt-1">
                 This cultural crafting session is provided free of charge. No payment or credit card is required.
               </p>
             </div>
@@ -466,7 +466,7 @@ export default function CheckoutClient({
 
       {/* Right Column: Order Summary & Delivery Snapshot */}
       <div className="space-y-4">
-        <div className="card h-fit p-5 space-y-4 border border-stone-200 shadow-sm sticky top-20">
+        <div className="card h-fit p-5 space-y-4 border border-stone-200 shadow-sm md:sticky md:top-20">
           <h2 className="font-serif text-lg font-bold text-brand-900 border-b border-stone-100 pb-2">
             Order summary ({items.length} item{items.length === 1 ? '' : 's'})
           </h2>
@@ -485,10 +485,10 @@ export default function CheckoutClient({
                     </p>
                   )}
                   {i.attendee_name && (
-                    <div className="text-xs text-leaf-800 font-medium flex items-center gap-1.5 flex-wrap">
+                    <div className="text-xs text-charcoal-800 font-medium flex items-center gap-1.5 flex-wrap">
                       <span>👤 Attendee(s): {i.attendee_name}</span>
                       {i.attendee_for === 'others' && (
-                        <span className="rounded-full bg-amber-50 border border-amber-200 px-1.5 py-0.2 text-[10px] font-semibold text-amber-800">
+                        <span className="rounded-full bg-ochre-100 border border-ochre-300 px-1.5 py-0.2 text-[10px] font-semibold text-ochre-900">
                           Guest / Group
                         </span>
                       )}
@@ -524,7 +524,7 @@ export default function CheckoutClient({
             </div>
             <div className="flex justify-between text-xs text-stone-500">
               <span>Shipping Fee:</span>
-              <span className="text-leaf-700 font-medium">Free / Standard Included</span>
+              <span className="text-charcoal-800 font-semibold">Free / Standard Included</span>
             </div>
             <div className="flex justify-between text-lg font-bold text-brand-900 pt-1 border-t border-stone-100">
               <span>Total Amount:</span>

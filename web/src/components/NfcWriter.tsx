@@ -116,7 +116,7 @@ export default function NfcWriter({
             {phase.kind === 'writing' ? 'Hold the card to your phone…' : '📡 Write to card'}
           </button>
           {phase.kind === 'success' && (
-            <p className="mt-2 text-sm font-medium text-leaf-700">✅ Card written and verified — a tap now opens the verify page.</p>
+            <p className="mt-2 text-sm font-semibold text-ochre-800 bg-ochre-50 p-2 rounded-lg border border-ochre-200">✅ Card written and verified — a tap now opens the verify page.</p>
           )}
           {phase.kind === 'error' && (
             <p className="mt-2 text-sm text-red-600">{phase.message}</p>

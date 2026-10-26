@@ -13,7 +13,7 @@ export default function AdminProductsClient({ initial }: { initial: Array<{ id: 
             <p className="font-semibold text-stone-800">{p.name}</p>
             <p className="text-sm text-stone-500">{p.artisan} · {p.category ?? '—'} · ₱{p.price.toFixed(2)}</p>
           </div>
-          <span className={`badge ${p.status === 'active' ? 'bg-leaf-500/10 text-leaf-700' : 'bg-stone-100 text-stone-500'}`}>{p.status}</span>
+          <span className={`badge ${p.status === 'active' ? 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold' : 'bg-stone-100 text-stone-500'}`}>{p.status}</span>
         </div>
       ))}
       {rows.length === 0 && <p className="text-sm text-stone-500">No products.</p>}

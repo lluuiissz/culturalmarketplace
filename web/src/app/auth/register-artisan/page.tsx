@@ -594,7 +594,7 @@ export default function ArtisanRegisterPage() {
           2. Biometrics & Craft
         </span>
         <span className="text-stone-300">→</span>
-        <span className={`badge ${step === 'done' ? 'bg-forest-600 text-white font-bold' : 'bg-stone-100 text-stone-400'}`}>
+        <span className={`badge ${step === 'done' ? 'bg-ochre-700 text-white font-bold' : 'bg-stone-100 text-stone-400'}`}>
           3. Curated Review
         </span>
       </div>
@@ -615,7 +615,7 @@ export default function ArtisanRegisterPage() {
                   Upload your Philippine ID (Driver&apos;s License, PhilSys, UMID, Postal ID, Passport) to automatically extract your Name, ID Number, Birthday, and Address into the fields below.
                 </p>
               </div>
-              <span className="badge bg-leaf-100 text-leaf-800 text-[10px] uppercase font-bold shrink-0">
+              <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] uppercase font-bold shrink-0">
                 Fast OCR
               </span>
             </div>
@@ -626,7 +626,7 @@ export default function ArtisanRegisterPage() {
                 {idFrontPreview ? (
                   <div>
                     <img src={idFrontPreview} alt="ID Front" className="mx-auto h-20 rounded object-cover" />
-                    <p className="mt-1 text-[11px] font-semibold text-leaf-700">✓ Front Attached</p>
+                    <p className="mt-1 text-[11px] font-semibold text-ochre-800">✓ Front Attached</p>
                     <button
                       type="button"
                       className="mt-1 text-[11px] text-stone-400 underline hover:text-red-600"
@@ -665,7 +665,7 @@ export default function ArtisanRegisterPage() {
                 {idBackPreview ? (
                   <div>
                     <img src={idBackPreview} alt="ID Back" className="mx-auto h-20 rounded object-cover" />
-                    <p className="mt-1 text-[11px] font-semibold text-leaf-700">✓ Back Attached</p>
+                    <p className="mt-1 text-[11px] font-semibold text-ochre-800">✓ Back Attached</p>
                     <button
                       type="button"
                       className="mt-1 text-[11px] text-stone-400 underline hover:text-red-600"
@@ -708,7 +708,7 @@ export default function ArtisanRegisterPage() {
               </div>
             )}
             {!ocrBusy && ocrHint && (
-              <p className="text-xs text-leaf-700 font-medium bg-leaf-50 p-2.5 rounded-lg border border-leaf-200">
+              <p className="text-xs text-ochre-800 font-semibold bg-ochre-50 p-2.5 rounded-lg border border-ochre-200">
                 {ocrHint}
               </p>
             )}
@@ -871,7 +871,7 @@ export default function ArtisanRegisterPage() {
                 {idFrontPreview ? (
                   <div>
                     <img src={idFrontPreview} alt="ID Front" className="mx-auto h-20 rounded object-cover" />
-                    <p className="mt-1 text-xs text-leaf-700 font-medium">✓ Front attached</p>
+                    <p className="mt-1 text-xs text-ochre-800 font-semibold">✓ Front attached</p>
                   </div>
                 ) : (
                   <button type="button" className="btn-outline w-full text-xs py-2 mt-4" onClick={() => setStep('details')}>
@@ -884,7 +884,7 @@ export default function ArtisanRegisterPage() {
                 {idBackPreview ? (
                   <div>
                     <img src={idBackPreview} alt="ID Back" className="mx-auto h-20 rounded object-cover" />
-                    <p className="mt-1 text-xs text-leaf-700 font-medium">✓ Back attached</p>
+                    <p className="mt-1 text-xs text-ochre-800 font-semibold">✓ Back attached</p>
                   </div>
                 ) : (
                   <button type="button" className="btn-outline w-full text-xs py-2 mt-4" onClick={() => setStep('details')}>
@@ -918,11 +918,11 @@ export default function ArtisanRegisterPage() {
                       </div>
                     )}
                     {faceResult === 'match' && (
-                      <div className="flex items-start gap-2.5 text-emerald-800 bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
+                      <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
                         <span className="text-base leading-none">✅</span>
                         <div>
                           <p className="font-semibold">Face matched your ID!</p>
-                          <p className="text-[11px] text-emerald-700 mt-0.5">{faceMessage || 'Biometric verification passed successfully.'}</p>
+                          <p className="text-[11px] text-ochre-800 mt-0.5">{faceMessage || 'Biometric verification passed successfully.'}</p>
                         </div>
                       </div>
                     )}
@@ -954,7 +954,7 @@ export default function ArtisanRegisterPage() {
                       </div>
                     )}
                     {faceResult === 'idle' && (
-                      <div className="text-center text-leaf-700 font-medium py-1">
+                      <div className="text-center text-ochre-800 font-semibold py-1">
                         {faceMessage || '✓ Selfie captured'}
                       </div>
                     )}
@@ -1106,7 +1106,7 @@ export default function ArtisanRegisterPage() {
                   {preview ? (
                     <div>
                       <img src={preview} alt={label} className="mx-auto h-16 rounded object-cover" />
-                      <p className="mt-1 text-xs text-leaf-700 font-semibold">✓</p>
+                      <p className="mt-1 text-xs text-ochre-800 font-bold">✓</p>
                       <button
                         type="button"
                         className="text-[11px] text-stone-400 underline hover:text-red-600"

@@ -54,7 +54,7 @@ export default function OfficialReceiptTicketView({
               View My Orders →
             </Link>
             {hasWorkshop && (
-              <Link className="btn-outline text-sm px-4 py-2 border-leaf-300 text-leaf-800 hover:bg-leaf-50" href="/customer/account/bookings">
+              <Link className="btn-outline text-sm px-4 py-2 border-ochre-400 text-ochre-900 hover:bg-ochre-50 font-semibold" href="/customer/account/bookings">
                 View My Bookings →
               </Link>
             )}
@@ -140,7 +140,7 @@ export default function OfficialReceiptTicketView({
               {order.payment_method === 'gcash' ? '📱 GCash Digital Payment' : '💵 Cash on Delivery'}
             </p>
             <p className="text-xs text-stone-600 mt-0.5">
-              Status: <span className="font-bold uppercase text-leaf-700">{order.status.replace(/_/g, ' ')}</span>
+              Status: <span className="font-bold uppercase text-ochre-800">{order.status.replace(/_/g, ' ')}</span>
             </p>
             {order.payment_reference && (
               <p className="text-xs text-stone-500 mt-1 font-mono">
@@ -160,7 +160,7 @@ export default function OfficialReceiptTicketView({
           <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">
             Itemized Purchase Summary
           </h3>
-          <div className="overflow-x-auto -mx-1 sm:mx-0">
+          <div className="overflow-x-auto touch-scroll -mx-1 sm:mx-0 [scrollbar-width:thin]">
             <table className="w-full min-w-[500px] sm:min-w-0 text-left text-sm border-collapse">
               <thead>
                 <tr className="border-b border-stone-200 text-xs font-semibold text-stone-500 uppercase">
@@ -185,9 +185,9 @@ export default function OfficialReceiptTicketView({
                           </p>
                         )}
                         {isWorkshop && (
-                          <div className="mt-1 space-y-0.5 text-xs text-leaf-800 bg-leaf-50/70 p-2 rounded-lg border border-leaf-200/60">
+                          <div className="mt-1 space-y-0.5 text-xs text-charcoal-900 bg-ochre-50/80 p-2.5 rounded-lg border border-ochre-200/80">
                             {i.ticket_code && (
-                              <p className="font-mono font-bold">🎟️ Admission Ticket: {i.ticket_code}</p>
+                              <p className="font-mono font-bold text-crimson-700">🎟️ Admission Ticket: {i.ticket_code}</p>
                             )}
                             {i.selected_session && (
                               <p>
@@ -210,7 +210,7 @@ export default function OfficialReceiptTicketView({
                                   <span className="font-semibold text-stone-800">{i.attendee_name}</span>
                                 )}
                                 {i.attendee_for === 'others' && (
-                                  <span className="rounded bg-leaf-200/70 px-1.5 py-0.5 text-[10px] font-bold text-leaf-900">
+                                  <span className="rounded bg-ochre-200 px-1.5 py-0.5 text-[10px] font-bold text-charcoal-950">
                                     Guest / Group
                                   </span>
                                 )}
@@ -221,7 +221,7 @@ export default function OfficialReceiptTicketView({
                       </td>
                       <td className="py-3 text-center text-xs text-stone-600">
                         {isWorkshop ? (
-                          <span className="badge bg-leaf-100 text-leaf-800">Workshop</span>
+                          <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold">Workshop</span>
                         ) : (
                           <span className="badge bg-stone-100 text-stone-700">Craft</span>
                         )}
@@ -250,7 +250,7 @@ export default function OfficialReceiptTicketView({
             </div>
             <div className="flex justify-between text-stone-600">
               <span>Shipping / Booking Fee:</span>
-              <span className="text-leaf-700 font-medium">Included / Free</span>
+              <span className="text-charcoal-800 font-semibold">Included / Free</span>
             </div>
             <div className="border-t border-abaca-200 pt-2 flex justify-between text-base font-bold text-charcoal-900">
               <span>Grand Total:</span>
@@ -279,7 +279,7 @@ export default function OfficialReceiptTicketView({
         <div className="space-y-4">
           <div className="flex items-center justify-between border-b border-stone-200 pb-2">
             <div>
-              <h2 className="font-serif text-xl font-bold text-brand-900 flex items-center gap-2">
+              <h2 className="font-sculpted text-xl font-bold text-charcoal-900 flex items-center gap-2">
                 <span>🎟️</span>
                 <span>Official Workshop Admission Tickets</span>
               </h2>
@@ -287,7 +287,7 @@ export default function OfficialReceiptTicketView({
                 Present your admission ticket code upon arrival at the artisan studio venue.
               </p>
             </div>
-            <span className="badge bg-leaf-100 text-leaf-800 text-xs font-semibold">
+            <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-xs font-semibold">
               {workshopItems.length} {workshopItems.length === 1 ? 'Pass' : 'Passes'}
             </span>
           </div>
@@ -301,17 +301,17 @@ export default function OfficialReceiptTicketView({
               <div
                 key={item.id || idx}
                 id={`ticket-${item.id}`}
-                className="card overflow-hidden border-2 border-leaf-500/80 bg-white shadow-md print:shadow-none print:border-stone-400"
+                className="card overflow-hidden border-2 border-ochre-400 bg-white shadow-md print:shadow-none print:border-stone-400"
               >
                 {/* Ticket Top Ribbon */}
-                <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-leaf-800 to-brand-900 px-6 py-3.5 text-white">
+                <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-charcoal-950 via-crimson-900 to-charcoal-900 px-6 py-3.5 text-white">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">🌿</span>
                     <div>
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-leaf-200">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-ochre-300">
                         Cultural Heritage Masterclass Admission Pass
                       </p>
-                      <p className="font-serif text-base font-bold text-white">
+                      <p className="font-sculpted text-base font-bold text-white">
                         {item.product_name}
                       </p>
                     </div>
@@ -378,7 +378,7 @@ export default function OfficialReceiptTicketView({
                           Registered Attendee(s)
                         </p>
                         {item.attendee_for === 'others' && (
-                          <span className="rounded bg-leaf-100 text-leaf-800 px-1.5 py-0.5 text-[10px] font-bold border border-leaf-200">
+                          <span className="rounded bg-ochre-100 text-ochre-900 px-1.5 py-0.5 text-[10px] font-bold border border-ochre-300">
                             Booked for Others / Group
                           </span>
                         )}
@@ -411,10 +411,10 @@ export default function OfficialReceiptTicketView({
                       <p className="text-xs text-stone-500 uppercase tracking-wider font-semibold">
                         Total Passes
                       </p>
-                      <p className="font-mono text-lg font-bold text-brand-900">
+                      <p className="font-mono text-lg font-bold text-charcoal-900">
                         {item.quantity} seat{item.quantity > 1 ? 's' : ''}
                       </p>
-                      <p className="text-xs text-leaf-700 font-semibold">✔ Admission Confirmed</p>
+                      <p className="text-xs text-ochre-800 font-bold">✔ Admission Confirmed</p>
                     </div>
                   </div>
 

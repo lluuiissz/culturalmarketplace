@@ -198,7 +198,7 @@ export default function MapViewer({
 
     // Draw Route Polyline with shadow
     const polyline = L.polyline(routeCoords, {
-      color: '#16a34a', // emerald green navigation path
+      color: '#C5832B', // sacred ochre gold navigation route
       weight: 5,
       opacity: 0.9,
       lineCap: 'round',
@@ -272,11 +272,11 @@ export default function MapViewer({
   const wazeNavUrl = `https://waze.com/ul?ll=${destLat},${destLng}&navigate=yes`;
 
   return (
-    <div className={isFullscreen ? "fixed inset-0 z-50 bg-white p-3 sm:p-6 overflow-y-auto flex flex-col space-y-3" : "space-y-3 rounded-xl border-2 border-leaf-600/20 bg-gradient-to-b from-leaf-500/5 to-white p-4 shadow-xs"}>
+    <div className={isFullscreen ? "fixed inset-0 z-50 bg-white p-3 sm:p-6 overflow-y-auto flex flex-col space-y-3" : "space-y-3 rounded-xl border-2 border-ochre-300 bg-gradient-to-b from-ochre-50/20 to-white p-4 shadow-xs"}>
       {/* Venue Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/80 pb-2.5">
         <div>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-leaf-900">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-charcoal-900">
             <span>🏛️ Workshop Venue:</span>
             <span className="font-semibold text-stone-800">{locationName || 'Pinned Studio Location'}</span>
           </div>
@@ -311,7 +311,7 @@ export default function MapViewer({
             href={googleMapsNavUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-lg bg-leaf-700 px-3 py-1 text-xs font-bold text-white hover:bg-leaf-800 transition shadow-xs"
+            className="inline-flex items-center gap-1 rounded-lg bg-charcoal-900 px-3 py-1 text-xs font-bold text-ochre-300 hover:bg-charcoal-800 border border-ochre-500/40 transition shadow-xs"
           >
             <span>🗺️</span>
             <span>Google Maps</span>
@@ -375,10 +375,10 @@ export default function MapViewer({
 
           {/* Real-time Route Statistics & Live Navigation Launchers */}
           {routeInfo && userPos && (
-            <div className="mt-2 rounded-lg bg-leaf-50 p-3 border border-leaf-300 text-xs space-y-2">
+            <div className="mt-2 rounded-lg bg-ochre-50 p-3 border border-ochre-300 text-xs space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="font-bold text-leaf-900 text-sm flex items-center gap-1">
+                  <div className="font-bold text-charcoal-900 text-sm flex items-center gap-1">
                     <span>📏</span>
                     <span>{routeInfo.distanceKm} km away</span>
                   </div>
@@ -414,7 +414,7 @@ export default function MapViewer({
                 </div>
               </div>
 
-              <p className="text-[11px] text-leaf-800">
+              <p className="text-[11px] text-charcoal-800">
                 Route path traced from <b>{userPos.label}</b> to <b>{locationName || 'Workshop Venue'}</b>. Click &ldquo;Turn-by-Turn GPS&rdquo; for live voice navigation on your phone.
               </p>
             </div>

@@ -21,11 +21,11 @@ export default async function VerifyPage({ params }: { params: Promise<{ tagId: 
           <div className="rounded-3xl border-2 border-ochre-400 bg-white p-8 sm:p-12 shadow-md relative overflow-hidden text-center">
             <WeaveDivider pattern="diamond" className="absolute top-0 left-0 right-0 opacity-40" />
 
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-ochre-500 to-forest-600 text-4xl text-white shadow-sm">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-ochre-500 to-crimson-700 text-4xl text-white shadow-sm">
               <span>🛡️</span>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-forest-50 px-3.5 py-1 text-xs font-bold text-forest-700 border border-forest-200 mb-3">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-ochre-100 px-3.5 py-1 text-xs font-bold text-ochre-900 border border-ochre-300 mb-3">
               <span>✔</span>
               <span>Authentic Cultural Provenance Verified</span>
             </div>

@@ -108,6 +108,7 @@ export default function PortalSidebar({
         <Link
           href="/"
           prefetch={true}
+          onClick={() => setOpen(false)}
           className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold text-ochre-300 hover:bg-charcoal-800 hover:text-ochre-200 transition"
         >
           <span>🛍️</span>
@@ -124,7 +125,7 @@ export default function PortalSidebar({
         <form action="/api/auth/logout" method="post">
           <button
             type="submit"
-            className="w-full rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-1.5 text-xs font-semibold text-red-300 transition hover:bg-red-900/40 hover:text-red-200"
+            className="w-full rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-2 text-xs font-semibold text-red-300 transition hover:bg-red-900/40 hover:text-red-200"
           >
             Log out
           </button>
@@ -141,9 +142,9 @@ export default function PortalSidebar({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              aria-label="Menu"
+              aria-label="Toggle portal navigation"
               aria-expanded={open}
-              className="flex shrink-0 items-center gap-1 rounded-xl border border-abaca-300 bg-white px-2.5 py-1 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1 rounded-xl border border-abaca-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100"
               onClick={() => setOpen((o) => !o)}
             >
               <span aria-hidden className="text-base leading-none">{open ? '✕' : '☰'}</span>
@@ -153,7 +154,7 @@ export default function PortalSidebar({
               ☀️ {portalLabel}
             </Link>
           </div>
-          <Link href="/" className="text-xs font-semibold text-crimson-700 hover:underline">
+          <Link href="/" className="text-xs font-semibold text-crimson-700 hover:underline px-2 py-1">
             Storefront →
           </Link>
         </div>

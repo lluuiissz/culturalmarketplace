@@ -191,116 +191,136 @@ export default function CartClient({ initialItems }: { initialItems: CartRow[] }
           return (
             <div
               key={i.id}
-              className={`card flex items-center gap-4 p-4 transition border ${
-                isSelected ? 'border-brand-300 bg-white shadow-xs' : 'border-stone-200 bg-stone-50/50 opacity-80'
+              className={`card flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-3.5 sm:p-4 transition border ${
+                isSelected ? 'border-ochre-400 bg-white shadow-xs' : 'border-stone-200 bg-stone-50/50 opacity-80'
               }`}
             >
-              <input
-                type="checkbox"
-                aria-label={`Select ${i.name}`}
-                className="h-4 w-4 rounded border-stone-300 text-brand-600 focus:ring-brand-500 cursor-pointer accent-brand-600 shrink-0"
-                checked={isSelected}
-                onChange={() => toggleItem(i.id)}
-              />
+              {/* Mobile Top Row: Checkbox, Image, Title & Delete button */}
+              <div className="flex items-start gap-3 w-full sm:flex-1 min-w-0">
+                <input
+                  type="checkbox"
+                  aria-label={`Select ${i.name}`}
+                  className="mt-1 sm:mt-0 h-4 w-4 rounded border-stone-300 text-crimson-600 focus:ring-crimson-500 cursor-pointer accent-crimson-600 shrink-0"
+                  checked={isSelected}
+                  onChange={() => toggleItem(i.id)}
+                />
 
-              <Link
-                href={`/customer/browse/${i.product_id}`}
-                className="relative flex h-16 w-16 items-center justify-center rounded-lg bg-brand-100 overflow-hidden text-3xl shrink-0 border border-stone-200 hover:opacity-90 transition group"
-                title="View original craft listing"
-              >
-                {i.image_path ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={i.image_path}
-                    alt={i.name}
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform"
-                  />
-                ) : (
-                  <span>{i.purchase_type === 'workshop' ? '🧑‍🏫' : '🧶'}</span>
-                )}
-              </Link>
-
-              <div className="flex-1 min-w-0">
                 <Link
                   href={`/customer/browse/${i.product_id}`}
-                  className="font-semibold text-stone-800 hover:text-brand-700 hover:underline block truncate transition"
-                  title="Click to double check product listing"
+                  className="relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl bg-abaca-100/60 overflow-hidden text-2xl sm:text-3xl shrink-0 border border-stone-200 hover:opacity-90 transition group"
+                  title="View original craft listing"
                 >
-                  {i.name}
-                </Link>
-                <p className="text-xs text-stone-500 mt-0.5">
-                  {i.variant ? `${i.variant} · ` : ''}
-                  {i.purchase_type === 'workshop' ? (
-                    <span className="badge bg-leaf-500/10 text-leaf-700 font-medium">Workshop booking</span>
+                  {i.image_path ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={i.image_path}
+                      alt={i.name}
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                    />
                   ) : (
-                    'Handcrafted Product'
+                    <span>{i.purchase_type === 'workshop' ? '🧑‍🏫' : '🧶'}</span>
                   )}
-                </p>
-                {i.attendee_name && (
-                  <p className="text-xs text-leaf-800 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
-                    <span>👤 Attendee: {i.attendee_name}</span>
-                    {i.attendee_for === 'others' && (
-                      <span className="rounded-full bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800">
-                        Guest / Group
-                      </span>
-                    )}
-                  </p>
-                )}
-                <div className="flex items-center gap-2 mt-1">
+                </Link>
+
+                <div className="flex-1 min-w-0 pr-1">
                   <Link
                     href={`/customer/browse/${i.product_id}`}
-                    className="text-[11px] font-medium text-brand-600 hover:underline flex items-center gap-0.5"
+                    className="font-sculpted text-sm sm:text-base font-bold text-charcoal-900 hover:text-crimson-700 block truncate transition"
+                    title="Click to double check product listing"
                   >
-                    <span>🔍 Double check item</span>
+                    {i.name}
                   </Link>
-                  <span className="text-stone-300">·</span>
-                  <span className="text-xs text-stone-400">₱{i.price.toFixed(2)} each</span>
+                  <p className="text-xs text-stone-500 mt-0.5">
+                    {i.variant ? `${i.variant} · ` : ''}
+                    {i.purchase_type === 'workshop' ? (
+                      <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold text-[10px]">Workshop Booking</span>
+                    ) : (
+                      'Handcrafted Craft'
+                    )}
+                  </p>
+                  {i.attendee_name && (
+                    <p className="text-xs text-charcoal-800 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                      <span>👤 Attendee: {i.attendee_name}</span>
+                      {i.attendee_for === 'others' && (
+                        <span className="rounded-full bg-ochre-100 border border-ochre-300 px-1.5 py-0.2 text-[10px] font-semibold text-ochre-900">
+                          Guest / Group
+                        </span>
+                      )}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2 mt-1">
+                    <Link
+                      href={`/customer/browse/${i.product_id}`}
+                      className="text-[11px] font-semibold text-ochre-700 hover:text-crimson-700 hover:underline flex items-center gap-0.5"
+                    >
+                      <span>🔍 View details</span>
+                    </Link>
+                    <span className="text-stone-300">·</span>
+                    <span className="text-xs text-stone-500 font-mono">₱{i.price.toFixed(2)} each</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
+                {/* Remove button on top-right for mobile */}
                 <button
-                  className="btn-outline px-2 py-1 text-xs"
-                  disabled={busy}
-                  onClick={() => updateQty(i.id, Math.max(1, i.quantity - 1))}
+                  className="sm:hidden text-stone-400 hover:text-crimson-700 p-1 text-base font-bold shrink-0 -mt-1"
+                  aria-label="Remove"
+                  onClick={() => remove(i.id)}
                 >
-                  −
-                </button>
-                <span className="w-8 text-center text-sm font-semibold">{i.quantity}</span>
-                <button
-                  className="btn-outline px-2 py-1 text-xs"
-                  disabled={busy}
-                  onClick={() => updateQty(i.id, i.quantity + 1)}
-                >
-                  +
+                  ✕
                 </button>
               </div>
 
-              <div className="w-24 text-right font-bold text-brand-700">
-                ₱{(i.price * i.quantity).toFixed(2)}
-              </div>
+              {/* Bottom Row on Mobile / Right controls on Desktop */}
+              <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-2 sm:pt-0 border-t border-abaca-100 sm:border-t-0">
+                <div className="flex items-center gap-1.5 rounded-xl border border-abaca-300 bg-white shadow-2xs overflow-hidden">
+                  <button
+                    className="flex h-8 w-8 items-center justify-center text-sm font-bold text-charcoal-700 hover:bg-ochre-50 active:bg-ochre-100 disabled:opacity-30 transition"
+                    disabled={busy}
+                    onClick={() => updateQty(i.id, Math.max(1, i.quantity - 1))}
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <span className="w-8 text-center text-xs font-bold text-charcoal-900">{i.quantity}</span>
+                  <button
+                    className="flex h-8 w-8 items-center justify-center text-sm font-bold text-charcoal-700 hover:bg-ochre-50 active:bg-ochre-100 disabled:opacity-30 transition"
+                    disabled={busy}
+                    onClick={() => updateQty(i.id, i.quantity + 1)}
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
 
-              <button
-                className="text-stone-400 hover:text-red-600 p-1"
-                aria-label="Remove"
-                onClick={() => remove(i.id)}
-              >
-                ✕
-              </button>
+                <div className="text-right">
+                  <span className="text-[10px] text-stone-400 block sm:hidden uppercase font-semibold">Subtotal</span>
+                  <span className="font-mono text-base font-bold text-crimson-700">
+                    ₱{(i.price * i.quantity).toFixed(2)}
+                  </span>
+                </div>
+
+                <button
+                  className="hidden sm:inline-flex text-stone-400 hover:text-crimson-700 p-1 font-bold"
+                  aria-label="Remove"
+                  onClick={() => remove(i.id)}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           );
         })}
       </div>
 
       {/* Checkout Summary Bar */}
-      <div className="card flex flex-wrap items-center justify-between gap-4 p-5 sticky bottom-4 shadow-lg border-2 border-brand-200 bg-white">
+      <div className="card flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 sticky bottom-4 shadow-xl border-2 border-ochre-300 bg-white/95 backdrop-blur-md rounded-2xl">
         <div>
           <p className="text-xs text-stone-500 uppercase tracking-wider font-semibold">
             Selected Subtotal ({selectedItems.length} item{selectedItems.length === 1 ? '' : 's'})
           </p>
-          <p className="text-2xl font-bold text-brand-700">₱{selectedTotal.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-crimson-700 font-mono">₱{selectedTotal.toFixed(2)}</p>
           {selectedIds.size === 0 && (
-            <p className="text-xs text-amber-600 font-medium mt-0.5">
+            <p className="text-xs text-ochre-800 font-medium mt-0.5">
               ⚠️ Please check at least 1 item above to proceed.
             </p>
           )}
@@ -308,7 +328,7 @@ export default function CartClient({ initialItems }: { initialItems: CartRow[] }
 
         {selectedItems.length > 0 ? (
           <Link
-            className="btn-primary px-6 py-2.5 text-base font-bold shadow-md"
+            className="btn-primary w-full sm:w-auto px-6 py-3 text-center text-sm font-bold shadow-md rounded-xl"
             href={`/checkout?items=${Array.from(selectedIds).join(',')}`}
           >
             Proceed to checkout ({selectedItems.length}) →
@@ -317,7 +337,7 @@ export default function CartClient({ initialItems }: { initialItems: CartRow[] }
           <button
             type="button"
             disabled
-            className="btn-primary px-6 py-2.5 text-base font-semibold opacity-50 cursor-not-allowed"
+            className="btn-primary w-full sm:w-auto px-6 py-3 text-center text-sm font-semibold opacity-50 cursor-not-allowed rounded-xl"
           >
             Select items to checkout →
           </button>

@@ -74,14 +74,14 @@ export default async function AdminAnalyticsPage() {
                 <div key={w} className="flex items-center gap-2 text-xs">
                   <span className="w-16 shrink-0 text-stone-400">{w.slice(5)}</span>
                   <div className="flex h-4 flex-1 gap-px">
-                    <div className="h-full rounded-l bg-brand-500" style={{ width: `${(c / max) * 100}%` }} title={`${c} customers`} />
-                    <div className="h-full rounded-r bg-leaf-500" style={{ width: `${(ar / max) * 100}%` }} title={`${ar} artisans`} />
+                    <div className="h-full rounded-l bg-crimson-600" style={{ width: `${(c / max) * 100}%` }} title={`${c} customers`} />
+                    <div className="h-full rounded-r bg-ochre-500" style={{ width: `${(ar / max) * 100}%` }} title={`${ar} artisans`} />
                   </div>
                   <span className="w-12 shrink-0 text-right text-stone-500">{c + ar > 0 ? `${c}/${ar}` : ''}</span>
                 </div>
               );
             })}
-            <p className="pt-1 text-xs text-stone-400"><span className="font-semibold text-brand-600">■</span> customers · <span className="font-semibold text-leaf-600">■</span> artisans</p>
+            <p className="pt-1 text-xs text-stone-400"><span className="font-semibold text-crimson-600">■</span> customers · <span className="font-semibold text-ochre-600">■</span> artisans</p>
           </div>
         </Section>
 

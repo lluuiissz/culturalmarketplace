@@ -28,7 +28,7 @@ export default function ProductsClient({ initial }: { initial: Row[] }) {
         <div key={p.id} className="card flex flex-wrap items-center justify-between gap-3 p-4">
           <div className="min-w-[200px] flex-1">
             <p className="font-semibold text-stone-800">
-              {p.name} {p.has_tutorial && <span className="badge ml-1 bg-leaf-500/10 text-leaf-700">Workshop</span>}
+              {p.name} {p.has_tutorial && <span className="badge ml-1 bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold text-[10px]">Workshop</span>}
             </p>
             <p className="text-sm text-stone-500">
               ₱{p.price.toFixed(2)} · {p.stock} in stock
@@ -36,7 +36,7 @@ export default function ProductsClient({ initial }: { initial: Row[] }) {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`badge ${p.status === 'active' ? 'bg-leaf-500/10 text-leaf-700' : 'bg-stone-100 text-stone-500'}`}>{p.status}</span>
+            <span className={`badge ${p.status === 'active' ? 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold' : 'bg-stone-100 text-stone-500'}`}>{p.status}</span>
             <button className="btn-outline px-3 py-1 text-xs" disabled={busy} onClick={() => toggle(p.id)}>Toggle</button>
             <Link className="btn-outline px-3 py-1 text-xs" href={`/artisan/products/edit/${p.id}`}>Edit</Link>
             {!p.nfc_tag_id && <Link className="btn-outline px-3 py-1 text-xs" href={`/artisan/products/${p.id}/nfc`}>Register NFC</Link>}

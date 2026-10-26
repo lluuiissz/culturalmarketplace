@@ -7,9 +7,9 @@ import NfcWriter from '@/components/NfcWriter';
 interface Row { id: number; name: string; tag: string; status: string }
 
 const STATUS_BADGE: Record<string, string> = {
-  active: 'bg-leaf-500/10 text-leaf-700',
-  awaiting_write: 'bg-amber-100 text-amber-700',
-  lost: 'bg-red-100 text-red-700',
+  active: 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold',
+  awaiting_write: 'bg-amber-100 text-amber-800 border border-amber-200',
+  lost: 'bg-crimson-100 text-crimson-800 border border-crimson-200',
   inactive: 'bg-stone-100 text-stone-500',
 };
 

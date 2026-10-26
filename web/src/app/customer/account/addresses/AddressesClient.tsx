@@ -38,7 +38,7 @@ export default function AddressesClient({ initial }: { initial: Row[] }) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="font-semibold text-stone-800">
-                {a.label}{a.is_default && <span className="badge ml-2 bg-leaf-500/10 text-leaf-700">default</span>}
+                {a.label}{a.is_default && <span className="badge ml-2 bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold">default</span>}
               </p>
               <p className="mt-1 text-sm text-stone-600">{a.address}</p>
               <p className="text-xs text-stone-400">{a.full_name}{a.phone ? ` · ${a.phone}` : ''}{a.landmark ? ` · landmark: ${a.landmark}` : ''}</p>

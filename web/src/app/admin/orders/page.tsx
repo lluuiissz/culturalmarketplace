@@ -16,9 +16,9 @@ export default async function AdminOrdersPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold text-brand-900">All orders</h1>
-      <div className="card mt-6 overflow-x-auto">
-        <table className="w-full text-left text-sm">
+      <h1 className="font-sculpted text-2xl font-bold text-charcoal-900">All orders</h1>
+      <div className="card mt-6 overflow-x-auto touch-scroll [scrollbar-width:thin]">
+        <table className="w-full min-w-[560px] text-left text-sm">
           <thead className="border-b border-stone-100 text-xs uppercase tracking-wide text-stone-400">
             <tr>
               <th className="px-4 py-3">Order</th>
@@ -30,14 +30,14 @@ export default async function AdminOrdersPage() {
           </thead>
           <tbody className="divide-y divide-stone-50">
             {rows.map((o) => (
-              <tr key={o.id} className="hover:bg-brand-50/40">
+              <tr key={o.id} className="hover:bg-ochre-50/40">
                 <td className="px-4 py-3">
-                  <p className="font-semibold text-stone-700">#{o.id}</p>
+                  <p className="font-semibold text-charcoal-900">#{o.id}</p>
                   <p className="text-xs text-stone-400">{o.created}</p>
                 </td>
                 <td className="px-4 py-3 text-stone-600">{o.items.join(', ') || '—'}</td>
                 <td className="px-4 py-3">{o.method === 'gcash' ? '📱 GCash' : '💵 COD'}</td>
-                <td className="px-4 py-3 font-semibold text-brand-700">₱{o.total.toFixed(2)}</td>
+                <td className="px-4 py-3 font-bold text-crimson-700 font-mono">₱{o.total.toFixed(2)}</td>
                 <td className="px-4 py-3"><span className="badge bg-stone-100 capitalize text-stone-600">{o.status.replace(/_/g, ' ')}</span></td>
               </tr>
             ))}

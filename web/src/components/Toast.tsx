@@ -27,9 +27,9 @@ export function useToast() {
 }
 
 const KIND_STYLE: Record<ToastKind, string> = {
-  success: 'bg-leaf-500 text-white',
-  error: 'bg-red-600 text-white',
-  info: 'bg-stone-800 text-white',
+  success: 'bg-charcoal-950 text-white border-2 border-ochre-400 shadow-xl',
+  error: 'bg-crimson-700 text-white shadow-xl',
+  info: 'bg-charcoal-900 text-white shadow-xl',
 };
 const KIND_ICON: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'ℹ' };
 

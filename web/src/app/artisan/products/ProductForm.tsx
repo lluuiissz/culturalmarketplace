@@ -255,7 +255,7 @@ export default function ProductForm({
           <div>
             <label className="mb-1 block text-sm font-medium text-stone-700">Category</label>
             <select
-              className={`input ${(form.category || isCustomCategory) ? 'border-leaf-500/60' : 'border-stone-300'}`}
+              className={`input ${(form.category || isCustomCategory) ? 'border-ochre-400' : 'border-stone-300'}`}
               value={isCustomCategory ? '__other__' : form.category}
               onChange={(e) => {
                 const val = e.target.value;
@@ -447,7 +447,7 @@ export default function ProductForm({
                 Available Cultural Experience
               </h2>
               {form.has_tutorial ? (
-                <span className="badge bg-leaf-500 text-white text-xs">Enabled</span>
+                <span className="badge bg-ochre-400 text-charcoal-950 font-bold border border-ochre-500 text-xs">Enabled</span>
               ) : (
                 <span className="badge bg-stone-200 text-stone-600 text-xs">Optional</span>
               )}

@@ -63,7 +63,7 @@ export default function NfcSection({
     <div className="card mt-6 p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-serif text-xl font-bold text-brand-900">NFC authenticity tag</h2>
-        <span className={`badge ${awaiting ? 'bg-amber-100 text-amber-700' : 'bg-leaf-500/10 text-leaf-700'}`}>
+        <span className={`badge ${awaiting ? 'bg-amber-100 text-amber-700' : 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold'}`}>
           {awaiting ? 'Awaiting write' : 'Active'}
         </span>
       </div>
@@ -96,7 +96,7 @@ export default function NfcSection({
 
       {status === 'active' && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <p className="text-sm text-leaf-700">✅ Buyers who tap this card see the authentic-craft verify page.</p>
+          <p className="text-sm font-medium text-ochre-800">✅ Buyers who tap this card see the authentic-craft verify page.</p>
           <button type="button" className="btn-outline px-3 py-1.5 text-xs" disabled={busy} onClick={() => call('replace')}>
             Replace tag (new card)
           </button>

@@ -29,7 +29,7 @@ export default function ProductCard({ product, priority = false }: { product: Pr
         {/* Top Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
           {product.has_tutorial && (
-            <span className="badge bg-forest-700 text-white shadow-xs text-[10px] font-bold py-0.5 px-2">
+            <span className="badge bg-ochre-400 text-charcoal-950 font-bold border border-ochre-500 shadow-xs text-[10px] py-0.5 px-2">
               🌿 Living Workshop
             </span>
           )}

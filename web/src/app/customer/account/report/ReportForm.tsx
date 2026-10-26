@@ -24,7 +24,7 @@ export default function ReportForm() {
   }
 
   if (done) {
-    return <p className="mt-8 rounded-lg bg-leaf-500/10 px-4 py-3 text-sm text-leaf-700">Thank you — your report was submitted and will be reviewed by our team.</p>;
+    return <p className="mt-8 rounded-lg bg-ochre-50 border border-ochre-200 px-4 py-3 text-sm font-medium text-ochre-900">Thank you — your report was submitted and will be reviewed by our team.</p>;
   }
 
   return (
