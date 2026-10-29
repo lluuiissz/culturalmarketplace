@@ -33,7 +33,7 @@ export default async function CustomerDashboard() {
               className="h-16 w-16 rounded-full object-cover border-2 border-brand-200 shadow-xs"
             />
           ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-700 to-amber-700 text-xl font-bold text-white shadow-xs">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-crimson-700 to-ochre-600 text-xl font-bold text-white shadow-xs">
               {session.name.slice(0, 2).toUpperCase()}
             </div>
           )}

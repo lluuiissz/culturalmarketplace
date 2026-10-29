@@ -297,15 +297,15 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               onClick={() => setMode('bundle')}
               className={`flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl font-semibold transition text-center ${
                 mode === 'bundle'
-                  ? 'bg-white text-amber-950 shadow-sm border border-amber-400 ring-2 ring-amber-500/25'
-                  : 'text-charcoal-600 hover:text-amber-900 hover:bg-white/60'
+                  ? 'bg-white text-ochre-900 shadow-sm border border-ochre-400 ring-2 ring-ochre-500/25'
+                  : 'text-charcoal-600 hover:text-ochre-900 hover:bg-white/60'
               }`}
             >
               <div className="flex items-center gap-1.5 font-bold">
                 <span>✨</span>
                 <span>Craft + Workshop</span>
               </div>
-              <span className="text-[11px] font-bold text-amber-700">
+              <span className="text-[11px] font-bold text-ochre-700">
                 ₱{bundleUnitPrice.toFixed(2)}
               </span>
             </button>
@@ -578,17 +578,17 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
 
       {/* PANEL 3: Combined Craft + Workshop Bundle Mode */}
       {mode === 'bundle' && product.has_tutorial && (
-        <div className="space-y-5 rounded-2xl border-2 border-amber-300 bg-amber-50/20 p-5 shadow-xs">
-          <div className="flex items-center justify-between border-b border-amber-200 pb-3">
+        <div className="space-y-5 rounded-2xl border-2 border-ochre-300 bg-ochre-50/20 p-5 shadow-xs">
+          <div className="flex items-center justify-between border-b border-ochre-200 pb-3">
             <div>
-              <p className="text-sm font-bold text-amber-950 flex items-center gap-1.5 font-sculpted">
+              <p className="text-sm font-bold text-ochre-900 flex items-center gap-1.5 font-sculpted">
                 <span>✨</span> Complete Cultural Heritage Bundle
               </p>
               <p className="text-xs text-stone-600 mt-0.5">
                 Receive the authentic craft item AND attend the masterclass workshop.
               </p>
             </div>
-            <span className="badge bg-amber-700 text-white font-bold py-1 px-2.5 text-xs">
+            <span className="badge bg-ochre-600 text-white font-bold py-1 px-2.5 text-xs">
               ₱{bundleUnitPrice.toFixed(2)} / bundle
             </span>
           </div>
@@ -612,8 +612,8 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
                           onClick={() => toggleVariation(v.typeLabel, v.name, Number(v.price) || 0)}
                           className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition ${
                             isSelected
-                              ? 'border-amber-700 bg-amber-700 text-white shadow-xs'
-                              : 'border-abaca-300 bg-white text-charcoal-800 hover:border-amber-500'
+                              ? 'border-crimson-600 bg-crimson-600 text-white shadow-xs'
+                              : 'border-abaca-300 bg-white text-charcoal-800 hover:border-ochre-500'
                           }`}
                         >
                           {v.name} {Number(v.price) > 0 ? `(+₱${v.price})` : ''}
@@ -638,14 +638,14 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
                     key={i}
                     className={`flex items-start gap-3 rounded-xl border p-2.5 cursor-pointer text-xs transition ${
                       session === i
-                        ? 'border-amber-600 bg-amber-50/50 ring-2 ring-amber-500/20 shadow-xs'
+                        ? 'border-ochre-600 bg-ochre-50/50 ring-2 ring-ochre-500/20 shadow-xs'
                         : 'border-abaca-200 bg-white hover:bg-stone-50'
                     }`}
                   >
                     <input
                       type="radio"
                       name="bundle_session"
-                      className="mt-1 accent-amber-600"
+                      className="mt-1 accent-ochre-600"
                       checked={session === i}
                       onChange={() => setSession(i)}
                     />
@@ -671,14 +671,14 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               <label
                 className={`flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer transition ${
                   attendeeFor === 'self'
-                    ? 'border-amber-600 bg-amber-50/70 font-bold text-amber-900 ring-1 ring-amber-500'
+                    ? 'border-ochre-600 bg-ochre-50/70 font-bold text-ochre-900 ring-1 ring-ochre-500'
                     : 'border-abaca-200 text-charcoal-700 hover:bg-stone-50'
                 }`}
               >
                 <input
                   type="radio"
                   name="bundle_attendee_for"
-                  className="accent-amber-600"
+                  className="accent-ochre-600"
                   checked={attendeeFor === 'self'}
                   onChange={() => setAttendeeFor('self')}
                 />
@@ -688,14 +688,14 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               <label
                 className={`flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer transition ${
                   attendeeFor === 'others'
-                    ? 'border-amber-600 bg-amber-50/70 font-bold text-amber-900 ring-1 ring-amber-500'
+                    ? 'border-ochre-600 bg-ochre-50/70 font-bold text-ochre-900 ring-1 ring-ochre-500'
                     : 'border-abaca-200 text-charcoal-700 hover:bg-stone-50'
                 }`}
               >
                 <input
                   type="radio"
                   name="bundle_attendee_for"
-                  className="accent-amber-600"
+                  className="accent-ochre-600"
                   checked={attendeeFor === 'others'}
                   onChange={() => setAttendeeFor('others')}
                 />
@@ -738,7 +738,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               type="button"
-              className="btn bg-amber-700 hover:bg-amber-800 text-white flex-1 py-3.5 font-bold uppercase tracking-wider text-xs shadow-md rounded-xl transition"
+              className="btn bg-crimson-600 hover:bg-crimson-700 text-white flex-1 py-3.5 font-bold uppercase tracking-wider text-xs shadow-md rounded-xl transition"
               disabled={busy || product.stock_quantity <= 0}
               onClick={() => addToCart('bundle')}
             >

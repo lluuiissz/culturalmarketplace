@@ -39,8 +39,8 @@ export default function GcashClient({ orderId, total }: { orderId: number; total
   if (step === 'done') {
     return (
       <div className="mt-6 text-center">
-        <div className="text-5xl">✅</div>
-        <p className="mt-3 font-semibold text-sky-800">Payment successful</p>
+        <div className="text-5xl">✨</div>
+        <p className="mt-3 font-bold font-sculpted text-charcoal-900 text-lg">Payment Successful</p>
         <p className="mt-1 text-sm text-stone-500">Reference: {ref}</p>
         <button className="btn-primary mt-6 w-full" onClick={() => router.push(`/order/success/${orderId}`)}>
           Continue to order

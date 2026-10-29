@@ -160,7 +160,7 @@ export default function ShipWizard({ orderItemId, item, shippingAddress, custome
           <div className="rounded-xl bg-stone-50 p-3 text-sm text-stone-600">
             <p className="font-semibold text-stone-800">{item.name} × {item.quantity}{item.variant ? ` (${item.variant})` : ''}</p>
             <p className="mt-1">Declared value: <b>₱{declaredValue.toFixed(2)}</b> (auto-computed from the order)</p>
-            {declaredValue > 10000 && <p className="mt-1 text-amber-600">⚠ High-value item — J&T recommends purchasing insurance for items above ₱10,000.</p>}
+            {declaredValue > 10000 && <p className="mt-1 text-ochre-800 font-medium">⚠ High-value item — J&T recommends purchasing insurance for items above ₱10,000.</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

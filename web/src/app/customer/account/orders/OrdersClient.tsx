@@ -235,8 +235,8 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                       : r.status === 'shipped'
                       ? 'bg-ochre-100 text-ochre-800 border border-ochre-300'
                       : r.status === 'cancelled'
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-amber-100 text-amber-800'
+                      ? 'bg-crimson-100 text-crimson-700'
+                      : 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold'
                   }`}
                 >
                   {r.status.replace(/_/g, ' ')}
@@ -278,7 +278,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                             {i.name} × {i.qty}
                           </p>
                           {isBundle && (
-                            <span className="badge bg-amber-100 text-amber-800 text-[10px] font-bold">
+                            <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
                               ✨ Craft + Workshop Bundle
                             </span>
                           )}
@@ -358,7 +358,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                         )}
 
                         {i.rating != null && (
-                          <span className="text-xs text-amber-500 font-medium">
+                          <span className="text-xs text-ochre-500 font-medium">
                             {'★'.repeat(i.rating)}{'☆'.repeat(5 - i.rating)} Reviewed
                           </span>
                         )}
@@ -383,7 +383,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                             <button
                               key={s}
                               type="button"
-                              className={`text-2xl transition ${s <= rating ? 'text-amber-500 scale-110' : 'text-stone-300'}`}
+                              className={`text-2xl transition ${s <= rating ? 'text-ochre-500 scale-110' : 'text-stone-300'}`}
                               onClick={() => setRating(s)}
                             >
                               ★

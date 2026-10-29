@@ -41,7 +41,7 @@ export default async function ArtisanAnalyticsPage() {
             <div className="mt-3 space-y-2 text-sm">
               {stats.recentReviews.map((r, i) => (
                 <div key={i}>
-                  <p className="text-stone-600">{r.name} <span className="text-amber-500">{'★'.repeat(r.rating)}</span></p>
+                  <p className="text-stone-600">{r.name} <span className="text-ochre-500">{'★'.repeat(r.rating)}</span></p>
                   {r.comment && <p className="text-xs text-stone-500">“{r.comment}”</p>}
                 </div>
               ))}

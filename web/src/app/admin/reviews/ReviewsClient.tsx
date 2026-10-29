@@ -31,7 +31,7 @@ export default function ReviewsClient({ initial }: { initial: Row[] }) {
             <div>
               <p className="font-semibold text-stone-800">
                 {r.product}
-                <span className="ml-2 text-amber-500">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                <span className="ml-2 text-ochre-500">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
                 {!r.visible && <span className="badge ml-2 bg-red-100 text-red-700">hidden</span>}
               </p>
               <p className="text-sm text-stone-500">{r.customer} · {r.reviewed}</p>

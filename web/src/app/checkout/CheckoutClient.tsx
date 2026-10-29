@@ -457,7 +457,7 @@ export default function CheckoutClient({
           )}
 
           {total > 0 && hasWorkshop && (
-            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <p className="rounded-lg bg-ochre-50 border border-ochre-200 px-3 py-2 text-xs text-ochre-900 font-medium">
               📌 Workshop session bookings require advance payment via GCash.
             </p>
           )}

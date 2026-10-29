@@ -927,20 +927,20 @@ export default function ArtisanRegisterPage() {
                       </div>
                     )}
                     {faceResult === 'mismatch' && (
-                      <div className="flex items-start gap-2.5 text-amber-800 bg-amber-50 border border-amber-200 p-3 rounded-xl">
+                      <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
                         <span className="text-base leading-none">⚠️</span>
                         <div>
                           <p className="font-semibold">Face match score below threshold</p>
-                          <p className="text-[11px] text-amber-700 mt-0.5">{faceMessage || 'You can retake photo or submit anyway for manual admin review.'}</p>
+                          <p className="text-[11px] text-ochre-800 mt-0.5">{faceMessage || 'You can retake photo or submit anyway for manual admin review.'}</p>
                         </div>
                       </div>
                     )}
                     {faceResult === 'no_face' && (
-                      <div className="flex items-start gap-2.5 text-amber-800 bg-amber-50 border border-amber-200 p-3 rounded-xl">
+                      <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
                         <span className="text-base leading-none">👤</span>
                         <div>
                           <p className="font-semibold">No face detected</p>
-                          <p className="text-[11px] text-amber-700 mt-0.5">{faceMessage || 'Please retake with your face clearly centered in good lighting.'}</p>
+                          <p className="text-[11px] text-ochre-800 mt-0.5">{faceMessage || 'Please retake with your face clearly centered in good lighting.'}</p>
                         </div>
                       </div>
                     )}
@@ -1041,9 +1041,9 @@ export default function ArtisanRegisterPage() {
                   </p>
 
                   {cameraError && (
-                    <div className="mx-auto mb-3 max-w-sm rounded-xl border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800 text-left flex items-start gap-2">
+                    <div className="mx-auto mb-3 max-w-sm rounded-xl border border-ochre-300 bg-ochre-50 p-2.5 text-xs text-charcoal-900 text-left flex items-start gap-2">
                       <span className="text-sm shrink-0">⚠️</span>
-                      <p className="leading-snug">{cameraError}</p>
+                      <p className="leading-snug text-ochre-900">{cameraError}</p>
                     </div>
                   )}
 

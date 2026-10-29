@@ -108,7 +108,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitialData }
               className="h-24 w-24 rounded-full object-cover border-4 border-brand-100 shadow-sm"
             />
           ) : (
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-brand-700 to-amber-700 text-2xl font-bold text-white shadow-sm border-4 border-brand-100">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-crimson-700 to-ochre-600 text-2xl font-bold text-white shadow-sm border-4 border-crimson-100">
               {form.name.slice(0, 2).toUpperCase() || 'CU'}
             </div>
           )}

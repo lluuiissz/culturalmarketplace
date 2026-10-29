@@ -220,7 +220,7 @@ export default function CustomerBookingsClient({
                     </span>
                   )}
                   {b.purchase_type === 'bundle' && (
-                    <span className="badge bg-amber-100 text-amber-800 text-[10px] font-bold">
+                    <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
                       ✨ Craft + Workshop Bundle
                     </span>
                   )}

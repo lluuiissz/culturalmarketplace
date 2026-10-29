@@ -34,7 +34,7 @@ export default function AttendeesClient({ initial }: { initial: Row[] }) {
             <div className="flex items-center gap-2 flex-wrap">
               <p className="font-semibold text-stone-800">{r.attendee ?? r.customer}</p>
               {r.attendee_for === 'others' && (
-                <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                <span className="rounded-full bg-ochre-100 border border-ochre-300 px-2 py-0.5 text-xs font-bold text-ochre-900">
                   Guest / Group
                 </span>
               )}

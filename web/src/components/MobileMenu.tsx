@@ -112,7 +112,7 @@ export default function MobileMenu({
                 <form action="/api/auth/logout" method="post">
                   <button
                     type="submit"
-                    className="flex min-h-[44px] w-full items-center justify-center rounded-xl border border-red-200 bg-red-50/80 px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-100 active:bg-red-200 transition"
+                    className="flex min-h-[44px] w-full items-center justify-center rounded-xl border border-crimson-200 bg-crimson-50/80 px-4 py-2.5 text-sm font-semibold text-crimson-700 hover:bg-crimson-100 active:bg-crimson-200 transition"
                   >
                     Log out
                   </button>

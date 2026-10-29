@@ -20,7 +20,7 @@ export default async function ArtisanReviewsPage() {
             <div key={r.id} className="card p-4">
               <p className="font-semibold text-stone-800">
                 {r.product_name}
-                <span className="ml-2 text-amber-500">{'★'.repeat(r.review_rating ?? 0)}{'☆'.repeat(5 - (r.review_rating ?? 0))}</span>
+                <span className="ml-2 text-ochre-500">{'★'.repeat(r.review_rating ?? 0)}{'☆'.repeat(5 - (r.review_rating ?? 0))}</span>
               </p>
               {r.review_comment && <p className="mt-1 text-sm text-stone-600">“{r.review_comment}”</p>}
               <p className="mt-1 text-xs text-stone-400">{r.reviewed_at ? new Date(r.reviewed_at).toLocaleString() : ''}</p>

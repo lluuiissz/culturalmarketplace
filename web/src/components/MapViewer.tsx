@@ -368,7 +368,7 @@ export default function MapViewer({
           </div>
 
           {errorMsg && (
-            <p className="text-xs text-amber-800 bg-amber-50 p-2 rounded border border-amber-200">
+            <p className="text-xs text-ochre-900 bg-ochre-50 p-2 rounded border border-ochre-300 font-medium">
               ⚠️ {errorMsg}
             </p>
           )}
@@ -407,7 +407,7 @@ export default function MapViewer({
                     href={wazeNavUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded bg-sky-500 px-2.5 py-1 text-xs font-bold text-white hover:bg-sky-600 shadow-xs"
+                    className="inline-flex items-center gap-1 rounded bg-charcoal-900 border border-charcoal-800 px-2.5 py-1 text-xs font-bold text-white hover:bg-ochre-600 shadow-xs"
                   >
                     <span>🧭</span> Waze
                   </a>

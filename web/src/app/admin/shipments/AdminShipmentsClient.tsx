@@ -13,7 +13,7 @@ const STATUSES = ['created', 'dropped_off', 'in_transit', 'delivered', 'cancelle
 
 const STATUS_STYLE: Record<string, string> = {
   created: 'bg-stone-100 text-stone-600',
-  dropped_off: 'bg-amber-100 text-amber-800 border border-amber-300',
+  dropped_off: 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold',
   in_transit: 'bg-ochre-100 text-ochre-800 border border-ochre-300',
   delivered: 'bg-charcoal-900 text-ochre-300 font-semibold',
   cancelled: 'bg-red-100 text-red-700',

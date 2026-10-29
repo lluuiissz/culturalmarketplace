@@ -63,7 +63,7 @@ export default function NfcSection({
     <div className="card mt-6 p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-serif text-xl font-bold text-brand-900">NFC authenticity tag</h2>
-        <span className={`badge ${awaiting ? 'bg-amber-100 text-amber-700' : 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold'}`}>
+        <span className={`badge ${awaiting ? 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold' : 'bg-charcoal-900 text-ochre-300 font-semibold'}`}>
           {awaiting ? 'Awaiting write' : 'Active'}
         </span>
       </div>

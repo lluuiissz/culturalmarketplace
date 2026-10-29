@@ -46,7 +46,7 @@ export default function ModerationClient({ initial }: { initial: Item[] }) {
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-stone-800">{it.name}</p>
             <p className="text-sm text-stone-500">by {it.artisan}</p>
-            <p className="mt-1 text-xs text-amber-700">{it.flagged_reason}</p>
+            <p className="mt-1 text-xs text-ochre-800 font-medium">{it.flagged_reason}</p>
           </div>
           <div className="flex gap-2">
             <button className="btn-primary px-4 py-2 text-sm" disabled={busy} onClick={() => act(it, 'approve')}>

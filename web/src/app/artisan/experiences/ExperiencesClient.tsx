@@ -130,7 +130,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                   ) : (
                     <Link
                       href={`/artisan/products/${r.id}/edit`}
-                      className="text-amber-700 hover:underline flex items-center gap-1"
+                      className="text-ochre-800 font-medium hover:underline flex items-center gap-1"
                     >
                       <span>⚠️</span>
                       <span>No studio venue pinned</span>

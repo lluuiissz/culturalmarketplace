@@ -140,7 +140,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
             onClick={() => setStatusFilter('pending')}
             className={`rounded-lg px-3 py-1.5 font-medium transition ${
               statusFilter === 'pending'
-                ? 'bg-amber-600 text-white shadow-xs'
+                ? 'bg-ochre-500 text-charcoal-950 font-bold shadow-xs border border-ochre-600'
                 : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
@@ -196,7 +196,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                 <td className="py-2 font-mono font-bold">{b.ticket || `OID-${b.order_item_id}`}</td>
                 <td className="py-2 font-semibold">
                   {b.attendee || b.customer}
-                  {b.attendee_for === 'others' && <span className="block text-[10px] text-amber-800 font-normal">Guest / Group</span>}
+                  {b.attendee_for === 'others' && <span className="block text-[10px] text-ochre-900 font-medium">Guest / Group</span>}
                   {b.attendee && b.attendee !== b.customer && <span className="block text-[10px] text-stone-500">by {b.customer}</span>}
                 </td>
                 <td className="py-2">{b.product} × {b.quantity}</td>
@@ -240,7 +240,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                   <span className="text-xs font-semibold text-stone-500">× {b.quantity}</span>
 
                   {isBundle && (
-                    <span className="badge bg-amber-100 text-amber-800 text-[11px] font-bold">
+                    <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[11px] font-bold">
                       ✨ Craft + Workshop Bundle
                     </span>
                   )}
@@ -259,7 +259,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                     <span className="underline decoration-stone-300">{b.attendee || b.customer}</span>
                   </span>
                   {b.attendee_for === 'others' && (
-                    <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                    <span className="rounded-full bg-ochre-100 border border-ochre-300 px-2 py-0.5 text-[10px] font-bold text-ochre-900">
                       Guest / Group
                     </span>
                   )}
@@ -298,7 +298,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
 
                 {/* Craft Variant (If Bundle or customized craft) */}
                 {b.selected_variant && (
-                  <p className="text-xs text-amber-900 bg-amber-50 rounded px-2 py-1 inline-block border border-amber-200">
+                  <p className="text-xs text-ochre-900 bg-ochre-50 rounded px-2 py-1 inline-block border border-ochre-300">
                     🎨 <b>Craft Variant to Prepare:</b> {b.selected_variant}
                   </p>
                 )}
@@ -322,7 +322,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                       ? 'bg-red-100 text-red-800'
                       : isNoShow
                       ? 'bg-stone-200 text-stone-800'
-                      : 'bg-amber-100 text-amber-800 border border-amber-300'
+                      : 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold'
                   }`}
                 >
                   {isAttended ? '✓ Checked In (Attended)' : b.status.replace(/_/g, ' ')}

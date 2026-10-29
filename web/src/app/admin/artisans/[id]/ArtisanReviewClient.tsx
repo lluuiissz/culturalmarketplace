@@ -26,7 +26,7 @@ interface Props {
 const RULE_MARK = { pass: '✓', warn: '⚠', fail: '✗' } as const;
 const RULE_STYLE = {
   pass: 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold',
-  warn: 'bg-amber-50 text-amber-800 border border-amber-200',
+  warn: 'bg-ochre-100 text-ochre-900 border border-ochre-300 font-semibold',
   fail: 'bg-crimson-50 text-crimson-800 border border-crimson-200',
 } as const;
 

@@ -140,7 +140,7 @@ export default async function Header() {
                 </span>
               </Link>
               <form action="/api/auth/logout" method="post" className="hidden md:block">
-                <button className="min-h-[44px] rounded-xl border border-abaca-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-600 transition hover:border-red-300 hover:text-red-700" type="submit">
+                <button className="min-h-[44px] rounded-xl border border-abaca-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-charcoal-700 transition hover:border-crimson-300 hover:text-crimson-700" type="submit">
                   Log out
                 </button>
               </form>
@@ -159,11 +159,11 @@ export default async function Header() {
         </div>
       </div>
 
-      {/* Mobile only: Guest Action Buttons (above search bar) + Search Bar */}
-      <div className="border-t border-abaca-200/60 bg-canvas/60 px-3.5 pb-2.5 pt-2 md:hidden space-y-2">
-        {/* If guest (not signed in), place Sign In and Join Gathering clearly above the search bar */}
+      {/* Mobile & Tablet: Guest Action Buttons (<md) + Search Bar (<lg) */}
+      <div className="border-t border-abaca-200/60 bg-canvas/60 px-3.5 pb-2.5 pt-2 lg:hidden space-y-2">
+        {/* If guest (not signed in), place Sign In and Join Gathering clearly above the search bar on mobile (<md) */}
         {!session && (
-          <div className="flex items-center gap-2 pb-0.5">
+          <div className="flex items-center gap-2 pb-0.5 md:hidden">
             <Link
               href="/auth/login"
               className="flex-1 min-h-[40px] flex items-center justify-center rounded-xl border border-abaca-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100 transition"
