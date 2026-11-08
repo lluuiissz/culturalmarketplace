@@ -38,7 +38,7 @@ export default async function CustomerDashboard() {
             </div>
           )}
           <div>
-            <h1 className="font-serif text-3xl font-bold text-brand-900">Hi, {session.name} 👋</h1>
+            <h1 className="font-serif text-3xl font-bold text-brand-900">Hi, {session.name} </h1>
             <p className="mt-1 text-stone-500">Track your orders and support local artisans.</p>
           </div>
         </div>
@@ -47,19 +47,19 @@ export default async function CustomerDashboard() {
           <div className="card mt-6 p-5 border-2 border-ochre-400/50 bg-gradient-to-r from-ochre-50/80 via-white to-brand-50/40 flex flex-wrap items-center justify-between gap-4 shadow-xs">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="badge bg-ochre-500 text-charcoal-950 border border-ochre-600 text-xs font-bold">✨ Upcoming Workshop</span>
+                <span className="badge bg-ochre-500 text-charcoal-950 border border-ochre-600 text-xs font-bold"> Upcoming Workshop</span>
                 {nextBooking.ticket_code && (
                   <span className="font-mono text-xs font-bold text-brand-800">🎟️ {nextBooking.ticket_code}</span>
                 )}
               </div>
               <h3 className="font-serif text-lg font-bold text-stone-900">{nextBooking.product_name}</h3>
               <p className="text-xs text-stone-600">
-                📅 {nextBooking.selected_session?.date || 'Confirmed Session'} · 📍 {nextBooking.venue_location || 'Artisan Workshop Studio'}
+               {nextBooking.selected_session?.date || 'Confirmed Session'} · 📍 {nextBooking.venue_location || 'Artisan Workshop Studio'}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Link href="/customer/account/bookings" className="btn-primary text-xs px-3.5 py-2 font-bold shadow-xs">
-                🧭 Track Venue & Pathfinding →
+                 Track Venue & Pathfinding →
               </Link>
             </div>
           </div>

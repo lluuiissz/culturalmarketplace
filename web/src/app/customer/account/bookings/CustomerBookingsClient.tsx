@@ -272,10 +272,10 @@ export default function CustomerBookingsClient({
                         {b.product_name}
                       </h3>
                       <p className="text-xs text-stone-600 flex items-center gap-1.5 mt-0.5">
-                        <span>🧑‍🎨 Conducted by:</span>
+                        <span> Conducted by:</span>
                         <span className="font-semibold text-brand-700">{b.artisan_name}</span>
                         {b.artisan_phone && (
-                          <span className="text-stone-400">· 📞 {b.artisan_phone}</span>
+                          <span className="text-stone-400">·  {b.artisan_phone}</span>
                         )}
                       </p>
                     </div>
@@ -284,7 +284,7 @@ export default function CustomerBookingsClient({
                       {/* Session Date & Time */}
                       <div className="rounded-lg bg-ochre-50/70 p-2.5 border border-ochre-200/60">
                         <p className="font-bold text-charcoal-900 flex items-center gap-1">
-                          <span>📅 Scheduled Session</span>
+                          <span> Scheduled Session</span>
                         </p>
                         <p className="mt-0.5 text-stone-700 font-medium">
                           {b.selected_session?.date || 'Schedule to be confirmed'}
@@ -333,7 +333,7 @@ export default function CustomerBookingsClient({
                       </div>
                       {b.selected_variant && (
                         <p>
-                          🎨 Variant:{' '}
+                           Variant:{' '}
                           <span className="font-semibold text-stone-800">{b.selected_variant}</span>
                         </p>
                       )}
@@ -350,7 +350,7 @@ export default function CustomerBookingsClient({
                   <div className="rounded-xl border-2 border-ochre-400/50 bg-white p-4 shadow-sm space-y-3 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xl">🧭</span>
+                        <span className="text-xl"></span>
                         <div>
                           <p className="text-xs font-bold text-brand-900 uppercase tracking-wide">
                             Live Venue Navigation & Pathfinding
@@ -390,7 +390,7 @@ export default function CustomerBookingsClient({
                           : 'bg-ochre-500 text-charcoal-950 hover:bg-ochre-600 border border-ochre-600'
                       }`}
                     >
-                      <span>🧭</span>
+                      <span></span>
                       <span>{isMapOpen ? 'Hide Venue Map' : 'Find Venue & Pathfinding'}</span>
                     </button>
 
@@ -398,7 +398,7 @@ export default function CustomerBookingsClient({
                       href={`/order/receipt/${b.order_id}#ticket-${b.order_item_id}`}
                       className="btn-outline px-3 py-1.5 text-xs font-semibold flex items-center gap-1 hover:bg-stone-50"
                     >
-                      <span>🧾</span>
+                      <span></span>
                       <span>Official Receipt & Ticket</span>
                     </Link>
 

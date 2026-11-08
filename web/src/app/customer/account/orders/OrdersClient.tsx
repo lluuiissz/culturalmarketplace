@@ -222,7 +222,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                   )}
                 </div>
                 <p className="text-xs text-stone-500 mt-0.5">
-                  Placed on {new Date(r.created_at).toLocaleString()} · {r.method === 'gcash' ? '📱 GCash' : '💵 Cash on Delivery'} ·{' '}
+                  Placed on {new Date(r.created_at).toLocaleString()} · {r.method === 'gcash' ? 'GCash' : ' Cash on Delivery'} ·{' '}
                   <span className="font-bold text-stone-800">₱{r.total.toFixed(2)}</span>
                 </p>
               </div>
@@ -247,7 +247,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                   className="btn-outline px-3 py-1.5 text-xs font-semibold flex items-center gap-1 hover:bg-stone-50"
                   title="View official printable receipt and ticket"
                 >
-                  <span>🧾</span>
+                  
                   <span>Receipt {hasWorkshop ? '& Ticket' : ''}</span>
                 </Link>
 
@@ -292,7 +292,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                         {/* Variant */}
                         {i.selected_variant && (
                           <p className="text-xs text-stone-600">
-                            🎨 Variant: <span className="font-medium text-stone-800">{i.selected_variant}</span>
+                            Variant: <span className="font-medium text-stone-800">{i.selected_variant}</span>
                           </p>
                         )}
 
@@ -307,7 +307,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                         {i.selected_session && (
                           <div className="rounded-lg bg-ochre-50/70 p-2.5 text-xs text-charcoal-900 border border-ochre-200 space-y-1">
                             <p className="font-semibold text-charcoal-900 flex items-center gap-1">
-                              <span>📅 Scheduled Session:</span>
+                              <span>Scheduled Session:</span>
                               <span>{i.selected_session.date} ({i.selected_session.time_start}–{i.selected_session.time_end})</span>
                             </p>
                             {i.selected_session.location && (
@@ -321,7 +321,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                                 href={`/order/success/${r.id}#venue-guide`}
                                 className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
                               >
-                                <span>🧭</span>
+                                <span></span>
                                 <span>Open Interactive Venue Pathfinding & GPS Guide →</span>
                               </Link>
                             </div>
