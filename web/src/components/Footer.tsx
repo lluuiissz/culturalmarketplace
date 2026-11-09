@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import WeaveDivider from './WeaveDivider';
 
@@ -8,19 +9,13 @@ export default function Footer() {
       <WeaveDivider pattern="kalinga" className="opacity-75" />
 
       <div className="mx-auto max-w-6xl px-4 py-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
+        <div className="grid grid-cols-1 items-start gap-x-12 gap-y-10 md:grid-cols-[1.45fr_1fr_1fr_1.15fr]">
 
           {/* Brand & Provenance */}
           <div className="space-y-4 md:col-span-1">
 
             {/* LOGO AND BRAND NAME */}
-            <div className="flex items-center gap-3">
-              <Link
-                href="/"
-                className="flex shrink-0 items-center"
-                aria-label="Cultural Marketplace — home"
-              {/* LOGO AND BRAND NAME */}
-<div className="flex items-center gap-6">
+<div className="flex min-w-0 items-center gap-4">
   <Link
     href="/"
     className="flex shrink-0 items-center"
@@ -29,7 +24,7 @@ export default function Footer() {
     <img
       src="/images/cultural-marketplace-logo.png"
       alt="Cultural Marketplace Logo"
-      className="h-16 w-auto max-w-[125px] object-contain"
+      className="h-14 w-auto max-w-[110px] object-contain"
     />
   </Link>
 
@@ -41,7 +36,7 @@ export default function Footer() {
       <span className="text-[#D18A00]">Marketplace</span>
     </h2>
 
-    <p className="mt-1 max-w-[190px] text-[10px] font-semibold leading-relaxed text-[#51443A]">
+    <p className="mt-1 max-w-[190px] text-[10px] font-semibold leading-relaxed text-[#8B0000]">
       Agusan del Sur Indigenous Crafts and Experiences
     </p>
   </div>
@@ -62,6 +57,7 @@ export default function Footer() {
             <p className="font-sculpted text-sm font-semibold uppercase tracking-wider text-[#8B0000]">
               Discover the Craft
             </p>
+
             <ul className="space-y-2 text-xs text-[#51443A]">
               <li>
                 <Link href="/customer/browse" className="transition hover:text-[#990000]">
@@ -91,6 +87,7 @@ export default function Footer() {
             <p className="font-sculpted text-sm font-semibold uppercase tracking-wider text-[#8B0000]">
               The Gathering
             </p>
+
             <ul className="space-y-2 text-xs text-[#51443A]">
               <li>
                 <Link href="/auth/register-artisan" className="transition hover:text-[#990000]">
@@ -120,9 +117,11 @@ export default function Footer() {
             <p className="font-sculpted text-sm font-semibold uppercase tracking-wider text-[#8B0000]">
               Cultural Respect
             </p>
+
             <p className="text-xs leading-relaxed text-[#51443A]">
               Each craft pattern represents centuries of sacred heritage. Motifs are utilized with tribal attribution, ensuring genuine cultural preservation without sacred misuse.
             </p>
+
             <p className="text-[11px] text-[#8B5E00]">
               Caraga Administrative Region · Agusan del Sur, Philippines
             </p>
@@ -134,6 +133,7 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} Cultural Marketplace. All rights reserved. Handcrafted with reverence.
           </p>
+
           <p className="text-[11px]">
             Honoring Manobo, Higaonon, Banwaon, and Talaandig Artisan Heritage
           </p>

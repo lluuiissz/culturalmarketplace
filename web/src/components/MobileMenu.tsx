@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import WeaveDivider from '@/components/WeaveDivider';
 
 export interface NavLink { href: string; label: string }
 
@@ -43,26 +44,55 @@ export default function MobileMenu({
         aria-label="Mobile navigation menu"
       >
             <div>
-              {/* Drawer Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-abaca-200">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">☀️</span>
-                  <span className="font-sculpted text-sm font-bold text-charcoal-900">
-                    Cultural Marketplace
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Close menu"
-                  onClick={() => setOpen(false)}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-charcoal-700 hover:bg-stone-100 transition text-base font-bold"
-                >
-                  ✕
-                </button>
-              </div>
+              
+{/* Drawer Header: Official Logo + Brand Name */}
+<div className="flex items-center justify-between gap-2 border-b border-abaca-200 pb-3">
 
-              {/* Tribal divider */}
-              <div className="weave-divider-diamond opacity-60 h-1 my-3" />
+  {/* LOGO + BRAND NAME */}
+  <div className="flex min-w-0 items-center gap-3">
+    <Link
+      href="/"
+      onClick={() => setOpen(false)}
+      className="flex shrink-0 items-center"
+      aria-label="Cultural Marketplace — home"
+    >
+      <img
+        src="/images/cultural-marketplace-logo.png"
+        alt="Cultural Marketplace Logo"
+        className="h-12 w-auto max-w-[85px] object-contain"
+      />
+    </Link>
+
+    {/* BRAND NAME BESIDE LOGO */}
+    <div className="flex min-w-0 flex-col justify-center leading-tight">
+      <h2 className="whitespace-nowrap text-[12px] font-extrabold tracking-tight">
+        <span className="text-[#8B0000]">Cultural</span>
+        {' '}
+        <span className="text-[#FFA500]">Marketplace</span>
+      </h2>
+
+      <p className="mt-1 max-w-[145px] text-[8px] font-bold leading-relaxed text-[#B00000]">
+        Agusan del Sur Indigenous Crafts and Experiences
+      </p>
+    </div>
+  </div>
+
+  {/* CLOSE BUTTON */}
+  <button
+    type="button"
+    aria-label="Close menu"
+    onClick={() => setOpen(false)}
+    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-charcoal-700 transition hover:bg-stone-100"
+  >
+    ✕
+  </button>
+</div>
+
+
+              {/* Top decorative weave border */}
+<div className="relative z-20 my-3">
+  <WeaveDivider pattern="kalinga" />
+</div>
 
               {/* User profile snippet */}
               {loggedIn && name && (
