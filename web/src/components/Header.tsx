@@ -26,9 +26,10 @@ export default async function Header() {
       ? [
           {
             href: '/cart',
-            label: count > 0
-              ? `🧺 Artisan Basket (${count})`
-              : '🧺 Artisan Basket',
+            label:
+              count > 0
+                ? `🧺 Artisan Basket (${count})`
+                : '🧺 Artisan Basket',
           },
           { href: '/customer/account/dashboard', label: 'Patron Account' },
         ]
@@ -72,22 +73,21 @@ export default async function Header() {
       </div>
 
       <button
-  type="submit"
-  className="flex min-h-[36px] items-center justify-center rounded-lg border border-crimson-600 bg-white px-3 py-1.5 text-sm font-medium text-charcoal-800 transition hover:bg-crimson-50"
->
-  Search
-</button>
+        type="submit"
+        className="flex min-h-[36px] items-center justify-center rounded-lg border border-crimson-600 bg-white px-3 py-1.5 text-sm font-medium text-charcoal-800 transition hover:bg-crimson-50"
+      >
+        Search
+      </button>
     </form>
   );
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-stone-200 bg-white shadow-sm">
-
       {/* MAIN HEADER ROW */}
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-3 sm:px-4">
+      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-2 py-2 sm:gap-3 sm:px-4">
 
         {/* LOGO + BRAND NAME + MOBILE MENU */}
-        <div className="flex min-w-0 shrink-0 items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
 
           <MobileMenu
             links={mobileLinks}
@@ -105,24 +105,22 @@ export default async function Header() {
             <img
               src="/images/cultural-marketplace-logo.png"
               alt="Cultural Marketplace Logo"
-              className="h-9 w-auto max-w-[65px] object-contain sm:h-10 sm:max-w-[280px]"
+              className="h-9 w-auto max-w-[48px] object-contain sm:h-10 sm:max-w-[280px]"
             />
           </Link>
 
-          {/* BRAND NAME BESIDE LOGO */}
-<div className="flex min-w-0 shrink flex-col justify-center leading-tight">
-  <h1 className="whitespace-nowrap text-[13px] font-extrabold tracking-tight sm:text-[17px]">
-    <span className="text-[#8B0000]">Cultural</span>{' '}
-    <span className="text-[#FFA500]">Marketplace</span>
-  </h1>
+          {/* BRAND NAME + TAGLINE */}
+          <div className="flex min-w-0 flex-1 flex-col justify-center leading-tight">
+            <h1 className="text-[12px] font-extrabold tracking-tight sm:whitespace-nowrap sm:text-[17px]">
+              <span className="text-[#8B0000]">Cultural</span>{' '}
+              <span className="text-[#FFA500]">Marketplace</span>
+            </h1>
 
-  <p className="max-w-[190px] text-[8px] font-bold leading-tight text-[#B00000] sm:max-w-none sm:whitespace-nowrap sm:text-[9px]">
-    Agusan del Sur Indigenous Crafts and Experiences
-  </p>
-</div>
-
+            <p className="mt-0.5 max-w-full text-[7px] font-bold leading-tight text-[#B00000] sm:whitespace-nowrap sm:text-[9px]">
+              Agusan del Sur Indigenous Crafts and Experiences
+            </p>
+          </div>
         </div>
-        {/* END LOGO + BRAND NAME */}
 
         {/* DESKTOP SEARCH */}
         <div className="hidden w-[235px] shrink-0 xl:block">
@@ -144,15 +142,15 @@ export default async function Header() {
         </nav>
 
         {/* USER ACTIONS */}
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
 
-          {/* CUSTOMER BASKET */}
+          {/* CUSTOMER BASKET - HIDDEN ON SMALL PHONES */}
           {session?.role === 'customer' && (
             <Link
               href="/cart"
               prefetch={false}
               aria-label={`Artisan Basket${count > 0 ? `, ${count} items` : ''}`}
-              className="flex min-h-[38px] items-center justify-center gap-1.5 rounded-lg border border-stone-300 px-2.5 text-xs font-semibold text-charcoal-900 transition hover:bg-ochre-50"
+              className="hidden min-h-[38px] items-center justify-center gap-1.5 rounded-lg border border-stone-300 px-2.5 text-xs font-semibold text-charcoal-900 transition hover:bg-ochre-50 sm:flex"
             >
               <span aria-hidden>🧺</span>
               <span className="hidden sm:inline">Basket</span>
@@ -176,7 +174,7 @@ export default async function Header() {
                       : '/admin/dashboard'
                 }
                 title={`Signed in as ${session.name}`}
-                className="flex min-h-[38px] items-center gap-2 rounded-lg border border-stone-300 px-2 py-1 transition hover:bg-ochre-50"
+                className="flex min-h-[38px] items-center gap-2 rounded-lg border border-stone-300 px-1.5 py-1 transition hover:bg-ochre-50 sm:px-2"
               >
                 {user?.profile_picture ? (
                   <img
@@ -209,7 +207,6 @@ export default async function Header() {
               </form>
             </div>
           ) : (
-            /* GUEST ACTION BUTTONS */
             <div className="hidden items-center gap-2 md:flex">
               <Link
                 href="/auth/login"
@@ -256,7 +253,6 @@ export default async function Header() {
 
       {/* INDIGENOUS GEOMETRIC BORDER */}
       <div className="weave-header-border" aria-hidden="true" />
-
     </header>
   );
 }
