@@ -105,22 +105,21 @@ export default async function Header() {
             <img
               src="/images/cultural-marketplace-logo.png"
               alt="Cultural Marketplace Logo"
-              className="h-10 w-auto max-w-[240px] object-contain sm:h-10 sm:max-w-[280px]"
+              className="h-9 w-auto max-w-[65px] object-contain sm:h-10 sm:max-w-[280px]"
             />
           </Link>
 
           {/* BRAND NAME BESIDE LOGO */}
-          <div className="hidden shrink-0 flex-col justify-center leading-tight sm:flex">
-            <h1 className="whitespace-nowrap text-[16px] font-extrabold tracking-tight sm:text-[17px]">
-              <span className="text-[#8B0000]">Cultural</span>
-              {' '}
-              <span className="text-[#FFA500]">Marketplace</span>
-            </h1>
+<div className="flex min-w-0 shrink flex-col justify-center leading-tight">
+  <h1 className="whitespace-nowrap text-[13px] font-extrabold tracking-tight sm:text-[17px]">
+    <span className="text-[#8B0000]">Cultural</span>{' '}
+    <span className="text-[#FFA500]">Marketplace</span>
+  </h1>
 
-            <p className="whitespace-nowrap text-[8px] font-bold text-[#B00000] sm:text-[9px]">
-              Agusan del Sur Indigenous Crafts and Experiences
-            </p>
-          </div>
+  <p className="max-w-[190px] text-[8px] font-bold leading-tight text-[#B00000] sm:max-w-none sm:whitespace-nowrap sm:text-[9px]">
+    Agusan del Sur Indigenous Crafts and Experiences
+  </p>
+</div>
 
         </div>
         {/* END LOGO + BRAND NAME */}
