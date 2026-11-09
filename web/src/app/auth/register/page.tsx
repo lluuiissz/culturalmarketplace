@@ -5,18 +5,32 @@ import CustomerRegisterForm from './CustomerRegisterForm';
 export default function RegisterPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-canvas px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="mb-6 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 group">
-            <span className="text-2xl text-ochre-500">☀️</span>
-            <span className="font-sculpted text-xl font-bold text-charcoal-900 group-hover:text-crimson-700 transition-colors">
-              Cultural Marketplace
-            </span>
-          </Link>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-ochre-700 mt-1">
-            Agusan del Sur Heritage
-          </p>
-        </div>
+      {/* LOGO + BRAND NAME */}
+  <div className="flex items-center justify-center gap-4">
+    <Link
+      href="/"
+      className="flex shrink-0 items-center"
+      aria-label="Cultural Marketplace — home"
+    >
+      <img
+        src="/images/cultural-marketplace-logo.png"
+        alt="Cultural Marketplace Logo"
+        className="h-16 w-auto max-w-[130px] object-contain"
+      />
+    </Link>
+
+    {/* BRAND NAME */}
+    <div className="flex flex-col justify-center text-left leading-tight">
+      <h1 className="whitespace-nowrap text-lg font-extrabold tracking-tight sm:text-xl">
+        <span className="text-[#8B0000]">Cultural</span>
+        {' '}
+        <span className="text-[#FFA500]">Marketplace</span>
+      </h1>
+
+      <p className="mt-1 max-w-[190px] text-[9px] font-bold leading-relaxed text-[#B00000] sm:text-[10px]">
+        Agusan del Sur Indigenous Crafts and Experiences
+      </p>
+    </div>
 
         <div className="rounded-3xl border border-abaca-200/90 bg-white/95 p-8 shadow-xs relative overflow-hidden">
           <WeaveDivider pattern="diamond" className="absolute top-0 left-0 right-0 opacity-30" />
