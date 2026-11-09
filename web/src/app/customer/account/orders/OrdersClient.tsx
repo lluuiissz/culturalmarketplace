@@ -217,7 +217,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                   <p className="font-bold text-stone-900 text-base">Order #{r.id}</p>
                   {hasWorkshop && (
                     <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
-                      🌿 Cultural Workshop
+                      Cultural Workshop
                     </span>
                   )}
                 </div>
@@ -279,7 +279,7 @@ export default function OrdersClient({ initial }: { initial: OrderRow[] }) {
                           </p>
                           {isBundle && (
                             <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
-                              ✨ Craft + Workshop Bundle
+                              Craft + Workshop Bundle
                             </span>
                           )}
                           {i.ticket_code && (

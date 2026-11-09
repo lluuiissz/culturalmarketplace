@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand & Provenance */}
           <div className="md:col-span-1 space-y-4">
             <Link href="/" className="inline-flex items-center gap-2 font-sculpted text-xl font-bold text-white tracking-wide">
-              <span className="text-2xl text-ochre-500">☀️</span>
+              <span className="text-2xl text-ochre-500"></span>
               <span>Cultural Marketplace</span>
             </Link>
             <p className="text-xs leading-relaxed text-abaca-200/80">

@@ -148,7 +148,7 @@ export default function CustomerBookingsClient({
                 : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'
             }`}
           >
-            🌿 Upcoming ({upcomingCount})
+            Upcoming ({upcomingCount})
           </button>
           <button
             type="button"
@@ -176,7 +176,7 @@ export default function CustomerBookingsClient({
 
         <div className="relative w-full sm:w-64">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-stone-400">
-            🔍
+            
           </span>
           <input
             type="search"
@@ -221,7 +221,7 @@ export default function CustomerBookingsClient({
                   )}
                   {b.purchase_type === 'bundle' && (
                     <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] font-bold">
-                      ✨ Craft + Workshop Bundle
+                      Craft + Workshop Bundle
                     </span>
                   )}
                 </div>

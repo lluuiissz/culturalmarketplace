@@ -67,19 +67,19 @@ export default async function Header() {
             avatar={user?.profile_picture ?? null}
           />
 
-          <Link href="/" className="shrink-0 flex items-center gap-2 sm:gap-2.5 group min-w-0" aria-label="Cultural Marketplace — home">
-            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-ochre-500 to-crimson-700 text-white shadow-xs group-hover:scale-105 transition-transform">
-              <span className="text-lg sm:text-xl">☀️</span>
-            </div>
-            <div className="min-w-0">
-              <span className="block font-sculpted text-sm sm:text-lg font-bold text-charcoal-900 group-hover:text-crimson-700 transition-colors leading-tight truncate">
-                Cultural Marketplace
-              </span>
-              <span className="block text-[9px] sm:text-[10px] font-sans font-semibold tracking-wider sm:tracking-widest uppercase text-ochre-700 truncate">
-                Agusan del Sur Heritage
-              </span>
-            </div>
-          </Link>
+          
+<Link
+  href="/"
+  className="shrink-0 flex items-center group min-w-0"
+  aria-label="Cultural Marketplace — home"
+>
+  <img
+    src="/images/cultural-marketplace-logo.jpg"
+    alt="Cultural Marketplace"
+    className="h-12 w-auto max-w-[190px] object-contain"
+  />
+</Link>
+
         </div>
 
         {/* Desktop: global search sits at the center with dedicated space */}
