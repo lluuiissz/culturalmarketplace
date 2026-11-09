@@ -8,13 +8,13 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Patron Record',
     items: [
-      { href: '/customer/account/dashboard', label: 'Patron Logbook', icon: '🏠' },
-      { href: '/customer/account/orders', label: 'Craft Orders & History', icon: '🧾' },
-      { href: '/customer/account/bookings', label: 'Workshop Passes & Schedules', icon: '🎟️' },
-      { href: '/customer/account/messages', label: 'Artisan Messages', icon: '💬' },
-      { href: '/customer/account/addresses', label: 'Delivery Addresses', icon: '📍' },
-      { href: '/customer/account/report', label: 'Cultural Helpdesk & Reports', icon: '🚩' },
-      { href: '/customer/account/profile', label: 'Patron Profile', icon: '👤' },
+      { href: '/customer/account/dashboard', label: 'Patron Logbook', icon: 'home' },
+      { href: '/customer/account/orders', label: 'Craft Orders & History', icon: 'receipt' },
+      { href: '/customer/account/bookings', label: 'Workshop Passes & Schedules', icon: 'calendar' },
+      { href: '/customer/account/messages', label: 'Artisan Messages', icon: 'message' },
+      { href: '/customer/account/addresses', label: 'Delivery Addresses', icon: 'map-pin' },
+      { href: '/customer/account/report', label: 'Cultural Helpdesk & Reports', icon: 'flag' },
+      { href: '/customer/account/profile', label: 'Patron Profile', icon: 'user' },
     ],
   },
 ];

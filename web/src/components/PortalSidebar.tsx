@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -5,10 +6,47 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
+import {
+  Home,
+  ReceiptText,
+  CalendarDays,
+  MessageCircle,
+  MapPin,
+  Flag,
+  UserRound,
+  ShoppingBag,
+  Menu,
+  X,
+  ArrowRight,
+} from 'lucide-react';
+
+type NavIconName =
+  | 'home'
+  | 'receipt'
+  | 'calendar'
+  | 'message'
+  | 'map-pin'
+  | 'flag'
+  | 'user';
+
 export interface NavSection {
   title: string;
-  items: Array<{ href: string; label: string; icon?: string }>;
+  items: Array<{
+    href: string;
+    label: string;
+    icon?: NavIconName;
+  }>;
 }
+
+const NAV_ICONS = {
+  home: Home,
+  receipt: ReceiptText,
+  calendar: CalendarDays,
+  message: MessageCircle,
+  'map-pin': MapPin,
+  flag: Flag,
+  user: UserRound,
+};
 
 function isActive(pathname: string, href: string): boolean {
   if (href === pathname) return true;
@@ -42,6 +80,7 @@ export default function PortalSidebar({
     } else {
       document.body.style.overflow = '';
     }
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -50,65 +89,69 @@ export default function PortalSidebar({
   const roleTitle = portalLabel.toLowerCase().includes('admin')
     ? 'Curator Administrator'
     : portalLabel.toLowerCase().includes('artisan')
-    ? 'Master Artisan'
-    : 'Active Patron';
+      ? 'Master Artisan'
+      : 'Active Patron';
 
   const content = (
-    <div className="flex h-full max-h-full flex-col min-h-0 overflow-hidden">
-      
-{/* 1. Header: Official Logo and Brand Identity */}
-<div className="shrink-0 flex items-center justify-between gap-2 border-b border-charcoal-800 pb-3.5">
-  <Link
-    href={portalHome}
-    className="flex min-w-0 items-center gap-2.5 group"
-  >
-    {/* OFFICIAL LOGO */}
-    <img
-      src="/images/cultural-marketplace-logo.png"
-      alt="Cultural Marketplace Logo"
-      className="h-10 w-10 shrink-0 rounded-lg object-contain"
-    />
+    <div className="flex h-full max-h-full min-h-0 flex-col overflow-hidden">
 
-    {/* BRAND NAME AND TAGLINE */}
-    <div className="flex min-w-0 flex-col justify-center leading-tight">
-      <span className="font-sculpted text-[12px] font-extrabold tracking-tight text-white transition-colors group-hover:text-ochre-300">
-        Cultural Marketplace
-      </span>
+      {/* SIDEBAR HEADER */}
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#DCC5A8] pb-3.5">
+        <Link
+          href={portalHome}
+          className="group flex min-w-0 items-center gap-2.5"
+        >
+          <img
+            src="/images/cultural-marketplace-logo.png"
+            alt="Cultural Marketplace Logo"
+            className="h-10 w-10 shrink-0 rounded-lg object-contain"
+          />
 
-      <span className="mt-1 text-[8px] font-semibold leading-relaxed text-stone-400">
-        Agusan del Sur Indigenous Crafts and Experiences
-      </span>
+          <div className="flex min-w-0 flex-col justify-center leading-tight">
+  <span className="text-[12px] font-extrabold tracking-tight">
+    <span className="text-[#8B0000]">Cultural</span>{' '}
+    <span className="text-[#FFA500]">Marketplace</span>
+  </span>
 
-      <span className="mt-1 inline-block w-fit rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-ochre-500/20 text-ochre-300 border border-ochre-500/30">
-        {portalLabel}
-      </span>
-    </div>
-  </Link>
+  <span className="mt-0.5 max-w-full text-[7px] font-bold leading-tight text-[#B00000]">
+    Agusan del Sur Indigenous Crafts and Experiences
+  </span>
 
-  <button
-    type="button"
-    className="shrink-0 rounded-lg p-1.5 text-base text-stone-400 hover:text-white hover:bg-charcoal-800 md:hidden"
-    aria-label="Close menu"
-    onClick={() => setOpen(false)}
-  >
-    ✕
-  </button>
-</div>
+            <span className="mt-1 inline-block w-fit rounded border border-[#D6B56D] bg-[#F0DFC0] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#5C421D]">
+              {portalLabel}
+            </span>
+          </div>
+        </Link>
 
+        {/* CLOSE BUTTON */}
+        <button
+          type="button"
+          className="shrink-0 rounded-lg p-1.5 text-[#4B4038] transition hover:bg-[#EAD9C3] hover:text-[#211B17] md:hidden"
+          aria-label="Close menu"
+          onClick={() => setOpen(false)}
+        >
+          <X size={19} strokeWidth={1.8} />
+        </button>
+      </div>
 
-      {/* 2. Navigation Sections (Scrollable middle container) */}
+      {/* NAVIGATION SECTIONS */}
       <nav
-        className="my-3 flex-1 min-h-0 overflow-y-auto pr-1 space-y-4 text-xs font-medium [scrollbar-width:thin] [scrollbar-color:#23272F_transparent]"
+        className="my-3 min-h-0 flex-1 space-y-4 overflow-y-auto pr-1 text-xs font-medium [scrollbar-color:#B8A58F_transparent] [scrollbar-width:thin]"
         aria-label={`${portalLabel} navigation`}
       >
         {sections.map((section) => (
           <div key={section.title}>
-            <p className="px-2.5 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-ochre-400 font-sculpted">
+            <p className="px-2.5 pb-1.5 font-sculpted text-[10px] font-bold uppercase tracking-wider text-[#8B0000]">
               {section.title}
             </p>
+
             <div className="flex flex-col gap-0.5">
               {section.items.map((item) => {
                 const active = isActive(pathname, item.href);
+                const Icon = item.icon
+                  ? NAV_ICONS[item.icon]
+                  : null;
+
                 return (
                   <Link
                     key={item.href}
@@ -117,16 +160,22 @@ export default function PortalSidebar({
                     aria-current={active ? 'page' : undefined}
                     className={`flex items-center gap-2.5 rounded-xl px-3 py-2 transition-all ${
                       active
-                        ? 'bg-crimson-600 text-white font-semibold shadow-xs'
-                        : 'hover:bg-charcoal-800 hover:text-white text-stone-300 font-medium'
+                        ? 'bg-[#8B0000] font-semibold text-white shadow-sm'
+                        : 'font-medium text-[#3F352E] hover:bg-[#EAD9C3] hover:text-[#211B17]'
                     }`}
                     onClick={() => setOpen(false)}
                   >
-                    {item.icon && (
-                      <span aria-hidden className="w-4 text-center text-sm leading-none opacity-90">
-                        {item.icon}
-                      </span>
+                    {Icon && (
+                      <Icon
+                        size={17}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                        className={`shrink-0 ${
+                          active ? 'text-white' : 'text-[#75695F]'
+                        }`}
+                      />
                     )}
+
                     <span className="truncate">{item.label}</span>
                   </Link>
                 );
@@ -136,29 +185,40 @@ export default function PortalSidebar({
         ))}
       </nav>
 
-      {/* 3. Footer (Fixed bottom) */}
-      <div className="shrink-0 border-t border-charcoal-800 pt-3 space-y-2">
+      {/* SIDEBAR FOOTER */}
+      <div className="shrink-0 space-y-2 border-t border-[#DCC5A8] pt-3">
+
+        {/* BACK TO STOREFRONT */}
         <Link
           href="/"
           prefetch={true}
           onClick={() => setOpen(false)}
-          className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold text-ochre-300 hover:bg-charcoal-800 hover:text-ochre-200 transition"
+          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#8B0000] transition hover:bg-[#EAD9C3] hover:text-[#650000]"
         >
-          <span>🛍️</span>
+          <ShoppingBag
+            size={16}
+            strokeWidth={1.8}
+            className="text-[#75695F]"
+          />
           <span>{backLabel}</span>
         </Link>
 
-        <div className="rounded-xl bg-charcoal-900 p-2.5 border border-charcoal-800">
-          <p className="text-[10px] text-ochre-400/90 uppercase tracking-wider font-bold">
+        {/* USER INFORMATION */}
+        <div className="rounded-xl border border-[#DCC5A8] bg-white/70 p-2.5">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8B0000]">
             {roleTitle}
           </p>
-          <p className="font-bold text-xs text-white truncate mt-0.5">{userName}</p>
+
+          <p className="mt-0.5 truncate text-xs font-bold text-[#211B17]">
+            {userName}
+          </p>
         </div>
 
+        {/* LOGOUT */}
         <form action="/api/auth/logout" method="post">
           <button
             type="submit"
-            className="w-full rounded-xl border border-red-900/60 bg-red-950/40 px-3 py-2 text-xs font-semibold text-red-300 transition hover:bg-red-900/40 hover:text-red-200"
+            className="w-full rounded-xl border border-[#D9A6A6] bg-[#FCEEEE] px-3 py-2 text-xs font-semibold text-[#8B0000] transition hover:bg-[#F5DADA] hover:text-[#650000]"
           >
             Log out
           </button>
@@ -169,53 +229,74 @@ export default function PortalSidebar({
 
   return (
     <>
-      {/* Mobile Top Bar */}
-      <div className="sticky top-0 z-40 border-b border-abaca-200/90 bg-white/95 backdrop-blur-md md:hidden">
+      {/* MOBILE TOP BAR */}
+      <div className="sticky top-0 z-40 border-b border-[#DCC5A8] bg-[#F5EBDD]/95 backdrop-blur-md md:hidden">
         <div className="flex h-14 items-center justify-between px-3">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+
+            {/* MENU BUTTON */}
             <button
               type="button"
               aria-label="Toggle portal navigation"
               aria-expanded={open}
-              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1 rounded-xl border border-abaca-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1 rounded-xl border border-[#DCC5A8] bg-white px-3 py-2 text-xs font-semibold text-[#211B17] shadow-sm transition hover:bg-[#EAD9C3] active:bg-[#DCC5A8]"
               onClick={() => setOpen((o) => !o)}
             >
-              <span aria-hidden className="text-base leading-none">{open ? '✕' : '☰'}</span>
+              {open ? (
+                <X size={18} strokeWidth={1.8} className="text-[#211B17]" />
+              ) : (
+                <Menu size={18} strokeWidth={1.8} className="text-[#211B17]" />
+              )}
               <span>Menu</span>
             </button>
-            <Link
-  href={portalHome}
-  className="flex min-w-0 items-center gap-2"
->
-  <img
-    src="/images/cultural-marketplace-logo.png"
-    alt="Cultural Marketplace"
-    className="h-8 w-8 shrink-0 rounded object-contain"
-  />
 
-  <span className="truncate text-xs font-bold text-charcoal-900">
-    {portalLabel}
-  </span>
-</Link>
+            {/* MOBILE BRAND */}
+            <Link
+              href={portalHome}
+              className="flex min-w-0 items-center gap-2"
+            >
+              <img
+                src="/images/cultural-marketplace-logo.png"
+                alt="Cultural Marketplace"
+                className="h-8 w-8 shrink-0 rounded object-contain"
+              />
+
+              <span className="truncate text-xs font-bold text-[#211B17]">
+                {portalLabel}
+              </span>
+            </Link>
           </div>
-          <Link href="/" className="text-xs font-semibold text-crimson-700 hover:underline px-2 py-1">
-            Storefront →
+
+          {/* STOREFRONT LINK */}
+          <Link
+            href="/"
+            className="flex shrink-0 items-center gap-1 px-2 py-1 text-xs font-semibold text-[#8B0000] transition hover:underline"
+          >
+            Storefront
+            <ArrowRight size={13} className="text-[#8B0000]" />
           </Link>
         </div>
 
-        {open && mounted && createPortal(
-          <div className="fixed inset-0 z-[100] flex justify-start md:hidden">
-            <div className="fixed inset-0 bg-charcoal-950/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-            <div className="relative z-50 flex h-full w-72 sm:w-80 flex-col bg-charcoal-950 p-4 shadow-2xl border-r border-charcoal-800 overflow-hidden animate-in slide-in-from-left duration-200">
-              {content}
-            </div>
-          </div>,
-          document.body
-        )}
+        {/* MOBILE DRAWER */}
+        {open &&
+          mounted &&
+          createPortal(
+            <div className="fixed inset-0 z-[100] flex justify-start md:hidden">
+              <div
+                className="fixed inset-0 bg-[#211B17]/60 backdrop-blur-sm"
+                onClick={() => setOpen(false)}
+              />
+
+              <div className="relative z-50 flex h-full w-72 flex-col overflow-hidden border-r border-[#DCC5A8] bg-[#F5EBDD] p-4 shadow-2xl animate-in slide-in-from-left duration-200 sm:w-80">
+                {content}
+              </div>
+            </div>,
+            document.body
+          )}
       </div>
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-charcoal-800 bg-charcoal-950 p-4 text-canvas md:sticky md:top-0 md:flex md:h-screen md:max-h-screen overflow-hidden shadow-lg">
+      {/* DESKTOP SIDEBAR */}
+      <aside className="hidden w-64 shrink-0 flex-col overflow-hidden border-r border-[#DCC5A8] bg-[#F5EBDD] p-4 text-[#211B17] shadow-lg md:sticky md:top-0 md:flex md:h-screen md:max-h-screen">
         {content}
       </aside>
     </>
