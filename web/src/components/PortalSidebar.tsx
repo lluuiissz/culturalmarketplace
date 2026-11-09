@@ -55,30 +55,46 @@ export default function PortalSidebar({
 
   const content = (
     <div className="flex h-full max-h-full flex-col min-h-0 overflow-hidden">
-      {/* 1. Header (Fixed top) */}
-      <div className="shrink-0 flex items-center justify-between pb-3.5 border-b border-charcoal-800">
-        <Link href={portalHome} className="flex items-center gap-2.5 group">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-ochre-500 to-crimson-700 text-white shadow-2xs">
-            <span className="text-base">☀️</span>
-          </div>
-          <div>
-            <span className="block font-sculpted text-sm font-bold text-white group-hover:text-ochre-300 transition-colors leading-tight">
-              Cultural Marketplace
-            </span>
-            <span className="inline-block mt-0.5 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-ochre-500/20 text-ochre-300 border border-ochre-500/30">
-              {portalLabel}
-            </span>
-          </div>
-        </Link>
-        <button
-          type="button"
-          className="rounded-lg p-1.5 text-base text-stone-400 hover:text-white hover:bg-charcoal-800 md:hidden"
-          aria-label="Close menu"
-          onClick={() => setOpen(false)}
-        >
-          ✕
-        </button>
-      </div>
+      
+{/* 1. Header: Official Logo and Brand Identity */}
+<div className="shrink-0 flex items-center justify-between gap-2 border-b border-charcoal-800 pb-3.5">
+  <Link
+    href={portalHome}
+    className="flex min-w-0 items-center gap-2.5 group"
+  >
+    {/* OFFICIAL LOGO */}
+    <img
+      src="/images/cultural-marketplace-logo.png"
+      alt="Cultural Marketplace Logo"
+      className="h-10 w-10 shrink-0 rounded-lg object-contain"
+    />
+
+    {/* BRAND NAME AND TAGLINE */}
+    <div className="flex min-w-0 flex-col justify-center leading-tight">
+      <span className="font-sculpted text-[12px] font-extrabold tracking-tight text-white transition-colors group-hover:text-ochre-300">
+        Cultural Marketplace
+      </span>
+
+      <span className="mt-1 text-[8px] font-semibold leading-relaxed text-stone-400">
+        Agusan del Sur Indigenous Crafts and Experiences
+      </span>
+
+      <span className="mt-1 inline-block w-fit rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-ochre-500/20 text-ochre-300 border border-ochre-500/30">
+        {portalLabel}
+      </span>
+    </div>
+  </Link>
+
+  <button
+    type="button"
+    className="shrink-0 rounded-lg p-1.5 text-base text-stone-400 hover:text-white hover:bg-charcoal-800 md:hidden"
+    aria-label="Close menu"
+    onClick={() => setOpen(false)}
+  >
+    ✕
+  </button>
+</div>
+
 
       {/* 2. Navigation Sections (Scrollable middle container) */}
       <nav
@@ -167,9 +183,20 @@ export default function PortalSidebar({
               <span aria-hidden className="text-base leading-none">{open ? '✕' : '☰'}</span>
               <span>Menu</span>
             </button>
-            <Link href={portalHome} className="min-w-0 truncate font-sculpted text-sm font-bold text-charcoal-900">
-              ☀️ {portalLabel}
-            </Link>
+            <Link
+  href={portalHome}
+  className="flex min-w-0 items-center gap-2"
+>
+  <img
+    src="/images/cultural-marketplace-logo.png"
+    alt="Cultural Marketplace"
+    className="h-8 w-8 shrink-0 rounded object-contain"
+  />
+
+  <span className="truncate text-xs font-bold text-charcoal-900">
+    {portalLabel}
+  </span>
+</Link>
           </div>
           <Link href="/" className="text-xs font-semibold text-crimson-700 hover:underline px-2 py-1">
             Storefront →
