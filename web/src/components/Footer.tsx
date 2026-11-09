@@ -19,26 +19,33 @@ export default function Footer() {
                 href="/"
                 className="flex shrink-0 items-center"
                 aria-label="Cultural Marketplace — home"
-              >
-                <img
-                  src="/images/cultural-marketplace-logo.png"
-                  alt="Cultural Marketplace Logo"
-                  className="h-14 w-auto max-w-[110px] object-contain"
-                />
-              </Link>
+              {/* LOGO AND BRAND NAME */}
+<div className="flex items-center gap-6">
+  <Link
+    href="/"
+    className="flex shrink-0 items-center"
+    aria-label="Cultural Marketplace — home"
+  >
+    <img
+      src="/images/cultural-marketplace-logo.png"
+      alt="Cultural Marketplace Logo"
+      className="h-16 w-auto max-w-[125px] object-contain"
+    />
+  </Link>
 
-              {/* BRAND NAME BESIDE LOGO */}
-              <div className="flex min-w-0 flex-col justify-center leading-tight">
-                <h2 className="whitespace-nowrap font-sans text-sm font-extrabold tracking-tight sm:text-base">
-                  <span className="text-[#8B0000]">Cultural</span>
-                  {' '}
-                  <span className="text-[#D18A00]">Marketplace</span>
-                </h2>
-                <p className="mt-1 text-[9px] font-semibold leading-tight text-[#51443A]">
-                  Agusan del Sur Indigenous Crafts and Experiences
-                </p>
-              </div>
-            </div>
+  {/* BRAND NAME BESIDE LOGO */}
+  <div className="flex min-w-0 flex-col justify-center leading-tight">
+    <h2 className="whitespace-nowrap font-sans text-base font-extrabold tracking-tight sm:text-lg">
+      <span className="text-[#8B0000]">Cultural</span>
+      {' '}
+      <span className="text-[#D18A00]">Marketplace</span>
+    </h2>
+
+    <p className="mt-1 max-w-[190px] text-[10px] font-semibold leading-relaxed text-[#51443A]">
+      Agusan del Sur Indigenous Crafts and Experiences
+    </p>
+  </div>
+</div>
 
             <p className="text-xs leading-relaxed text-[#51443A]">
               Preserving and honoring the living indigenous traditions of Agusan del Sur. Connecting master weavers, woodcarvers, and cultural keepers directly with respectful global patrons.
