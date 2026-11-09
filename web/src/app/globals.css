@@ -27,13 +27,16 @@ body {
   letter-spacing: -0.015em;
 }
 
-/* Tactical Weave Section Dividers */
+
+/* Traditional Geometric Tribal Weave Divider */
 .weave-divider {
   height: 12px;
   width: 100%;
-  background-image: var(--weave-kalinga);
+  background-color: #111111;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='12' viewBox='0 0 36 12'%3E%3Crect width='36' height='12' fill='%23111111'/%3E%3Cpath d='M0 12 L6 0 L12 12 L18 0 L24 12 L30 0 L36 12' fill='none' stroke='%23FFFFFF' stroke-width='2'/%3E%3Cpath d='M2 11 L6 3 L10 11 Z M14 11 L18 3 L22 11 Z M26 11 L30 3 L34 11 Z' fill='%239E0000' stroke='%23F5C542' stroke-width='0.8'/%3E%3Cpath d='M6 0 L12 12 M18 0 L24 12 M30 0 L36 12' stroke='%23FFFFFF' stroke-width='1'/%3E%3C/svg%3E");
   background-repeat: repeat-x;
   background-position: center;
+  background-size: 36px 12px;
 }
 
 .weave-divider-diamond {
@@ -124,3 +127,5 @@ html {
   background: #C5832B;
   border-radius: 4px;
 }
+
+

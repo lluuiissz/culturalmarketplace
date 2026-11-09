@@ -21,60 +21,99 @@ export default async function HomePage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-ecru via-canvas to-canvas border-b border-abaca-200/80">
-        <WeaveDivider pattern="kalinga" className="opacity-60" />
+<section
+  className="relative isolate overflow-hidden border-b border-abaca-200/80 bg-[#F5EBDD]"
+  style={{
+    backgroundImage: "url('/images/homepage-background.png')",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center 70%',
+    backgroundRepeat: 'no-repeat',
+  }}
+>
+  {/* Cream gradient overlay for readable text */}
+  <div
+    className="absolute inset-0 z-0 bg-gradient-to-r from-[#F5EBDD]/70 via-[#F5EBDD]/30 to-[#F5EBDD]/5"
+    aria-hidden="true"
+  />
 
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-1.5 text-xs font-semibold text-ochre-700 shadow-2xs border border-ochre-300/80 mb-6 backdrop-blur-xs">
-            <span className="text-sm">🌿</span>
-            <span>Living Traditions of Agusan del Sur</span>
-          </div>
+  {/* Top decorative weave border */}
+  <div className="relative z-20">
+    <WeaveDivider pattern="kalinga" />
+  </div>
 
-          <h1 className="font-sculpted text-3xl font-extrabold text-charcoal-900 sm:text-5xl md:text-6xl max-w-4xl mx-auto leading-tight sm:leading-none tracking-tight">
-            {settings.homepage_banner_title ?? 'Living Heritage, Woven by Master Hands'}
-          </h1>
+  {/* Hero Content */}
+  <div className="relative z-10 mx-auto flex min-h-[410px] max-w-6xl items-center px-5 py-14 sm:min-h-[430px] sm:px-8 sm:py-16">
+    <div className="max-w-[620px] text-left">
 
-          <p className="mx-auto mt-5 max-w-2xl text-sm sm:text-base md:text-lg text-stone-600 leading-relaxed font-sans">
-            {settings.homepage_banner_subtitle ??
-              'Discover authentic indigenous textiles, woodcarvings, and living workshop experiences directly from Agusan del Sur custodians.'}
-          </p>
+      <h1 className="font-sculpted max-w-[600px] text-4xl font-extrabold leading-[1.02] tracking-tight text-[#990000] drop-shadow-[0_1px_1px_rgba(255,255,255,0.35)] sm:text-5xl md:text-[3.4rem]">
+        {settings.homepage_banner_title ??
+          'Discover Authentic Indigenous Crafts & Experiences'}
+      </h1>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-3.5">
-            <Link href="/customer/browse" className="btn-primary px-6 py-3 text-sm font-semibold tracking-wide">
-              <span>Explore the Weaves</span>
-              <span>→</span>
-            </Link>
-            <Link href="/artisans" className="btn-outline px-6 py-3 text-sm font-semibold">
-              Meet the Custodians
-            </Link>
-            <Link href="/auth/register-artisan" className="btn-dark px-6 py-3 text-sm font-semibold hidden sm:inline-flex">
-              Enroll as Artisan
-            </Link>
-          </div>
-        </div>
+      <p className="mt-4 max-w-xl font-sans text-sm font-medium leading-relaxed text-[#211B17] sm:text-base md:text-lg">
+        {settings.homepage_banner_subtitle ??
+          'Supporting Agusan del Sur Artisans and Preserving Cultural Heritage'}
+      </p>
 
-        <WeaveDivider pattern="kalinga" className="opacity-40" />
-      </section>
+      {/* Hero Action Buttons */}
+      <div className="mt-7 flex flex-wrap items-center justify-start gap-3">
+
+        <Link
+          href="/customer/browse"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#990000] bg-[#A50000] px-7 py-3 text-sm font-bold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#850000] hover:shadow-lg"
+        >
+          Explore
+          <span aria-hidden="true">→</span>
+        </Link>
+
+        <Link
+          href="/artisans"
+          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#D9A400] bg-white px-6 py-3 text-sm font-bold text-[#C58300] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FFF8E7] hover:shadow-md"
+        >
+          Meet Artisans
+        </Link>
+
+        <Link
+          href="/auth/register-artisan"
+          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-black bg-black px-6 py-3 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#292929] hover:shadow-md"
+        >
+          Enroll as Artisan
+        </Link>
+
+      </div>
+    </div>
+  </div>
+
+  {/* Bottom decorative weave border */}
+  <div className="relative z-20">
+    <WeaveDivider pattern="kalinga" />
+  </div>
+</section>
+      
 
       <main className="mx-auto max-w-6xl px-4 py-12 flex-1 w-full">
         {/* Category Weave Pills */}
         <div className="mb-12">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-ochre-700 font-sans">
-              Traditional Craft Categories
-            </h2>
-            <Link href="/customer/browse" className="text-xs font-semibold text-crimson-700 hover:underline">
-              View All Crafts →
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-2">
+  <div className="mb-3 flex items-center justify-between border-b border-stone-300 pb-3">
+    <h2 className="font-sans text-xl font-extrabold tracking-tight text-[#44403C] sm:text-2xl">
+      Traditional Craft Categories
+    </h2>
+
+    <Link
+      href="/customer/browse"
+      className="text-base font-medium text-[#990000] transition-colors hover:text-[#C5832B] hover:underline sm:text-lg"
+    >
+      View all crafts...
+    </Link>
+  </div>
+          <div className="flex flex-wrap justify-center gap-3">
             {categories
               .filter((c) => c.name.toLowerCase() !== 'other')
               .map((c) => (
                 <Link
                   key={c.id}
                   href={`/customer/browse?category=${encodeURIComponent(c.name)}`}
-                  className="rounded-xl border border-abaca-300 bg-white/90 px-3.5 py-1.5 text-xs font-semibold text-charcoal-900 shadow-2xs transition hover:border-ochre-500 hover:bg-ochre-50 hover:text-ochre-800"
+                  className="rounded-xl border border-[#DCC5A8] bg-white px-5 py-2.5 text-base font-medium text-[#211B17] transition hover:bg-[#FFF4E5]"
                 >
                   {c.name}
                 </Link>

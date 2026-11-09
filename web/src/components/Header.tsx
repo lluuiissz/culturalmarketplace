@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { getSession } from '@/lib/auth';
@@ -7,6 +8,7 @@ import SearchBox from './SearchBox';
 
 export default async function Header() {
   const session = await getSession();
+
   const [count, user] = await Promise.all([
     session?.role === 'customer' ? getCartCount(session.id) : 0,
     session ? getUser(session.id) : null,
@@ -15,51 +17,78 @@ export default async function Header() {
   const desktopLinks = [
     { href: '/', label: 'Home' },
     { href: '/customer/browse', label: 'Discover Crafts' },
-    { href: '/artisans', label: 'Master Artisans' },
+    { href: '/artisans', label: 'Artisans' },
   ];
 
   const mobileLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/customer/browse', label: 'Discover Crafts' },
-    { href: '/artisans', label: 'Master Artisans' },
+    ...desktopLinks,
     ...(session?.role === 'customer'
       ? [
-          { href: '/cart', label: count > 0 ? `🧺 Artisan Basket (${count})` : '🧺 Artisan Basket' },
+          {
+            href: '/cart',
+            label: count > 0
+              ? `🧺 Artisan Basket (${count})`
+              : '🧺 Artisan Basket',
+          },
           { href: '/customer/account/dashboard', label: 'Patron Account' },
         ]
       : []),
-    ...(session?.role === 'artisan' ? [{ href: '/artisan/dashboard', label: 'Artisan Atelier' }] : []),
-    ...(session?.role === 'admin' ? [{ href: '/admin/dashboard', label: 'Curator Admin' }] : []),
+    ...(session?.role === 'artisan'
+      ? [{ href: '/artisan/dashboard', label: 'Artisan Atelier' }]
+      : []),
+    ...(session?.role === 'admin'
+      ? [{ href: '/admin/dashboard', label: 'Curator Admin' }]
+      : []),
   ];
 
   const searchForm = (
-    <form action="/customer/browse" method="get" role="search" className="flex w-full items-center gap-1.5">
-      <div className="relative flex-1 min-w-0">
-        <span aria-hidden className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ochre-700/60">🔍</span>
-        <Suspense fallback={
-          <input
-            type="search"
-            name="q"
-            placeholder="Search traditional crafts…"
-            aria-label="Search traditional crafts"
-            className="w-full rounded-full border border-abaca-300 bg-white/95 text-xs sm:text-sm pl-9 pr-3 py-1.5 text-charcoal-900 shadow-2xs"
-          />
-        }>
+    <form
+      action="/customer/browse"
+      method="get"
+      role="search"
+      className="flex w-full items-center gap-1.5"
+    >
+      <div className="relative min-w-0 flex-1">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-400"
+        >
+          🔍
+        </span>
+
+        <Suspense
+          fallback={
+            <input
+              type="search"
+              name="q"
+              placeholder="Search..."
+              aria-label="Search traditional crafts"
+              className="header-search-input"
+            />
+          }
+        >
           <SearchBox />
         </Suspense>
       </div>
-      <button type="submit" className="btn-outline shrink-0 py-1.5 px-3 text-xs font-semibold whitespace-nowrap">
-        Search
-      </button>
+
+      <button
+  type="submit"
+  className="flex min-h-[36px] items-center justify-center rounded-lg border border-crimson-600 bg-white px-3 py-1.5 text-sm font-medium text-charcoal-800 transition hover:bg-crimson-50"
+>
+  Search
+</button>
     </form>
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-abaca-200/90 bg-white/95 backdrop-blur-md shadow-xs">
-      {/* Row 1: Logo & Nav & User Actions */}
-      <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-2.5 px-3 sm:px-4 sm:gap-6">
-        {/* Left side: Hamburger menu (mobile only) + Logo */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+    <header className="sticky top-0 z-40 w-full border-b border-stone-200 bg-white shadow-sm">
+
+      {/* MAIN HEADER ROW */}
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-3 sm:px-4">
+
+        {/* LOGO + BRAND NAME + MOBILE MENU */}
+        <div className="flex min-w-0 shrink-0 items-center gap-2">
+
           <MobileMenu
             links={mobileLinks}
             loggedIn={Boolean(session)}
@@ -67,50 +96,76 @@ export default async function Header() {
             avatar={user?.profile_picture ?? null}
           />
 
-          
-<Link
-  href="/"
-  className="shrink-0 flex items-center group min-w-0"
-  aria-label="Cultural Marketplace — home"
->
-  <img
-    src="/images/cultural-marketplace-logo.jpg"
-    alt="Cultural Marketplace"
-    className="h-12 w-auto max-w-[190px] object-contain"
-  />
-</Link>
+          {/* LOGO */}
+          <Link
+            href="/"
+            className="flex shrink-0 items-center"
+            aria-label="Cultural Marketplace — home"
+          >
+            <img
+              src="/images/cultural-marketplace-logo.png"
+              alt="Cultural Marketplace Logo"
+              className="h-10 w-auto max-w-[240px] object-contain sm:h-10 sm:max-w-[280px]"
+            />
+          </Link>
+
+          {/* BRAND NAME BESIDE LOGO */}
+          <div className="hidden shrink-0 flex-col justify-center leading-tight sm:flex">
+            <h1 className="whitespace-nowrap text-[16px] font-extrabold tracking-tight sm:text-[17px]">
+              <span className="text-[#8B0000]">Cultural</span>
+              {' '}
+              <span className="text-[#FFA500]">Marketplace</span>
+            </h1>
+
+            <p className="whitespace-nowrap text-[8px] font-bold text-[#B00000] sm:text-[9px]">
+              Agusan del Sur Indigenous Crafts and Experiences
+            </p>
+          </div>
 
         </div>
+        {/* END LOGO + BRAND NAME */}
 
-        {/* Desktop: global search sits at the center with dedicated space */}
-        <div className="hidden min-w-[220px] max-w-xs xl:max-w-sm flex-1 justify-center px-3 lg:flex">{searchForm}</div>
+        {/* DESKTOP SEARCH */}
+        <div className="hidden w-[235px] shrink-0 xl:block">
+          {searchForm}
+        </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <nav className="hidden items-center gap-4 xl:gap-6 text-sm font-medium text-charcoal-800 md:flex">
-            {desktopLinks.map((l) => (
-              <Link key={l.href} className="transition-colors hover:text-crimson-600 font-medium whitespace-nowrap shrink-0" href={l.href} prefetch={true}>
-                {l.label}
-              </Link>
-            ))}
-          </nav>
+        {/* DESKTOP NAVIGATION */}
+        <nav className="hidden items-center gap-4 text-sm font-medium text-charcoal-800 xl:flex">
+          {desktopLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              prefetch={true}
+              className="whitespace-nowrap transition-colors hover:text-crimson-600"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
+        {/* USER ACTIONS */}
+        <div className="flex shrink-0 items-center gap-2">
+
+          {/* CUSTOMER BASKET */}
           {session?.role === 'customer' && (
             <Link
               href="/cart"
               prefetch={false}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-xl border border-abaca-200 bg-canvas/80 px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-medium text-charcoal-900 transition hover:bg-ochre-50 hover:border-ochre-400"
               aria-label={`Artisan Basket${count > 0 ? `, ${count} items` : ''}`}
+              className="flex min-h-[38px] items-center justify-center gap-1.5 rounded-lg border border-stone-300 px-2.5 text-xs font-semibold text-charcoal-900 transition hover:bg-ochre-50"
             >
-              <span aria-hidden className="text-base leading-none">🧺</span>
-              <span className="hidden sm:inline font-semibold">Basket</span>
+              <span aria-hidden>🧺</span>
+              <span className="hidden sm:inline">Basket</span>
               {count > 0 && (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-crimson-600 px-1 text-[11px] font-bold text-white shadow-xs">
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-crimson-600 px-1 text-[11px] font-bold text-white">
                   {count}
                 </span>
               )}
             </Link>
           )}
 
+          {/* SIGNED-IN USER */}
           {session ? (
             <div className="flex items-center gap-2">
               <Link
@@ -118,40 +173,56 @@ export default async function Header() {
                   session.role === 'customer'
                     ? '/customer/account/dashboard'
                     : session.role === 'artisan'
-                    ? '/artisan/dashboard'
-                    : '/admin/dashboard'
+                      ? '/artisan/dashboard'
+                      : '/admin/dashboard'
                 }
-                className="flex min-h-[44px] items-center gap-1.5 sm:gap-2 rounded-full py-1 pl-1 pr-2 sm:pr-3 hover:bg-ochre-50/70 border border-abaca-300 transition"
                 title={`Signed in as ${session.name}`}
+                className="flex min-h-[38px] items-center gap-2 rounded-lg border border-stone-300 px-2 py-1 transition hover:bg-ochre-50"
               >
                 {user?.profile_picture ? (
                   <img
                     src={user.profile_picture}
                     alt={session.name}
-                    className="h-7 w-7 rounded-full object-cover border border-ochre-300"
+                    className="h-7 w-7 rounded-full border border-ochre-300 object-cover"
                   />
                 ) : (
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-charcoal-900 text-[11px] font-bold text-ochre-300">
                     {session.name.slice(0, 2).toUpperCase()}
                   </span>
                 )}
-                <span className="hidden md:inline text-xs font-semibold text-charcoal-900 max-w-[110px] truncate">
+
+                <span className="hidden max-w-[110px] truncate text-xs font-semibold text-charcoal-900 md:inline">
                   {session.name.split(' ')[0]}
                 </span>
               </Link>
-              <form action="/api/auth/logout" method="post" className="hidden md:block">
-                <button className="min-h-[44px] rounded-xl border border-abaca-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-charcoal-700 transition hover:border-crimson-300 hover:text-crimson-700" type="submit">
+
+              <form
+                action="/api/auth/logout"
+                method="post"
+                className="hidden xl:block"
+              >
+                <button
+                  type="submit"
+                  className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-700 transition hover:border-crimson-400 hover:text-crimson-700"
+                >
                   Log out
                 </button>
               </form>
             </div>
           ) : (
-            /* Desktop only: Sign in & Join Gathering are in Row 1 on desktop (hidden on mobile to prevent overlap) */
-            <div className="hidden md:flex items-center gap-2">
-              <Link href="/auth/login" className="btn-outline min-h-[38px] flex items-center py-1.5 px-3.5 text-xs font-semibold">
-                Sign in
+            /* GUEST ACTION BUTTONS */
+            <div className="hidden items-center gap-2 md:flex">
+              <Link
+                href="/auth/login"
+                className="flex min-h-[36px] items-center justify-center rounded-lg border border-crimson-600 bg-white px-3 py-1.5 text-sm font-medium text-charcoal-800 transition hover:bg-crimson-50"
+              >
+                Sign In
               </Link>
-              <Link href="/auth/register" className="btn-primary min-h-[38px] flex items-center py-1.5 px-3.5 text-xs font-bold">
+
+              <Link
+                href="/auth/register"
+                className="flex min-h-[36px] items-center justify-center whitespace-nowrap rounded-lg bg-crimson-700 px-3.5 py-1.5 text-sm font-bold text-white transition hover:bg-crimson-800"
+              >
                 Join Gathering
               </Link>
             </div>
@@ -159,20 +230,22 @@ export default async function Header() {
         </div>
       </div>
 
-      {/* Mobile & Tablet: Guest Action Buttons (<md) + Search Bar (<lg) */}
-      <div className="border-t border-abaca-200/60 bg-canvas/60 px-3.5 pb-2.5 pt-2 lg:hidden space-y-2">
-        {/* If guest (not signed in), place Sign In and Join Gathering clearly above the search bar on mobile (<md) */}
+      {/* TABLET AND MOBILE SEARCH */}
+      <div className="space-y-2 border-t border-stone-100 bg-white px-3 pb-3 pt-2 xl:hidden">
+
+        {/* GUEST BUTTONS ON MOBILE */}
         {!session && (
-          <div className="flex items-center gap-2 pb-0.5 md:hidden">
+          <div className="flex gap-2 md:hidden">
             <Link
               href="/auth/login"
-              className="flex-1 min-h-[40px] flex items-center justify-center rounded-xl border border-abaca-300 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 shadow-2xs hover:bg-ochre-50 active:bg-ochre-100 transition"
+              className="flex min-h-[38px] flex-1 items-center justify-center rounded-lg border border-crimson-600 bg-white px-3 py-2 text-xs font-semibold text-charcoal-900 transition hover:bg-crimson-50"
             >
-              Sign in
+              Sign In
             </Link>
+
             <Link
               href="/auth/register"
-              className="flex-1 min-h-[40px] flex items-center justify-center rounded-xl bg-crimson-600 px-3 py-2 text-xs font-bold text-white shadow-xs hover:bg-crimson-700 active:bg-crimson-800 transition"
+              className="flex min-h-[38px] flex-1 items-center justify-center rounded-lg bg-crimson-700 px-3 py-2 text-xs font-bold text-white transition hover:bg-crimson-800"
             >
               Join Gathering
             </Link>
@@ -182,8 +255,9 @@ export default async function Header() {
         {searchForm}
       </div>
 
-      {/* Bottom subtle geometric accent */}
-      <div className="weave-divider-diamond opacity-25 h-1" />
+      {/* INDIGENOUS GEOMETRIC BORDER */}
+      <div className="weave-header-border" aria-hidden="true" />
+
     </header>
   );
 }

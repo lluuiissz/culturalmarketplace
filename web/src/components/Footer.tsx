@@ -10,19 +10,44 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           {/* Brand & Provenance */}
-          <div className="md:col-span-1 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-2 font-sculpted text-xl font-bold text-white tracking-wide">
-              <span className="text-2xl text-ochre-500"></span>
-              <span>Cultural Marketplace</span>
-            </Link>
-            <p className="text-xs leading-relaxed text-abaca-200/80">
-              Preserving and honoring the living indigenous traditions of Agusan del Sur. Connecting master weavers, woodcarvers, and cultural keepers directly with respectful global patrons.
-            </p>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-charcoal-900 px-3 py-1 text-[11px] font-medium text-ochre-400 border border-ochre-600/30">
-              <span>🌿</span>
-              <span>Custodians of Agusan del Sur</span>
-            </div>
-          </div>
+<div className="md:col-span-1 space-y-4">
+
+  {/* LOGO AND BRAND NAME */}
+  <div className="flex items-center gap-3">
+    <Link
+      href="/"
+      className="flex shrink-0 items-center"
+      aria-label="Cultural Marketplace — home"
+    >
+      <img
+        src="/images/cultural-marketplace-logo.png"
+        alt="Cultural Marketplace Logo"
+        className="h-14 w-auto max-w-[110px] object-contain"
+      />
+    </Link>
+
+    {/* BRAND NAME BESIDE LOGO */}
+    <div className="flex min-w-0 flex-col justify-center leading-tight">
+      <h2 className="whitespace-nowrap font-sans text-sm font-extrabold tracking-tight sm:text-base">
+        <span className="text-white">Cultural</span>
+        {' '}
+        <span className="text-[#FFA500]">Marketplace</span>
+      </h2>
+      <p className="mt-1 text-[9px] font-semibold leading-tight text-abaca-200/80">
+        Agusan del Sur Indigenous Crafts and Experiences
+      </p>
+    </div>
+  </div>
+
+  <p className="text-xs leading-relaxed text-abaca-200/80">
+    Preserving and honoring the living indigenous traditions of Agusan del Sur. Connecting master weavers, woodcarvers, and cultural keepers directly with respectful global patrons.
+  </p>
+
+  <div className="inline-flex items-center gap-1.5 rounded-full border border-ochre-600/30 bg-charcoal-900 px-3 py-1 text-[11px] font-medium text-ochre-400">
+    <span>🌿</span>
+    <span>Custodians of Agusan del Sur</span>
+  </div>
+</div>
 
           {/* Column 1: Discover */}
           <div className="space-y-3">
