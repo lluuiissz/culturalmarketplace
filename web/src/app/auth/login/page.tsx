@@ -1,8 +1,9 @@
-
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import WeaveDivider from '@/components/WeaveDivider';
+import AuthBackdrop from '@/components/AuthBackdrop';
+import CraftShowcase from '@/components/CraftShowcase';
 import LoginForm from './LoginForm';
 
 export default async function LoginPage() {
@@ -19,10 +20,18 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-canvas px-4">
+    <main className="relative flex min-h-screen flex-col items-center overflow-hidden bg-canvas px-4">
+
+      {/* Decorative background (behind everything) */}
+      <AuthBackdrop />
+
+      {/* Craft photos / illustrations on both sides (wide screens only).
+          224 = half of the login card width (max-w-md = 448px) */}
+      <CraftShowcase side="left" cardHalfWidth={224} />
+      <CraftShowcase side="right" cardHalfWidth={224} />
 
       {/* TOP: LOGO + BRAND NAME */}
-      <div className="w-full max-w-md pt-8 sm:pt-12">
+      <div className="relative w-full max-w-md pt-8 sm:pt-12">
         <div className="flex items-center justify-center gap-4">
           <Link
             href="/"
@@ -52,7 +61,7 @@ export default async function LoginPage() {
       </div>
 
       {/* MIDDLE: LOGIN CARD */}
-      <div className="w-full max-w-md py-8">
+      <div className="relative w-full max-w-md py-8">
         <div className="relative overflow-hidden rounded-3xl border border-abaca-200/90 bg-white/95 p-8 shadow-sm">
 
           {/* KALINGA WEAVE DIVIDER */}
@@ -104,7 +113,7 @@ export default async function LoginPage() {
       </div>
 
       {/* BOTTOM: RETURN TO STOREFRONT */}
-      <div className="mt-auto pb-8 pt-2 text-center">
+      <div className="relative mt-auto pb-8 pt-2 text-center">
         <Link
           href="/"
           className="text-xs font-semibold text-stone-500 transition hover:text-charcoal-900"

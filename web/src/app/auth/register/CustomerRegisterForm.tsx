@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, type FormEvent } from 'react';
@@ -21,28 +20,6 @@ const HINT: Record<FieldState, string> = {
   valid: 'text-ochre-800 font-semibold',
   invalid: 'text-crimson-600 font-medium',
 };
-
-// Single logo and brand header
-function BrandHeader() {
-  return (
-    <div className="mb-6 flex w-full flex-col items-center text-center">
-      <img
-        src="/images/cultural-marketplace-logo.png"
-        alt="Cultural Marketplace Logo"
-        className="mb-3 h-16 w-auto max-w-[160px] object-contain sm:h-20 sm:max-w-[180px]"
-      />
-
-      <h1 className="text-xl font-extrabold tracking-tight sm:text-2xl">
-        <span className="text-[#8B0000]">Cultural</span>{' '}
-        <span className="text-[#FFA500]">Marketplace</span>
-      </h1>
-
-      <p className="mt-1 max-w-[280px] text-xs leading-relaxed text-[#B00000] sm:text-sm">
-        Agusan del Sur Indigenous Crafts and Experiences
-      </p>
-    </div>
-  );
-}
 
 export default function CustomerRegisterForm() {
   const router = useRouter();
@@ -197,8 +174,6 @@ export default function CustomerRegisterForm() {
         onSubmit={verifyOtp}
         className="mx-auto mt-4 w-full min-w-0 space-y-5 sm:mt-6"
       >
-        <BrandHeader />
-
         {otpDelivered && !devOtp && (
           <p className="break-words rounded-lg border border-ochre-200 bg-ochre-50 px-3 py-3 text-sm font-medium text-charcoal-900">
             📧 We emailed a 6-digit code to <b>{form.email}</b>. It may take a minute to arrive.
@@ -274,8 +249,6 @@ export default function CustomerRegisterForm() {
       className="mx-auto mt-4 w-full min-w-0 space-y-5 sm:mt-6 sm:space-y-5"
       noValidate
     >
-      <BrandHeader />
-
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-3 text-sm text-red-700">
           {error}

@@ -4,6 +4,28 @@ import AuthBackdrop from '@/components/AuthBackdrop';
 import CraftShowcase from '@/components/CraftShowcase';
 import CustomerRegisterForm from './CustomerRegisterForm';
 
+// Logo and brand header (moved here from the form so it sits above the heading)
+function BrandHeader() {
+  return (
+    <div className="mb-6 flex w-full flex-col items-center text-center sm:mb-8">
+      <img
+        src="/images/cultural-marketplace-logo.png"
+        alt="Cultural Marketplace Logo"
+        className="mb-1 h-12 w-auto max-w-[160px] object-contain sm:h-20 sm:max-w-[180px]"
+      />
+
+      <h1 className="text-xl font-extrabold tracking-tight sm:text-2xl">
+        <span className="text-[#8B0000]">Cultural</span>{' '}
+        <span className="text-[#FFA500]">Marketplace</span>
+      </h1>
+
+      <p className="mt-1 max-w-[280px] text-xs leading-relaxed text-[#B00000] sm:text-sm">
+        Agusan del Sur Indigenous Crafts and Experiences
+      </p>
+    </div>
+  );
+}
+
 export default function RegisterPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-3 py-8 sm:px-6 sm:py-12">
@@ -23,11 +45,14 @@ export default function RegisterPage() {
           className="absolute left-0 right-0 top-0 opacity-30"
         />
 
+        {/* Logo and Brand Name */}
+        <BrandHeader />
+
         {/* Page Heading */}
-        <div className="pt-4 text-center sm:pt-5">
-          <h1 className="font-sculpted text-2xl font-bold text-charcoal-900 sm:text-3xl">
+        <div className="text-center">
+          <h2 className="font-sculpted text-2xl font-bold text-charcoal-900 sm:text-3xl">
             Join the Gathering
-          </h1>
+          </h2>
 
           <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-stone-500 sm:text-sm">
             Create your patron account to support Indigenous artisans,
@@ -36,8 +61,8 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Registration Form - Includes Logo and Brand Name */}
-        <div className="mt-5 w-full min-w-0 sm:mt-7">
+        {/* Registration Form */}
+        <div className="mt-1 w-full min-w-0 sm:mt-2">
           <CustomerRegisterForm />
         </div>
 
