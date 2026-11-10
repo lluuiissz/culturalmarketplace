@@ -4,12 +4,12 @@ import WeaveDivider from './WeaveDivider';
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-[#DCC5A8] bg-[#F5EBDD] text-[#211B17]">
+    <footer className="mt-8 border-t border-[#DCC5A8] bg-[#F5EBDD] text-[#211B17]">
       {/* Top Weave Border Accent */}
       <WeaveDivider pattern="kalinga" className="opacity-75" />
 
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:py-12 md:py-16">
-        <div className="grid grid-cols-1 items-start gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1.15fr]">
+      <div className="mx-auto max-w-6xl px-4 py-4 sm:py-5">
+        <div className="grid grid-cols-1 items-start gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1.15fr]">
 
           {/* Brand & Provenance */}
           <div className="min-w-0 space-y-4">
@@ -132,7 +132,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-[#DCC5A8] pt-6 text-center text-xs text-[#78695C] sm:mt-12 lg:flex-row">
+          <div className="mt-4 flex flex-col items-center justify-between gap-2 border-t border-[#DCC5A8] pt-3 text-center text-xs text-[#78695C] sm:mt-5 lg:flex-row">
           <p className="leading-relaxed">
             © {new Date().getFullYear()} Cultural Marketplace. All rights
             reserved. Handcrafted with reverence.

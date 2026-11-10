@@ -7,6 +7,8 @@ import { listActiveProducts, listCategories } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
+const QUICK_SEARCHES = ['Basket', 'Woven Textile', 'Beadwork', 'Woodcarving', 'Abaca'];
+
 export default async function BrowsePage({
   searchParams,
 }: {
@@ -21,14 +23,16 @@ export default async function BrowsePage({
   const activeCategory = params.category;
   const activeQ = params.q;
 
+  const visibleCategories = categories.filter(
+    (c) => c.name.toLowerCase() !== 'other'
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
       <Header />
-<WeaveDivider pattern="kalinga" />
+      <WeaveDivider pattern="kalinga" />
 
-<main className="mx-auto max-w-6xl px-4 py-10 flex-1 w-full">
-
-      
+      <main className="mx-auto max-w-6xl px-4 py-10 flex-1 w-full">
         {/* Page Header */}
         <div className="border-b border-abaca-200 pb-6">
           <div className="flex items-center gap-2 text-xs text-stone-500 mb-1">
@@ -55,34 +59,57 @@ export default async function BrowsePage({
                 id="cat-select"
                 name="category"
                 defaultValue={activeCategory ?? ''}
-                className="input max-w-[220px] text-xs py-1.5 px-3 rounded-xl border-abaca-300"
+                className="input h-9 !w-56 rounded-xl border-abaca-300 !py-0 px-3 !text-xs"
               >
                 <option value="">All Cultural Categories</option>
-                {categories
-                  .filter((c) => c.name.toLowerCase() !== 'other')
-                  .map((c) => (
-                    <option key={c.id} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
+                {visibleCategories.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
-              <button className="btn-secondary py-1.5 px-3.5 text-xs font-semibold rounded-xl" type="submit">
+              <button
+                className="btn-secondary h-9 rounded-xl !px-4 !py-0 !text-xs font-semibold"
+                type="submit"
+              >
                 Apply
               </button>
 
               {(activeQ || activeCategory) && (
                 <Link
                   href="/customer/browse"
-                  className="rounded-xl border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-100 transition"
+                  className="inline-flex h-9 items-center rounded-xl border border-stone-200 bg-stone-50 px-3 text-xs font-medium text-stone-600 transition hover:bg-stone-100"
                 >
                   ✕ Reset Filters
                 </Link>
               )}
             </form>
 
-            <div className="text-xs font-medium text-stone-500">
-              Showing <span className="font-bold text-charcoal-900">{products.length}</span> Authentic Crafts
-            </div>
+            {products.length > 0 && (
+              <div className="text-xs font-medium text-stone-500">
+                Showing <span className="font-bold text-charcoal-900">{products.length}</span> Authentic Crafts
+              </div>
+            )}
+          </div>
+
+          {/* Browse by craft chips */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-ochre-700">
+              Browse by craft:
+            </span>
+            {visibleCategories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/customer/browse?category=${encodeURIComponent(c.name)}`}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                  activeCategory === c.name
+                    ? 'border-crimson-700 bg-crimson-700 text-white'
+                    : 'border-abaca-300 bg-white text-charcoal-800 hover:border-ochre-400 hover:bg-ochre-50'
+                }`}
+              >
+                {c.name}
+              </Link>
+            ))}
           </div>
 
           {activeQ && (
@@ -101,17 +128,43 @@ export default async function BrowsePage({
 
         {/* Empty State */}
         {products.length === 0 && (
-          <div className="my-16 rounded-3xl border border-dashed border-abaca-300 bg-white/60 p-12 text-center max-w-md mx-auto">
-            <div className="text-4xl mb-3">🧺</div>
+          <div className="mx-auto my-14 max-w-lg rounded-3xl border border-dashed border-abaca-300 bg-white/70 p-10 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-ochre-300 bg-ochre-50">
+              <svg viewBox="0 0 48 48" fill="none" className="h-9 w-9" aria-hidden="true">
+                <path d="M24 3 45 24 24 45 3 24Z" stroke="#9E2A2B" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M24 12 36 24 24 36 12 24Z" stroke="#C5832B" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M24 19 29 24 24 29 19 24Z" fill="#9E2A2B" />
+              </svg>
+            </div>
+
             <h3 className="font-sculpted text-lg font-bold text-charcoal-900">
               No matching traditional crafts
             </h3>
-            <p className="mt-2 text-xs text-stone-500 leading-relaxed">
-              We couldn&apos;t find any pieces matching your current filters. Try searching for other materials like abaca, pine, or woven textiles.
+            <p className="mt-2 text-xs leading-relaxed text-stone-500">
+              We couldn&apos;t find any pieces matching your current filters. Try one of
+              these popular crafts instead:
             </p>
-            <Link href="/customer/browse" className="btn-primary mt-5 text-xs px-4 py-2 font-semibold">
-              View All Master Crafts
-            </Link>
+
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {QUICK_SEARCHES.map((t) => (
+                <Link
+                  key={t}
+                  href={`/customer/browse?q=${encodeURIComponent(t)}`}
+                  className="rounded-full border border-ochre-300 bg-ochre-50 px-3 py-1 text-xs font-medium text-ochre-800 transition hover:bg-ochre-100"
+                >
+                  {t}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Link href="/customer/browse" className="btn-primary px-4 py-2 text-xs font-semibold">
+                View All Artisans Crafts
+              </Link>
+              <Link href="/artisans" className="btn-outline px-4 py-2 text-xs font-semibold">
+                Meet the Artisans
+              </Link>
+            </div>
           </div>
         )}
       </main>

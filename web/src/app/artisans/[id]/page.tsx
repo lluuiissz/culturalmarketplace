@@ -22,7 +22,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
         {/* Breadcrumb Navigation */}
         <div className="mb-6 flex items-center gap-2 text-xs text-stone-500">
           <Link href="/artisans" className="hover:text-crimson-700">
-            ← Master Artisans
+            ← Local Artisans
           </Link>
           <span>/</span>
           <span className="font-semibold text-charcoal-900">{artisan.name}</span>
@@ -30,7 +30,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
 
         {/* Master Artisan Atelier Header Card */}
         <div className="rounded-3xl border border-abaca-200/90 bg-white/95 p-6 sm:p-10 shadow-xs relative overflow-hidden">
-          <WeaveDivider pattern="diamond" className="absolute top-0 left-0 right-0 opacity-25" />
+          <WeaveDivider pattern="kalinga" className="absolute top-0 left-0 right-0" />
 
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center pt-2">
             {artisan.profile_picture ? (
@@ -46,16 +46,16 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
             )}
 
             <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="font-sculpted text-2xl sm:text-4xl font-bold text-charcoal-900">
-                  {artisan.name}
-                </h1>
-                {artisan.verification_status === 'approved' && (
-                  <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-xs font-bold">
-                    ✔ Verified Cultural Custodian
-                  </span>
-                )}
-              </div>
+  <div className="flex flex-wrap items-center gap-3">
+    <h1 className="font-sculpted text-2xl sm:text-4xl font-bold text-charcoal-900">
+      {artisan.name}
+    </h1>
+    {artisan.verification_status === 'approved' && (
+      <span className="inline-block rounded bg-[#9E0000] px-2.5 py-1 text-[11px] font-semibold text-white">
+        ✔ Verified Cultural Artisan
+      </span>
+    )}
+  </div>
 
               <p className="mt-1 text-sm font-semibold text-ochre-700">
                 {artisan.business_name ?? 'Independent Cultural Workshop'}
@@ -64,17 +64,17 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
               <div className="mt-3 flex flex-wrap gap-2 text-xs">
                 {artisan.craft_type && (
                   <span className="rounded-xl bg-abaca-100/70 px-3 py-1 font-semibold text-charcoal-900 border border-abaca-200">
-                    🧵 Specialty: {artisan.craft_type}
+                    Specialty: {artisan.craft_type}
                   </span>
                 )}
                 {artisan.location && (
                   <span className="rounded-xl bg-ochre-50 px-3 py-1 font-semibold text-ochre-800 border border-ochre-200">
-                    📍 {artisan.location}
+                    {artisan.location}
                   </span>
                 )}
                 {artisan.phone && (
                   <span className="rounded-xl bg-white px-3 py-1 font-medium text-stone-600 border border-abaca-200">
-                    📞 {artisan.phone}
+                    {artisan.phone}
                   </span>
                 )}
               </div>
@@ -117,7 +117,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
           {products.length === 0 && (
             <div className="mt-8 rounded-3xl border border-dashed border-abaca-300 bg-white/60 p-10 text-center text-stone-500 max-w-md mx-auto">
               <p className="text-3xl mb-2">🧺</p>
-              <p className="font-medium text-xs">No active craft listings currently available from this artisan atelier.</p>
+              <p className="font-medium text-xs">No active craft listings currently available from this artisan.</p>
             </div>
           )}
         </div>
