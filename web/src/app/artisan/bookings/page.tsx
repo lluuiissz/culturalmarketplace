@@ -27,19 +27,19 @@ export default async function ArtisanBookingsPage() {
             href="/artisan/experiences"
             className="rounded-lg bg-stone-100 px-3.5 py-1.5 font-semibold text-stone-600 hover:bg-stone-200 transition"
           >
-            🎓 Workshops List
+            Workshops List
           </Link>
           <Link
             href="/artisan/experiences/calendar"
             className="rounded-lg bg-stone-100 px-3.5 py-1.5 font-semibold text-stone-600 hover:bg-stone-200 transition"
           >
-            📅 Session Calendar
+            Session Calendar
           </Link>
           <Link
             href="/artisan/bookings"
             className="rounded-lg bg-brand-600 px-3.5 py-1.5 font-bold text-white shadow-xs"
           >
-            🎟️ Bookings & Attendance ({bookings.length})
+            Bookings & Attendance ({bookings.length})
           </Link>
         </div>
 

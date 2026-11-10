@@ -8,7 +8,7 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Overview',
     items: [
-      { href: '/artisan/dashboard', label: 'Atelier Dashboard', icon: 'home' },
+      { href: '/artisan/dashboard', label: 'Artisan Dashboard', icon: 'home' },
       { href: '/artisan/analytics', label: 'Studio Statistics', icon: 'chart' },
     ],
   },
@@ -23,7 +23,7 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Orders & Delivery',
     items: [
-      { href: '/artisan/orders', label: 'Patron Orders', icon: 'receipt' },
+      { href: '/artisan/orders', label: 'Customer Orders', icon: 'receipt' },
       { href: '/artisan/shipments', label: 'Shipments (J&T)', icon: 'truck' },
       { href: '/artisan/bookings', label: 'Workshop Bookings', icon: 'ticket' },
     ],
@@ -31,15 +31,15 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Community',
     items: [
-      { href: '/artisan/messages', label: 'Patron Messages', icon: 'message' },
-      { href: '/artisan/reviews', label: 'Patron Reviews', icon: 'star' },
+      { href: '/artisan/messages', label: 'Customer Messages', icon: 'message' },
+      { href: '/artisan/reviews', label: 'Customer Reviews', icon: 'star' },
       { href: '/artisan/notifications', label: 'Notifications', icon: 'radio' },
     ],
   },
   {
     title: 'Atelier Identity',
     items: [
-      { href: '/artisan/profile', label: 'Master Profile', icon: 'user' },
+      { href: '/artisan/profile', label: 'Artisan Profile', icon: 'user' },
     ],
   },
 ];
@@ -53,9 +53,9 @@ export default async function ArtisanLayout({ children }: { children: React.Reac
       <PortalSidebar
         sections={SECTIONS}
         portalHome="/artisan/dashboard"
-        portalLabel="Artisan Atelier"
+        portalLabel="Artisan Dashboard"
         userName={session.name}
-        backLabel="Browse the marketplace"
+        backLabel="Browse the Marketplace"
       />
       <main className="min-w-0 flex-1 bg-canvas p-4 md:p-8">{children}</main>
     </div>

@@ -174,7 +174,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
       {/* Printable Sheet View (Hidden on Screen, Shown when Printing) */}
       <div className="hidden print:block mb-6">
         <div className="border-b-2 border-stone-800 pb-3">
-          <h1 className="text-xl font-bold font-serif">🧶 Cultural Marketplace — Workshop Attendance Roster</h1>
+          <h1 className="text-xl font-bold font-serif">Cultural Marketplace — Workshop Attendance Roster</h1>
           <p className="text-xs text-stone-600 mt-1">Official Artisan Session Sign-in Sheet · Agusan del Sur</p>
           <p className="text-xs text-stone-500">Date Printed: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
         </div>
@@ -241,13 +241,13 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
 
                   {isBundle && (
                     <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[11px] font-bold">
-                      ✨ Craft + Workshop Bundle
+                      Craft + Workshop Bundle
                     </span>
                   )}
 
                   {b.ticket && (
                     <span className="rounded-md bg-brand-100 px-2 py-0.5 font-mono text-xs font-bold text-brand-800 border border-brand-200">
-                      🎟️ {b.ticket}
+                       {b.ticket}
                     </span>
                   )}
                 </div>
@@ -255,7 +255,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                 {/* Attendee & Contact Details */}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-700">
                   <span className="font-bold text-stone-900 flex items-center gap-1">
-                    <span>👤 Attendee:</span>
+                    <span>Attendee:</span>
                     <span className="underline decoration-stone-300">{b.attendee || b.customer}</span>
                   </span>
                   {b.attendee_for === 'others' && (
@@ -273,7 +273,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                       href={`tel:${b.attendee_contact}`}
                       className="text-brand-700 font-medium hover:underline flex items-center gap-1"
                     >
-                      <span>📞</span>
+                      <span></span>
                       <span>{b.attendee_contact}</span>
                     </a>
                   )}
@@ -283,14 +283,14 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-600 bg-stone-50/90 rounded-lg p-2.5 border border-stone-200">
                   {b.session_date && (
                     <span className="font-medium text-stone-800 flex items-center gap-1">
-                      <span>📅</span>
+                      <span></span>
                       <span>{b.session_date}</span>
                       {b.session_time && <span className="text-stone-500 font-normal">({b.session_time})</span>}
                     </span>
                   )}
                   {b.session_location && (
                     <span className="flex items-center gap-1 text-charcoal-900 font-semibold truncate max-w-md">
-                      <span>📍</span>
+                      <span></span>
                       <span>{b.session_location}</span>
                     </span>
                   )}
@@ -299,7 +299,7 @@ export default function BookingsClient({ initial }: { initial: BookingRow[] }) {
                 {/* Craft Variant (If Bundle or customized craft) */}
                 {b.selected_variant && (
                   <p className="text-xs text-ochre-900 bg-ochre-50 rounded px-2 py-1 inline-block border border-ochre-300">
-                    🎨 <b>Craft Variant to Prepare:</b> {b.selected_variant}
+                    <b>Craft Variant to Prepare:</b> {b.selected_variant}
                   </p>
                 )}
 

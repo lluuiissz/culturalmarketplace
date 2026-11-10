@@ -40,19 +40,19 @@ export default async function ArtisanExperiencesPage() {
             href="/artisan/experiences"
             className="rounded-lg bg-brand-600 px-3.5 py-1.5 font-bold text-white shadow-xs"
           >
-            🎓 Workshops List
+            Workshops List
           </Link>
           <Link
             href="/artisan/experiences/calendar"
             className="rounded-lg bg-stone-100 px-3.5 py-1.5 font-semibold text-stone-600 hover:bg-stone-200 transition"
           >
-            📅 Session Calendar
+            Session Calendar
           </Link>
           <Link
             href="/artisan/bookings"
             className="rounded-lg bg-stone-100 px-3.5 py-1.5 font-semibold text-stone-600 hover:bg-stone-200 transition"
           >
-            🎟️ Bookings & Attendance ({bookings.length})
+            Bookings & Attendance ({bookings.length})
           </Link>
         </div>
 
@@ -74,7 +74,7 @@ export default async function ArtisanExperiencesPage() {
 
         {tutorials.length === 0 && (
           <div className="card p-8 text-center text-stone-500 bg-stone-50 border border-stone-200">
-            <span className="text-3xl">🌿</span>
+            <span className="text-3xl"></span>
             <p className="mt-2 font-medium text-stone-700">No bookable workshops yet</p>
             <p className="text-xs text-stone-400 mt-1">
               Enable &ldquo;Offer a live workshop&rdquo; when adding or editing a craft product to make it available for bookings.

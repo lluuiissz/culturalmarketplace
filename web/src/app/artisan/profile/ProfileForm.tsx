@@ -129,7 +129,7 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
           <div>
             <div className="flex items-center justify-center sm:justify-start gap-2">
               <h2 className="font-sculpted text-base font-bold text-charcoal-900">
-                Master Artisan Portrait
+                Artisan Portrait
               </h2>
               <span className="rounded-full bg-ochre-100 px-2 py-0.5 text-[10px] font-bold text-ochre-800 uppercase tracking-wider">
                 Public Avatar
@@ -196,7 +196,7 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
 
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal-700">
-              Studio / Business Name
+              Organization / Business Name
             </label>
             <input
               className="input border-abaca-300 focus:border-ochre-500 focus:ring-ochre-500/20"

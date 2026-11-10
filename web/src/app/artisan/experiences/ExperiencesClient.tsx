@@ -88,7 +88,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                   </h2>
                   {isFree ? (
                     <span className="rounded-full bg-ochre-100 px-2.5 py-0.5 text-xs font-bold text-ochre-900 border border-ochre-300">
-                      ✨ FREE Workshop
+                      FREE Workshop
                     </span>
                   ) : (
                     <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-800 border border-stone-200">
@@ -104,7 +104,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                 <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-stone-600">
                   {/* Booked / Capacity badge */}
                   <div className="flex items-center gap-1.5 font-medium">
-                    <span>👥</span>
+                    <span></span>
                     <span>
                       <b>{r.booked_count}</b> / {r.capacity ?? '∞'} seats reserved
                     </span>
@@ -124,7 +124,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                   {/* Studio / Venue Location */}
                   {r.location ? (
                     <div className="flex items-center gap-1 text-stone-700">
-                      <span>📍</span>
+                      <span></span>
                       <span className="truncate max-w-xs">{r.location}</span>
                     </div>
                   ) : (
@@ -145,7 +145,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                       rel="noopener noreferrer"
                       className="text-brand-600 hover:underline flex items-center gap-1"
                     >
-                      <span>🗺️</span>
+                      <span></span>
                       <span>Pinned on Map</span>
                     </a>
                   )}
@@ -159,14 +159,14 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                   className="btn-outline px-3 py-1.5 text-xs font-semibold"
                   title="View attendee roster for this specific workshop"
                 >
-                  👥 Attendees ({r.booked_count})
+                   Attendees ({r.booked_count})
                 </Link>
                 <Link
                   href={`/artisan/products/${r.id}/edit`}
                   className="btn-outline px-3 py-1.5 text-xs font-semibold"
                   title="Edit craft and workshop details"
                 >
-                  ✏️ Edit
+                  Edit
                 </Link>
                 <Link
                   href={`/customer/browse/${r.id}`}
@@ -174,7 +174,7 @@ export default function ExperiencesClient({ initial }: { initial: ExperienceRow[
                   title="View customer facing product page"
                   target="_blank"
                 >
-                  👁️ View
+                  View
                 </Link>
               </div>
             </div>

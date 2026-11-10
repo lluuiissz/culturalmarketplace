@@ -43,7 +43,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                 href={`/artisan/tutorial-attendees/${product.id}`}
                 className="btn-outline px-2.5 py-1 text-xs"
               >
-                👥 Attendees Roster
+                Attendees Roster
               </Link>
             )}
             <Link
@@ -51,7 +51,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               target="_blank"
               className="btn-outline px-2.5 py-1 text-xs text-stone-600 hover:text-stone-900"
             >
-              👁️ View as Buyer ↗
+              View as Buyer ↗
             </Link>
           </div>
         </div>
