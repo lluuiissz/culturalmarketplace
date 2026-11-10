@@ -128,4 +128,105 @@ html {
   border-radius: 4px;
 }
 
+/* ------------------------------------------------------------
+   AuthBackdrop animations
+   Paste this at the END of globals.css
+   ------------------------------------------------------------ */
 
+@keyframes backdrop-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes backdrop-float {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50%      { transform: translateY(-16px) rotate(45deg); }
+}
+
+@keyframes backdrop-drift {
+  to { background-position-x: 96px; }
+}
+
+@keyframes backdrop-drift-reverse {
+  to { background-position-x: -96px; }
+}
+
+.backdrop-spin          { animation: backdrop-spin 180s linear infinite; }
+.backdrop-spin-reverse  { animation: backdrop-spin 220s linear infinite reverse; }
+.backdrop-float         { transform: rotate(45deg); animation: backdrop-float 7s ease-in-out infinite; }
+.backdrop-drift         { animation: backdrop-drift 12s linear infinite; }
+.backdrop-drift-reverse { animation: backdrop-drift-reverse 12s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop-spin,
+  .backdrop-spin-reverse,
+  .backdrop-float,
+  .backdrop-drift,
+  .backdrop-drift-reverse {
+    animation: none;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   CraftShowcase animations
+   Paste this at the END of globals.css (after the backdrop CSS)
+   ------------------------------------------------------------ */
+
+@keyframes craft-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes craft-in {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes feather-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+
+/* Fade in once, then bob gently forever */
+.craft-bob {
+  animation:
+    craft-in 0.9s ease-out both,
+    craft-bob 6s ease-in-out 0.9s infinite;
+}
+
+/* Feathers sway around the base of the headdress band */
+.feather-sway {
+  transform-box: view-box;
+  transform-origin: 60px 76px;
+  animation: feather-sway 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .craft-bob,
+  .feather-sway {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Right-side craft frames: same as .craft-bob but they slide in
+   from the RIGHT. Paste at the END of globals.css (after the
+   previous craft-animations CSS).
+   ------------------------------------------------------------ */
+
+@keyframes craft-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.craft-bob-right {
+  animation:
+    craft-in-right 0.9s ease-out both,
+    craft-bob 6s ease-in-out 0.9s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .craft-bob-right {
+    animation: none;
+  }
+}

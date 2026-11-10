@@ -1,11 +1,19 @@
-
 import Link from 'next/link';
 import WeaveDivider from '@/components/WeaveDivider';
+import AuthBackdrop from '@/components/AuthBackdrop';
+import CraftShowcase from '@/components/CraftShowcase';
 import CustomerRegisterForm from './CustomerRegisterForm';
 
 export default function RegisterPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-3 py-8 sm:px-6 sm:py-12">
+
+      {/* Decorative background (behind the card) */}
+      <AuthBackdrop />
+
+      {/* Craft photos / illustrations on both sides (wide screens only) */}
+      <CraftShowcase side="left" />
+      <CraftShowcase side="right" />
 
       {/* Registration Card */}
       <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-abaca-200/90 bg-white/95 p-4 shadow-sm sm:rounded-3xl sm:p-7 md:p-9">
