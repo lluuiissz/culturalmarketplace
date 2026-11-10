@@ -18,6 +18,21 @@ import {
   Menu,
   X,
   ArrowRight,
+  ChartNoAxesColumnIncreasing,
+  History,
+  Users,
+  Package,
+  Tags,
+  Star,
+  Image,
+  Shield,
+  Radio,
+  CreditCard,
+  Truck,
+  Ticket,
+  Settings,
+  LucideIcon,
+
 } from 'lucide-react';
 
 type NavIconName =
@@ -27,7 +42,21 @@ type NavIconName =
   | 'message'
   | 'map-pin'
   | 'flag'
-  | 'user';
+  | 'user'
+  | 'chart'
+  | 'history'
+  | 'users'
+  | 'shopping-bag'
+  | 'package'
+  | 'tags'
+  | 'star'
+  | 'image'
+  | 'shield'
+  | 'radio'
+  | 'credit-card'
+  | 'truck'
+  | 'ticket'
+  | 'settings';
 
 export interface NavSection {
   title: string;
@@ -38,7 +67,7 @@ export interface NavSection {
   }>;
 }
 
-const NAV_ICONS = {
+const NAV_ICONS: Record<NavIconName, LucideIcon> = {
   home: Home,
   receipt: ReceiptText,
   calendar: CalendarDays,
@@ -46,6 +75,20 @@ const NAV_ICONS = {
   'map-pin': MapPin,
   flag: Flag,
   user: UserRound,
+  chart: ChartNoAxesColumnIncreasing,
+  history: History,
+  users: Users,
+  'shopping-bag': ShoppingBag,
+  package: Package,
+  tags: Tags,
+  star: Star,
+  image: Image,
+  shield: Shield,
+  radio: Radio,
+  'credit-card': CreditCard,
+  truck: Truck,
+  ticket: Ticket,
+  settings: Settings,
 };
 
 function isActive(pathname: string, href: string): boolean {
@@ -107,15 +150,16 @@ export default function PortalSidebar({
             className="h-10 w-10 shrink-0 rounded-lg object-contain"
           />
 
+          {/* BRAND NAME AND TAGLINE */}
           <div className="flex min-w-0 flex-col justify-center leading-tight">
-  <span className="text-[12px] font-extrabold tracking-tight">
-    <span className="text-[#8B0000]">Cultural</span>{' '}
-    <span className="text-[#FFA500]">Marketplace</span>
-  </span>
+            <span className="text-[12px] font-extrabold tracking-tight">
+              <span className="text-[#8B0000]">Cultural</span>{' '}
+              <span className="text-[#FFA500]">Marketplace</span>
+            </span>
 
-  <span className="mt-0.5 max-w-full text-[7px] font-bold leading-tight text-[#B00000]">
-    Agusan del Sur Indigenous Crafts and Experiences
-  </span>
+            <span className="mt-0.5 max-w-full text-[7px] font-bold leading-tight text-[#B00000]">
+              Agusan del Sur Indigenous Crafts and Experiences
+            </span>
 
             <span className="mt-1 inline-block w-fit rounded border border-[#D6B56D] bg-[#F0DFC0] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#5C421D]">
               {portalLabel}
@@ -148,9 +192,7 @@ export default function PortalSidebar({
             <div className="flex flex-col gap-0.5">
               {section.items.map((item) => {
                 const active = isActive(pathname, item.href);
-                const Icon = item.icon
-                  ? NAV_ICONS[item.icon]
-                  : null;
+                const Icon = item.icon ? NAV_ICONS[item.icon] : null;
 
                 return (
                   <Link

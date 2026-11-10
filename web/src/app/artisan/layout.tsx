@@ -8,38 +8,38 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Overview',
     items: [
-      { href: '/artisan/dashboard', label: 'Atelier Dashboard', icon: '🏠' },
-      { href: '/artisan/analytics', label: 'Studio Statistics', icon: '📈' },
+      { href: '/artisan/dashboard', label: 'Atelier Dashboard', icon: 'home' },
+      { href: '/artisan/analytics', label: 'Studio Statistics', icon: 'chart' },
     ],
   },
   {
     title: 'Heritage Crafting',
     items: [
-      { href: '/artisan/products', label: 'My Creations', icon: '📦' },
-      { href: '/artisan/products/new', label: 'Add New Craft', icon: '➕' },
-      { href: '/artisan/experiences', label: 'Workshops & Experiences', icon: '🧺' },
+      { href: '/artisan/products', label: 'My Creations', icon: 'package' },
+      { href: '/artisan/products/new', label: 'Add New Craft', icon: 'tags' },
+      { href: '/artisan/experiences', label: 'Workshops & Experiences', icon: 'calendar' },
     ],
   },
   {
     title: 'Orders & Delivery',
     items: [
-      { href: '/artisan/orders', label: 'Patron Orders', icon: '🧾' },
-      { href: '/artisan/shipments', label: 'Shipments (J&T)', icon: '🚚' },
-      { href: '/artisan/bookings', label: 'Workshop Bookings', icon: '🎟️' },
+      { href: '/artisan/orders', label: 'Patron Orders', icon: 'receipt' },
+      { href: '/artisan/shipments', label: 'Shipments (J&T)', icon: 'truck' },
+      { href: '/artisan/bookings', label: 'Workshop Bookings', icon: 'ticket' },
     ],
   },
   {
     title: 'Community',
     items: [
-      { href: '/artisan/messages', label: 'Patron Messages', icon: '💬' },
-      { href: '/artisan/reviews', label: 'Patron Reviews', icon: '⭐' },
-      { href: '/artisan/notifications', label: 'Notifications', icon: '🔔' },
+      { href: '/artisan/messages', label: 'Patron Messages', icon: 'message' },
+      { href: '/artisan/reviews', label: 'Patron Reviews', icon: 'star' },
+      { href: '/artisan/notifications', label: 'Notifications', icon: 'radio' },
     ],
   },
   {
     title: 'Atelier Identity',
     items: [
-      { href: '/artisan/profile', label: 'Master Profile', icon: '👤' },
+      { href: '/artisan/profile', label: 'Master Profile', icon: 'user' },
     ],
   },
 ];
