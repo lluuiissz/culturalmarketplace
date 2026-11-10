@@ -342,7 +342,7 @@ const LEFT_CRAFTS: Craft[] = [
 const RIGHT_CRAFTS: Craft[] = [
   { key: 'beads', caption: 'Beaded Jewelry', src: '/images/crafts/beadwork.jpg', shift: 0, delay: '0.7s' },
   { key: 'hat', caption: 'Woven Hats', src: '/images/crafts/hat.jpg', shift: 44, delay: '2.1s' },
-  { key: 'bag', caption: 'Handwoven Bags', src: '/images/crafts/bag.jpg', shift: 8, delay: '3.5s' },
+  { key: 'bag', caption: 'Traditional Workshops', src: '/images/crafts/bag.jpg', shift: 8, delay: '3.5s' },
 ];
 
 function CraftFrame({ craft, side }: { craft: Craft; side: 'left' | 'right' }) {
@@ -392,9 +392,9 @@ function CraftFrame({ craft, side }: { craft: Craft; side: 'left' | 'right' }) {
 }
 
 const ASIDE_LEFT =
-  'pointer-events-none absolute top-1/2 hidden origin-right -translate-y-1/2 xl:block 2xl:scale-[1.15]';
+  'pointer-events-none top-1/2 hidden origin-right -translate-y-1/2 xl:block 2xl:scale-[1.15]';
 const ASIDE_RIGHT =
-  'pointer-events-none absolute top-1/2 hidden origin-left -translate-y-1/2 xl:block 2xl:scale-[1.15]';
+  'pointer-events-none top-1/2 hidden origin-left -translate-y-1/2 xl:block 2xl:scale-[1.15]';
 
 /**
  * cardHalfWidth = half of the card's width in px, so the columns hug the card.
@@ -404,9 +404,12 @@ const ASIDE_RIGHT =
 export default function CraftShowcase({
   side = 'left',
   cardHalfWidth = 288,
+  fixed = false,
 }: {
   side?: 'left' | 'right';
   cardHalfWidth?: number;
+  /** Stay centered in the viewport while scrolling (use on long pages) */
+  fixed?: boolean;
 }) {
   const crafts = side === 'left' ? LEFT_CRAFTS : RIGHT_CRAFTS;
   const heading = side === 'left' ? 'Handcrafted Heritage' : 'Woven With Pride';
@@ -415,7 +418,9 @@ export default function CraftShowcase({
   return (
     <aside
       aria-hidden="true"
-      className={side === 'left' ? ASIDE_LEFT : ASIDE_RIGHT}
+      className={`${fixed ? 'fixed' : 'absolute'} ${
+        side === 'left' ? ASIDE_LEFT : ASIDE_RIGHT
+      }`}
       style={side === 'left' ? { right: edge } : { left: edge }}
     >
       <p className="mb-5 font-sculpted text-xs font-bold uppercase tracking-[0.28em] text-ochre-800">

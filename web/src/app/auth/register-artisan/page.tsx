@@ -3,6 +3,8 @@
 import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { compressImage, fileToDataUrl, dataUrlToFile } from '@/lib/imageCompress';
+import AuthShell from '@/components/AuthShell';
+import ArtisanHeader from '@/components/ArtisanHeader';
 
 type Step = 'details' | 'verify' | 'done';
 
@@ -533,8 +535,8 @@ export default function ArtisanRegisterPage() {
 
   if (done) {
     return (
-      <main className="flex min-h-screen items-center justify-center px-4">
-        <div className="card max-w-md p-8 text-center">
+      <AuthShell width="md" centered>
+  <div className="card p-8 text-center">
           <div className="text-4xl">🧵</div>
           <h1 className="mt-3 font-serif text-2xl font-bold text-brand-900">Application received</h1>
           <p className="mt-2 text-sm text-stone-600">
@@ -545,27 +547,17 @@ export default function ArtisanRegisterPage() {
           </p>
           <Link href="/" className="btn-primary mt-6 inline-block">Back to home</Link>
         </div>
-      </main>
-    );
+</AuthShell>    );
   }
 
   const inputClass = 'input w-full';
   const labelClass = 'block text-sm font-medium text-stone-700 mt-4';
 
-  return (
-    <main className="mx-auto max-w-xl px-4 py-10">
-      <div className="mb-2">
-        <Link href="/" className="text-xs font-semibold text-stone-500 hover:text-crimson-700">
-          ← Return to Storefront
-        </Link>
-      </div>
+      return (
+    <AuthShell>
+      <ArtisanHeader step={step} />
 
-      <h1 className="font-sculpted text-3xl font-bold text-charcoal-900">
-        Enroll as a Master Artisan
-      </h1>
-      <p className="mt-2 text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
-        Join the cultural custodians of Agusan del Sur. Showcase your living heritage, traditional weaves, and hands-on workshops with patrons worldwide.
-      </p>
+      
 
       {/* Accidental Refresh Recovery Banner */}
       {draftRestored && (
@@ -584,20 +576,7 @@ export default function ArtisanRegisterPage() {
         </div>
       )}
 
-      {/* Progress Steps */}
-      <div className="mt-6 flex items-center gap-2 text-xs">
-        <span className={`badge ${step === 'details' ? 'bg-crimson-600 text-white font-bold' : 'bg-ochre-100 text-ochre-800'}`}>
-          1. Lineage & ID
-        </span>
-        <span className="text-stone-300">→</span>
-        <span className={`badge ${step === 'verify' ? 'bg-crimson-600 text-white font-bold' : 'bg-stone-100 text-stone-400'}`}>
-          2. Biometrics & Craft
-        </span>
-        <span className="text-stone-300">→</span>
-        <span className={`badge ${step === 'done' ? 'bg-ochre-700 text-white font-bold' : 'bg-stone-100 text-stone-400'}`}>
-          3. Curated Review
-        </span>
-      </div>
+     
 
       {step === 'details' && (
         <div className="card mt-6 p-6 space-y-6">
@@ -1162,6 +1141,6 @@ export default function ArtisanRegisterPage() {
           </div>
         </form>
       )}
-    </main>
+        </AuthShell>
   );
 }

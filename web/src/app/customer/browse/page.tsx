@@ -24,8 +24,11 @@ export default async function BrowsePage({
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
       <Header />
+<WeaveDivider pattern="kalinga" />
 
-      <main className="mx-auto max-w-6xl px-4 py-10 flex-1 w-full">
+<main className="mx-auto max-w-6xl px-4 py-10 flex-1 w-full">
+
+      
         {/* Page Header */}
         <div className="border-b border-abaca-200 pb-6">
           <div className="flex items-center gap-2 text-xs text-stone-500 mb-1">
@@ -78,7 +81,7 @@ export default async function BrowsePage({
             </form>
 
             <div className="text-xs font-medium text-stone-500">
-              Showing <span className="font-bold text-charcoal-900">{products.length}</span> authentic crafts
+              Showing <span className="font-bold text-charcoal-900">{products.length}</span> Authentic Crafts
             </div>
           </div>
 
