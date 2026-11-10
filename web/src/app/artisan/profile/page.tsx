@@ -20,13 +20,13 @@ export default async function ArtisanProfilePage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ochre-700">
               <Link href="/artisan/dashboard" className="hover:text-ochre-800 hover:underline">
-                Artisan Dashboard
+                Dashboard
               </Link>
               <span>/</span>
               <span className="text-charcoal-500">Artisan Profile</span>
             </div>
             <h1 className="mt-1 font-sculpted text-2xl font-bold tracking-tight text-charcoal-900 md:text-3xl">
-              Artisan's Profile
+              My Profile
             </h1>
             <p className="mt-1 text-xs text-charcoal-600 md:text-sm">
               Manage your personal heritage biography, studio identity, workshop location, and public artisan portrait.

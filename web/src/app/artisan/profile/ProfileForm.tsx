@@ -129,7 +129,7 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
           <div>
             <div className="flex items-center justify-center sm:justify-start gap-2">
               <h2 className="font-sculpted text-base font-bold text-charcoal-900">
-                Artisan Portrait
+                My Portrait
               </h2>
               <span className="rounded-full bg-ochre-100 px-2 py-0.5 text-[10px] font-bold text-ochre-800 uppercase tracking-wider">
                 Public Avatar
