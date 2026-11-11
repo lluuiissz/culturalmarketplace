@@ -4,7 +4,6 @@
 
 insert into users (id, name, email, password, role, location, phone, is_verified) values
   (1, 'mark john', 'mark@gmail.com', '$2y$10$8TtgE/81aBN8nbGeCsTtte1FGWhsAVF6WFTxnAiDQvMUFDPub0tta', 'customer', 'bunawan, agusan del sur', '', true),
-  (6, 'Norie Suganob', 'noriesuganob17@gmail.com', '$2y$10$IThaAWUH0HFR2EfCidNtvu.MGlvZSFa5TnYcT3/w1fPiHf1moZYTO', 'customer', 'Bunawan, Agusan del Sur', '09979904061', true),
   (8, 'System Administrator', 'admin@marketplace.com', '$2y$10$la0zvTEQECeGtE4BmVe0Rud.zJ5baUFstzQI3eFE5g7riuqDJbsZG', 'admin', null, null, false),
   -- artisan user row (mirrors artisans.id 10 so unified login + notifications work)
   (10, 'John Mark Belar', 'artisan@demo.local', '$2a$10$ZqHsE4idNCRBTmUSW4UOee1OSble87n9j.jBOVWFGoL7ck.wMlffW', 'artisan', 'Bunawan, Agusan del Sur', '09078813630', true),
