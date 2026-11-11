@@ -5,6 +5,19 @@ import Link from 'next/link';
 import { compressImage, fileToDataUrl, dataUrlToFile } from '@/lib/imageCompress';
 import AuthShell from '@/components/AuthShell';
 import ArtisanHeader from '@/components/ArtisanHeader';
+import {
+  UserRound,
+  Camera,
+  ImagePlus,
+  RefreshCw,
+  X,
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+  Hammer, 
+  ShoppingBasket, 
+  Package
+} from 'lucide-react';
 
 type Step = 'details' | 'verify' | 'done';
 
@@ -563,7 +576,7 @@ export default function ArtisanRegisterPage() {
       {draftRestored && (
         <div className="mt-4 flex items-center justify-between rounded-2xl bg-ochre-50 p-3.5 border border-ochre-200 text-xs text-charcoal-900">
           <div className="flex items-center gap-2">
-            <span>📋</span>
+            <span></span>
             <span><b>Draft restored:</b> Your previous progress and uploaded photos were recovered.</span>
           </div>
           <button
@@ -585,18 +598,15 @@ export default function ArtisanRegisterPage() {
             <div className="flex items-start justify-between gap-2">
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xl">🪪</span>
-                  <h2 className="font-semibold text-brand-900 text-sm">
-                    Upload Government ID (Instant OCR Auto-Fill)
-                  </h2>
+                  <span className="text-xl"></span>
+                  
                 </div>
                 <p className="mt-1 text-xs text-stone-600 leading-relaxed">
-                  Upload your Philippine ID (Driver&apos;s License, PhilSys, UMID, Postal ID, Passport) to automatically extract your Name, ID Number, Birthday, and Address into the fields below.
+                  Please upload a valid Philippine government-issued ID for identity verification.
+Make sure that the information and photo on your ID are clear and readable.
                 </p>
               </div>
-              <span className="badge bg-ochre-100 text-ochre-900 border border-ochre-300 text-[10px] uppercase font-bold shrink-0">
-                Fast OCR
-              </span>
+              
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
@@ -616,13 +626,37 @@ export default function ArtisanRegisterPage() {
                   </div>
                 ) : (
                   <div>
-                    <div className="py-2 text-2xl">🪪</div>
+                    <div className="flex justify-center py-2">
+  <svg
+    viewBox="0 0 52 40"
+    className="h-10 w-[52px]"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="52" height="38" rx="6" fill="#B0B0B0" />
+
+    {/* Person silhouette */}
+    <circle cx="16" cy="13" r="5" fill="white" />
+    <path
+      d="M7 29C7 23.5 10.5 20 16 20C21.5 20 25 23.5 25 29V31H7V29Z"
+      fill="white"
+    />
+
+    {/* Information lines */}
+    <path
+      d="M30 17H44M30 25H44"
+      stroke="white"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+  </svg>
+</div>
                     <button
                       type="button"
                       className="btn-outline w-full text-xs py-1.5"
                       onClick={() => frontRef.current?.click()}
                     >
-                      Upload ID Front
+                      Upload Front of ID
                     </button>
                   </div>
                 )}
@@ -655,13 +689,36 @@ export default function ArtisanRegisterPage() {
                   </div>
                 ) : (
                   <div>
-                    <div className="py-2 text-2xl">🪪</div>
+                    <div className="flex justify-center py-2">
+                      <svg
+    viewBox="0 0 52 40"
+    className="h-10 w-[52px]"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="52" height="38" rx="6" fill="#B0B0B0" />
+
+    {/* Person silhouette */}
+    <circle cx="16" cy="13" r="5" fill="white" />
+    <path
+      d="M7 29C7 23.5 10.5 20 16 20C21.5 20 25 23.5 25 29V31H7V29Z"
+      fill="white"
+    />
+
+    {/* Information lines */}
+    <path
+      d="M30 17H44M30 25H44"
+      stroke="white"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+  </svg></div>
                     <button
                       type="button"
                       className="btn-outline w-full text-xs py-1.5"
                       onClick={() => backRef.current?.click()}
                     >
-                      Upload ID Back
+                      Upload Back of ID
                     </button>
                   </div>
                 )}
@@ -703,7 +760,7 @@ export default function ArtisanRegisterPage() {
             </div>
 
             <div>
-              <label className={labelClass} htmlFor="name">Full Name *</label>
+              <label className={labelClass} htmlFor="name">Full Name </label>
               <input
                 id="name"
                 type="text"
@@ -742,7 +799,7 @@ export default function ArtisanRegisterPage() {
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className={labelClass} htmlFor="email">Email Address *</label>
+                <label className={labelClass} htmlFor="email">Email Address </label>
                 <input
                   id="email"
                   type="email"
@@ -770,7 +827,7 @@ export default function ArtisanRegisterPage() {
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className={labelClass} htmlFor="phone">Philippine Mobile Number (09XX…)</label>
+                <label className={labelClass} htmlFor="phone">Mobile Number (09XX…)</label>
                 <input
                   id="phone"
                   type="tel"
@@ -782,7 +839,7 @@ export default function ArtisanRegisterPage() {
               </div>
 
               <div>
-                <label className={labelClass} htmlFor="location">Location / Municipality</label>
+                <label className={labelClass} htmlFor="location">Location / Address </label>
                 <input
                   id="location"
                   type="text"
@@ -796,7 +853,7 @@ export default function ArtisanRegisterPage() {
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className={labelClass} htmlFor="craft_type">Craft Specialization (e.g. Weaving, Beadwork)</label>
+                <label className={labelClass} htmlFor="craft_type">Craft Specialization (e.g. Weaving)</label>
                 <input
                   id="craft_type"
                   type="text"
@@ -808,7 +865,7 @@ export default function ArtisanRegisterPage() {
               </div>
 
               <div>
-                <label className={labelClass} htmlFor="business_name">Shop / Workshop Name (Optional)</label>
+                <label className={labelClass} htmlFor="business_name">Shop / Workshop Name</label>
                 <input
                   id="business_name"
                   type="text"
@@ -850,11 +907,11 @@ export default function ArtisanRegisterPage() {
                 {idFrontPreview ? (
                   <div>
                     <img src={idFrontPreview} alt="ID Front" className="mx-auto h-20 rounded object-cover" />
-                    <p className="mt-1 text-xs text-ochre-800 font-semibold">✓ Front attached</p>
+                    <p className="mt-1 text-xs text-ochre-800 font-semibold">✓ Front ID attached</p>
                   </div>
                 ) : (
                   <button type="button" className="btn-outline w-full text-xs py-2 mt-4" onClick={() => setStep('details')}>
-                    Upload Front ID
+                    Upload Front of ID
                   </button>
                 )}
               </div>
@@ -863,11 +920,11 @@ export default function ArtisanRegisterPage() {
                 {idBackPreview ? (
                   <div>
                     <img src={idBackPreview} alt="ID Back" className="mx-auto h-20 rounded object-cover" />
-                    <p className="mt-1 text-xs text-ochre-800 font-semibold">✓ Back attached</p>
+                    <p className="mt-1 text-xs text-ochre-800 font-semibold">✓ Back ID attached</p>
                   </div>
                 ) : (
                   <button type="button" className="btn-outline w-full text-xs py-2 mt-4" onClick={() => setStep('details')}>
-                    Upload Back ID
+                    Upload Back of ID
                   </button>
                 )}
               </div>
@@ -888,56 +945,74 @@ export default function ArtisanRegisterPage() {
                     <img src={selfiePreview} alt="Selfie preview" className="w-full h-full object-cover" />
                   </div>
 
-                  {/* Status badge */}
-                  <div className="mx-auto max-w-sm rounded-xl text-xs text-left">
-                    {faceResult === 'matching' && (
-                      <div className="flex items-center gap-2.5 text-primary-700 bg-primary-50 border border-primary-200 p-3 rounded-xl">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-300 border-t-primary-600 shrink-0" />
-                        <span>{faceMessage || 'Matching with ID photo…'}</span>
-                      </div>
-                    )}
-                    {faceResult === 'match' && (
-                      <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
-                        <span className="text-base leading-none">✅</span>
-                        <div>
-                          <p className="font-semibold">Face matched your ID!</p>
-                          <p className="text-[11px] text-ochre-800 mt-0.5">{faceMessage || 'Biometric verification passed successfully.'}</p>
-                        </div>
-                      </div>
-                    )}
-                    {faceResult === 'mismatch' && (
-                      <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
-                        <span className="text-base leading-none">⚠️</span>
-                        <div>
-                          <p className="font-semibold">Face match score below threshold</p>
-                          <p className="text-[11px] text-ochre-800 mt-0.5">{faceMessage || 'You can retake photo or submit anyway for manual admin review.'}</p>
-                        </div>
-                      </div>
-                    )}
-                    {faceResult === 'no_face' && (
-                      <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
-                        <span className="text-base leading-none">👤</span>
-                        <div>
-                          <p className="font-semibold">No face detected</p>
-                          <p className="text-[11px] text-ochre-800 mt-0.5">{faceMessage || 'Please retake with your face clearly centered in good lighting.'}</p>
-                        </div>
-                      </div>
-                    )}
-                    {faceResult === 'manual_review' && (
-                      <div className="flex items-start gap-2.5 text-stone-700 bg-stone-100 border border-stone-200 p-3 rounded-xl">
-                        <span className="text-base leading-none">ℹ️</span>
-                        <div>
-                          <p className="font-semibold">Pending Admin Review</p>
-                          <p className="text-[11px] text-stone-600 mt-0.5">{faceMessage || 'Selfie saved. An admin will review your photo during application approval.'}</p>
-                        </div>
-                      </div>
-                    )}
-                    {faceResult === 'idle' && (
-                      <div className="text-center text-ochre-800 font-semibold py-1">
-                        {faceMessage || '✓ Selfie captured'}
-                      </div>
-                    )}
-                  </div>
+                  
+{/* Status Badge */}
+<div className="mx-auto max-w-sm rounded-xl text-xs text-left">
+
+  {faceResult === 'matching' && (
+    <div className="flex items-center gap-2.5 text-primary-700 bg-primary-50 border border-primary-200 p-3 rounded-xl">
+      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-300 border-t-primary-600 shrink-0" />
+      <span>{faceMessage || 'Matching with ID photo…'}</span>
+    </div>
+  )}
+
+  {faceResult === 'match' && (
+    <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
+      <CheckCircle2 size={18} className="shrink-0 text-ochre-700" />
+      <div>
+        <p className="font-semibold">Face matched your ID!</p>
+        <p className="text-[11px] text-ochre-800 mt-0.5">
+          {faceMessage || 'Biometric verification passed successfully.'}
+        </p>
+      </div>
+    </div>
+  )}
+
+  {faceResult === 'mismatch' && (
+    <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
+      <AlertTriangle size={18} className="shrink-0 text-ochre-700" />
+      <div>
+        <p className="font-semibold">Face match score below threshold</p>
+        <p className="text-[11px] text-ochre-800 mt-0.5">
+          {faceMessage || 'You can retake photo or submit anyway for manual admin review.'}
+        </p>
+      </div>
+    </div>
+  )}
+
+  {faceResult === 'no_face' && (
+    <div className="flex items-start gap-2.5 text-charcoal-900 bg-ochre-50 border border-ochre-300 p-3 rounded-xl">
+      <UserRound size={18} className="shrink-0 text-ochre-700" />
+      <div>
+        <p className="font-semibold">No face detected</p>
+        <p className="text-[11px] text-ochre-800 mt-0.5">
+          {faceMessage || 'Please retake with your face clearly centered in good lighting.'}
+        </p>
+      </div>
+    </div>
+  )}
+
+  {faceResult === 'manual_review' && (
+    <div className="flex items-start gap-2.5 text-stone-700 bg-stone-100 border border-stone-200 p-3 rounded-xl">
+      <Info size={18} className="shrink-0 text-stone-500" />
+      <div>
+        <p className="font-semibold">Pending Admin Review</p>
+        <p className="text-[11px] text-stone-600 mt-0.5">
+          {faceMessage || 'Selfie saved. An admin will review your photo during application approval.'}
+        </p>
+      </div>
+    </div>
+  )}
+
+  {faceResult === 'idle' && (
+    <div className="flex items-center justify-center gap-1.5 text-ochre-800 font-semibold py-1">
+      <CheckCircle2 size={15} />
+      <span>{faceMessage || 'Selfie captured'}</span>
+    </div>
+  )}
+
+</div>
+
 
                   <button
                     type="button"
@@ -985,36 +1060,45 @@ export default function ArtisanRegisterPage() {
                   </div>
 
                   <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                    <button
-                      type="button"
-                      disabled={!camReady}
-                      className="btn-primary text-xs py-2 px-4 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                      onClick={() => captureSelfie(Boolean(idFront))}
-                    >
-                      📸 Capture Photo
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-outline text-xs py-2 px-3"
-                      onClick={flipCamera}
-                      title="Flip camera"
-                    >
-                      🔄 Flip
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-outline text-xs py-2 px-3 text-stone-500 hover:text-stone-800"
-                      onClick={stopCamera}
-                    >
-                      Cancel
-                    </button>
-                  </div>
+  <button
+    type="button"
+    disabled={!camReady}
+    className="btn-primary flex items-center gap-2 text-xs py-2 px-4 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+    onClick={() => captureSelfie(Boolean(idFront))}
+  >
+    <Camera size={15} />
+    Capture Photo
+  </button>
+
+  <button
+    type="button"
+    className="btn-outline flex items-center gap-2 text-xs py-2 px-3"
+    onClick={flipCamera}
+    title="Flip camera"
+  >
+    <RefreshCw size={14} />
+    Flip
+  </button>
+
+  <button
+    type="button"
+    className="btn-outline flex items-center gap-2 text-xs py-2 px-3 text-stone-500 hover:text-stone-800"
+    onClick={stopCamera}
+  >
+    <X size={14} />
+    Cancel
+  </button>
+</div>
                 </div>
               ) : (
                 <div className="py-4">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-stone-100 text-2xl text-stone-600 mb-3">
-                    🤳
-                  </div>
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-stone-100">
+  <UserRound
+    size={30}
+    strokeWidth={1.5}
+    className="text-stone-400"
+  />
+</div>
                   <p className="text-xs text-stone-600 font-medium mb-3">
                     Take a quick selfie or upload a photo of your face
                   </p>
@@ -1027,21 +1111,24 @@ export default function ArtisanRegisterPage() {
                   )}
 
                   <div className="flex flex-wrap items-center justify-center gap-2">
-                    <button
-                      type="button"
-                      className="btn-primary text-xs py-2 px-4 shadow-sm"
-                      onClick={() => void startCamera()}
-                    >
-                      📷 Open Camera
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-outline text-xs py-2 px-3"
-                      onClick={() => selfieFileRef.current?.click()}
-                    >
-                      📁 Upload File
-                    </button>
-                  </div>
+  <button
+    type="button"
+    className="btn-primary flex items-center gap-2 text-xs py-2 px-4 shadow-sm"
+    onClick={() => void startCamera()}
+  >
+    <Camera size={15} />
+    Open Camera
+  </button>
+
+  <button
+    type="button"
+    className="btn-outline flex items-center gap-2 text-xs py-2 px-3"
+    onClick={() => selfieFileRef.current?.click()}
+  >
+    <ImagePlus size={15} />
+    Upload File
+  </button>
+</div>
                   <input
                     ref={selfieFileRef}
                     type="file"
@@ -1077,10 +1164,10 @@ export default function ArtisanRegisterPage() {
 
             <div className="mt-3 grid grid-cols-3 gap-3">
               {([
-                ['proof', proofRef, proofCraft, setProofCraft, proofPreview, setProofPreview, '🛠️', 'Proof of Making'],
-                ['sample1', s1Ref, sample1, setSample1, s1Preview, setS1Preview, '🧺', 'Product Sample 1'],
-                ['sample2', s2Ref, sample2, setSample2, s2Preview, setS2Preview, '🏺', 'Product Sample 2'],
-              ] as const).map(([side, ref, file, setFile, preview, setPreview, icon, label]) => (
+  ['proof', proofRef, proofCraft, setProofCraft, proofPreview, setProofPreview, 'proof', 'Proof of Making'],
+  ['sample1', s1Ref, sample1, setSample1, s1Preview, setS1Preview, 'basket', 'Product Sample 1'],
+  ['sample2', s2Ref, sample2, setSample2, s2Preview, setS2Preview, 'package', 'Product Sample 2'],
+] as const).map(([side, ref, file, setFile, preview, setPreview, icon, label]) => (
                 <div key={side} className="rounded-xl border-2 border-dashed border-stone-200 p-2 text-center">
                   {preview ? (
                     <div>
@@ -1133,7 +1220,7 @@ export default function ArtisanRegisterPage() {
               disabled={busy || !idFront || !idBack || !selfie || !proofCraft || !sample1 || !sample2}
               type="submit"
             >
-              {busy ? 'Submitting application… ⚡' : 'Submit Artisan Application →'}
+              {busy ? 'Submitting application… ' : 'Submit Artisan Application →'}
             </button>
             <p className="mt-2 text-center text-xs text-stone-400">
               Optimized for fast processing. Your photos and progress are automatically saved if refreshed.

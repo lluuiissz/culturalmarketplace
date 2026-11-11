@@ -176,7 +176,7 @@ export default function CustomerRegisterForm() {
       >
         {otpDelivered && !devOtp && (
           <p className="break-words rounded-lg border border-ochre-200 bg-ochre-50 px-3 py-3 text-sm font-medium text-charcoal-900">
-            📧 We emailed a 6-digit code to <b>{form.email}</b>. It may take a minute to arrive.
+            We emailed a 6-digit code to <b>{form.email}</b>. It may take a minute to arrive.
           </p>
         )}
 

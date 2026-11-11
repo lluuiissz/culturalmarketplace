@@ -4,7 +4,7 @@ import CustomerRegisterForm from './CustomerRegisterForm';
 
 export default function RegisterPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
+    <main className="relative flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
       {/* Registration Card */}
       <div className="w-full max-w-xl overflow-hidden rounded-[2rem] border border-stone-300 bg-white">
 
@@ -67,7 +67,18 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+        
       </div>
+            {/* RETURN TO STOREFRONT - BELOW REGISTRATION CARD */}
+      <div className="absolute bottom-4 left-0 w-full text-center sm:bottom-6">
+        <Link
+          href="/"
+          className="text-xs font-semibold text-stone-500 transition hover:text-charcoal-900 sm:text-sm"
+        >
+          ← Return to Storefront
+        </Link>
+      </div>
+      
     </main>
   );
 }

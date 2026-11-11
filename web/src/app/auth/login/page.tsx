@@ -18,7 +18,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
+    <main className="relative flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
       {/* Login Card */}
       <div className="w-full max-w-xl overflow-hidden rounded-[2rem] border border-stone-300 bg-white">
 
@@ -70,22 +70,43 @@ export default async function LoginPage() {
             <LoginForm />
           </div>
 
+          {/* RETURN TO STOREFRONT - BELOW LOGIN CARD */}
+      <div className="absolute bottom-4 left-0 w-full text-center sm:bottom-6">
+        <Link
+          href="/"
+          className="text-xs font-semibold text-stone-500 transition hover:text-charcoal-900 sm:text-sm"
+        >
+          ← Return to Storefront
+        </Link>
+          </div>
+
           {/* Register Links */}
-          <div className="mt-3 space-y-2 text-center text-xs leading-relaxed text-stone-500  sm:text-sm">
-  <p>
-    New to our marketplace?{' '}
-    <Link className="text-stone-600 underline transition hover:text-crimson-700" href="/auth/register">
-      Create a Buyer Account
-    </Link>
+          <div className="mt-3 space-y-2 text-center text-xs leading-relaxed text-stone-500 sm:text-sm">
+            <p>
+              New to our marketplace?{' '}
+              <Link
+                className="text-stone-600 underline transition hover:text-crimson-700"
+                href="/auth/register"
+              >
+                Create a Buyer Account
+              </Link>
+            </p>
+
+            <p>
+              <Link
+                className="text-stone-600 underline transition hover:text-crimson-700"
+                href="/auth/register-artisan"
+              >
+                Register as an Artisan
+              </Link>
   </p>
-  <p>
-    <Link className="text-stone-600 underline transition hover:text-crimson-700" href="/auth/register-artisan">
-      Register as an Artisan
-    </Link>
-  </p>
+
+  
 </div>
+
         </div>
       </div>
+      
     </main>
   );
 }
