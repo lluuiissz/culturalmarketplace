@@ -1,92 +1,72 @@
 import Link from 'next/link';
 import WeaveDivider from '@/components/WeaveDivider';
-import AuthBackdrop from '@/components/AuthBackdrop';
-import CraftShowcase from '@/components/CraftShowcase';
 import CustomerRegisterForm from './CustomerRegisterForm';
-
-// Logo and brand header (moved here from the form so it sits above the heading)
-function BrandHeader() {
-  return (
-    <div className="mb-6 flex w-full flex-col items-center text-center sm:mb-8">
-      <img
-        src="/images/cultural-marketplace-logo.png"
-        alt="Cultural Marketplace Logo"
-        className="mb-1 h-12 w-auto max-w-[160px] object-contain sm:h-20 sm:max-w-[180px]"
-      />
-
-      <h1 className="text-xl font-extrabold tracking-tight sm:text-2xl">
-        <span className="text-[#8B0000]">Cultural</span>{' '}
-        <span className="text-[#FFA500]">Marketplace</span>
-      </h1>
-
-      <p className="mt-1 max-w-[280px] text-xs leading-relaxed text-[#B00000] sm:text-sm">
-        Agusan del Sur Indigenous Crafts and Experiences
-      </p>
-    </div>
-  );
-}
 
 export default function RegisterPage() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-3 py-8 sm:px-6 sm:py-12">
-
-      {/* Decorative background (behind the card) */}
-      <AuthBackdrop />
-
-      {/* Craft photos / illustrations on both sides (wide screens only) */}
-      <CraftShowcase side="left" />
-      <CraftShowcase side="right" />
-
+    <main className="flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
       {/* Registration Card */}
-      <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-abaca-200/90 bg-white/95 p-4 shadow-sm sm:rounded-3xl sm:p-7 md:p-9">
+      <div className="w-full max-w-xl overflow-hidden rounded-[2rem] border border-stone-300 bg-white">
 
-        {/* Decorative Top Border */}
-        <WeaveDivider pattern="kalinga"
-          className="absolute left-0 right-0 top-0 opacity-30"
-        />
+        {/* Logo and Brand Name (links back to the storefront) */}
+        <Link
+          href="/"
+          aria-label="Cultural Marketplace — home"
+          className="flex flex-wrap items-center justify-center gap-3 px-6 py-4 sm:py-5"
+        >
+          <img
+            src="/images/cultural-marketplace-logo.png"
+            alt="Cultural Marketplace Logo"
+            className="h-10 w-auto max-w-[110px] object-contain sm:h-12 sm:max-w-[130px]"
+          />
 
-        {/* Logo and Brand Name */}
-        <BrandHeader />
+          <div className="flex min-w-0 flex-col leading-tight">
+            <h1 className="text-xl font-extrabold tracking-tight sm:text-[28px]">
+              <span className="text-[#8B0000]">Cultural</span>{' '}
+              <span className="text-[#FFA500]">Marketplace</span>
+            </h1>
 
-        {/* Page Heading */}
-        <div className="text-center">
-          <h2 className="font-sculpted text-2xl font-bold text-charcoal-900 sm:text-3xl">
-            Join the Gathering
-          </h2>
+            <p className="mt-0.5 text-[10px] font-bold text-[#B00000] sm:text-[11px]">
+              Agusan del Sur Indigenous Crafts and Experiences
+            </p>
+          </div>
+        </Link>
 
-          <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-stone-500 sm:text-sm">
-            Create your patron account to support Indigenous artisans,
-            collect authentic crafts, and participate in living cultural
-            workshops.
+        {/* Full-width weave band under the header */}
+        <WeaveDivider pattern="kalinga" />
+
+        {/* Body */}
+        <div className="px-5 pb-7 pt-5 sm:px-9 sm:pb-8">
+
+          {/* Page Heading */}
+          <div className="text-center">
+            <h2 className="font-sculpted text-2xl font-bold text-charcoal-900 sm:text-3xl">
+              Join the Community
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-stone-500 sm:text-sm">
+              Create your patron account to support Indigenous artisans,
+              collect authentic crafts, and participate in living cultural
+              workshops.
+            </p>
+          </div>
+
+          {/* Registration Form */}
+          <div className="w-full min-w-0">
+            <CustomerRegisterForm />
+          </div>
+
+          {/* Sign In Link */}
+          <p className="mt-5 text-center text-xs leading-relaxed text-stone-500 sm:text-sm">
+            Already have an account?{' '}
+            <Link
+              className="font-medium text-crimson-700 underline transition hover:text-crimson-800"
+              href="/auth/login"
+            >
+              Log in
+            </Link>
           </p>
         </div>
-
-        {/* Registration Form */}
-        <div className="mt-1 w-full min-w-0 sm:mt-2">
-          <CustomerRegisterForm />
-        </div>
-
-        {/* Sign In Link */}
-        <p className="mt-6 text-center text-xs leading-relaxed text-stone-500 sm:text-sm">
-          Already part of the gathering?{' '}
-          <Link
-            className="font-bold text-crimson-700 transition hover:underline"
-            href="/auth/login"
-          >
-            Sign in
-          </Link>
-        </p>
-
-        {/* Return to Storefront */}
-        <div className="mt-5 border-t border-abaca-200 pt-4 text-center">
-          <Link
-            href="/"
-            className="text-xs font-semibold text-stone-500 transition hover:text-charcoal-900 sm:text-sm"
-          >
-            ← Return to Storefront
-          </Link>
-        </div>
-
       </div>
     </main>
   );

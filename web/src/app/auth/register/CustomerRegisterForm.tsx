@@ -406,9 +406,7 @@ export default function CustomerRegisterForm() {
         {busy ? 'Creating your account…' : 'Continue'}
       </button>
 
-      <p className="px-2 text-center text-xs leading-relaxed text-stone-500">
-        Free to join — you&apos;ll only be charged when you buy something.
-      </p>
+      
     </form>
   );
 }

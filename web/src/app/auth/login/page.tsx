@@ -2,10 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import WeaveDivider from '@/components/WeaveDivider';
-import AuthBackdrop from '@/components/AuthBackdrop';
-import CraftShowcase from '@/components/CraftShowcase';
 import LoginForm from './LoginForm';
-
 
 export default async function LoginPage() {
   const session = await getSession();
@@ -21,108 +18,74 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center overflow-hidden bg-canvas px-4">
+    <main className="flex min-h-screen items-center justify-center bg-canvas px-3 py-8 sm:px-6 sm:py-12">
+      {/* Login Card */}
+      <div className="w-full max-w-xl overflow-hidden rounded-[2rem] border border-stone-300 bg-white">
 
-      {/* Decorative background (behind everything) */}
-      <AuthBackdrop />
+        {/* Logo and Brand Name (links back to the storefront) */}
+        <Link
+          href="/"
+          aria-label="Cultural Marketplace — home"
+          className="flex flex-wrap items-center justify-center gap-3 px-6 py-4 sm:py-5"
+        >
+          <img
+            src="/images/cultural-marketplace-logo.png"
+            alt="Cultural Marketplace Logo"
+            className="h-10 w-auto max-w-[110px] object-contain sm:h-12 sm:max-w-[130px]"
+          />
 
-      {/* Craft photos / illustrations on both sides (wide screens only).
-          224 = half of the login card width (max-w-md = 448px) */}
-      <CraftShowcase side="left" cardHalfWidth={224} />
-      <CraftShowcase side="right" cardHalfWidth={224} />
-
-      {/* TOP: LOGO + BRAND NAME */}
-      <div className="relative w-full max-w-md pt-8 sm:pt-12">
-        <div className="flex items-center justify-center gap-4">
-          <Link
-            href="/"
-            className="flex shrink-0 items-center"
-            aria-label="Cultural Marketplace — home"
-          >
-            <img
-              src="/images/cultural-marketplace-logo.png"
-              alt="Cultural Marketplace Logo"
-              className="h-14 w-auto max-w-[115px] object-contain sm:h-16 sm:max-w-[130px]"
-            />
-          </Link>
-
-          {/* BRAND NAME */}
-          <div className="flex min-w-0 flex-col justify-center leading-tight">
-            <h1 className="whitespace-nowrap text-base font-extrabold tracking-tight sm:text-xl">
-              <span className="text-[#8B0000]">Cultural</span>
-              {' '}
+          <div className="flex min-w-0 flex-col leading-tight">
+            <h1 className="text-xl font-extrabold tracking-tight sm:text-[28px]">
+              <span className="text-[#8B0000]">Cultural</span>{' '}
               <span className="text-[#FFA500]">Marketplace</span>
             </h1>
 
-            <p className="mt-1 max-w-[230px] text-[9px] font-bold leading-relaxed text-[#B00000] sm:text-[10px]">
+            <p className="mt-0.5 text-[10px] font-bold text-[#B00000] sm:text-[11px]">
               Agusan del Sur Indigenous Crafts and Experiences
             </p>
           </div>
-        </div>
-      </div>
+        </Link>
 
-      {/* MIDDLE: LOGIN CARD */}
-      <div className="relative w-full max-w-md py-8">
-        <div className="relative overflow-hidden rounded-3xl border border-abaca-200/90 bg-white/95 p-8 shadow-sm">
+        {/* Full-width weave band under the header */}
+        <WeaveDivider pattern="kalinga" />
 
-          {/* KALINGA WEAVE DIVIDER */}
-          <WeaveDivider
-            pattern="kalinga"
-            className="absolute left-0 right-0 top-0 opacity-75"
-          />
+        {/* Body */}
+        <div className="px-5 pb-7 pt-6 sm:px-9 sm:pb-8 sm:pt-8">
 
-          <h2 className="pt-2 font-sculpted text-2xl font-bold text-charcoal-900">
-            Welcome to the Gathering
-          </h2>
+          {/* Page Heading */}
+          <div className="text-center">
+            <h2 className="font-sculpted text-2xl font-bold text-charcoal-900 sm:text-3xl">
+              Welcome to our Community!
+            </h2>
 
-          <p className="mt-1 text-xs text-stone-500">
-            Sign in to access your patron orders, workshop passes, or artisan atelier.
-          </p>
+            <p className="mx-auto mt-3 max-w-md text-xs leading-relaxed text-stone-500 sm:text-sm">
+              Explore authentic Indigenous crafts, learn about their cultural
+              stories, and connect with local artisans. Sign in to access your
+              account and enjoy all the features of our marketplace.
+            </p>
+          </div>
 
-          <div className="mt-6">
+          {/* Login Form */}
+          <div className="mt-5 w-full min-w-0 sm:mt-8">
             <LoginForm />
           </div>
 
-          <p className="mt-6 text-center text-xs text-stone-500">
-            New patron?{' '}
-            <Link
-              className="font-bold text-crimson-700 hover:underline"
-              href="/auth/register"
-            >
-              Join the Gathering
-            </Link>
-            {' · '}
-            <Link
-              className="font-bold text-ochre-700 hover:underline"
-              href="/auth/register-artisan"
-            >
-              Enroll as Artisan
-            </Link>
-          </p>
-
-          {/* DEMO ACCOUNTS */}
-          <div className="mt-6 rounded-2xl border border-abaca-200 bg-canvas p-3.5 text-xs text-stone-600">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-ochre-800">
-              Demo Test Accounts (password: demo1234)
-            </p>
-
-            <p className="mt-1 break-words font-mono text-[11px] text-stone-600">
-              customer@demo.local · artisan@demo.local · admin@demo.local
-            </p>
-          </div>
+          {/* Register Links */}
+          <div className="mt-3 space-y-2 text-center text-xs leading-relaxed text-stone-500  sm:text-sm">
+  <p>
+    New to our marketplace?{' '}
+    <Link className="text-stone-600 underline transition hover:text-crimson-700" href="/auth/register">
+      Create a Buyer Account
+    </Link>
+  </p>
+  <p>
+    <Link className="text-stone-600 underline transition hover:text-crimson-700" href="/auth/register-artisan">
+      Register as an Artisan
+    </Link>
+  </p>
+</div>
         </div>
       </div>
-
-      {/* BOTTOM: RETURN TO STOREFRONT */}
-      <div className="relative mt-auto pb-8 pt-2 text-center">
-        <Link
-          href="/"
-          className="text-xs font-semibold text-stone-500 transition hover:text-charcoal-900"
-        >
-          ← Return to Storefront
-        </Link>
-      </div>
-
     </main>
   );
 }
