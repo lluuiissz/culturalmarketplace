@@ -65,8 +65,7 @@ insert into reports (id, reporter_id, reporter_name, reported_type, reported_id,
 on conflict do nothing;
 
 insert into customer_addresses (id, customer_id, label, full_name, phone, address, landmark, is_default) values
-  (1, 1, 'Home', 'mark john', '09078813630', 'P 8 Simulao, Bunawan Brook, Bunawan, Agusan del Sur 8506', 'Near the chapel', true),
-  (2, 6, 'Home', 'Norie Suganob', '09979904061', 'Katmon, Poblacion, Bunawan, Agusan del Sur 8506', 'Infront of Catholic church', true)
+  (1, 1, 'Home', 'mark john', '09078813630', 'P 8 Simulao, Bunawan Brook, Bunawan, Agusan del Sur 8506', 'Near the chapel', true)
 on conflict do nothing;
 
 insert into settings (key, value) values
