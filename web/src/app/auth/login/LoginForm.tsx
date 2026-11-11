@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -40,6 +41,12 @@ export default function LoginForm() {
         <label className="mb-1 block text-sm font-medium text-stone-700">Password</label>
         <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
+      <div className="mt-1.5 text-right">
+  <Link href="/auth/forgot-password" className="text-xs font-semibold text-crimson-700 hover:underline">
+    Forgot password?
+  </Link>
+</div>
+      
       <button className="btn-primary w-full" disabled={busy} type="submit">
         {busy ? 'Signing in…' : 'Sign in'}
       </button>
