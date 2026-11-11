@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'node:crypto';
 import { findUserByEmail } from '@/lib/db';
+import { sealPending } from '@/lib/pendingToken';
 
-// In-memory pending-artisan handoff (text step -> capture step). Survives dev
-// hot-reload via globalThis. 15-minute expiry.
-declare global {
-  // eslint-disable-next-line no-var
-  var __pendingArtisans: Map<string, { data: Record<string, string>; expires: number }> | undefined;
-}
-
-function pending(): Map<string, { data: Record<string, string>; expires: number }> {
-  if (!globalThis.__pendingArtisans) globalThis.__pendingArtisans = new Map();
-  return globalThis.__pendingArtisans;
-}
+// Fields carried from the text step to the capture step (inside the encrypted token).
+const FIELDS = [
+  'name',
+  'email',
+  'password',
+  'phone',
+  'location',
+  'craft_type',
+  'business_name',
+  'id_number',
+  'dob',
+] as const;
 
 export async function POST(req: Request) {
   try {
@@ -27,8 +28,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 'error', message: 'This email is already registered.' }, { status: 409 });
     }
 
-    const token = randomUUID();
-    pending().set(token, { data: body, expires: Date.now() + 15 * 60_000 });
+    const data: Record<string, string> = {};
+    for (const f of FIELDS) {
+      if (typeof body[f] === 'string') data[f] = body[f];
+    }
+
+    // Stateless, encrypted token (valid 15 minutes) - works across serverless instances.
+    const token = sealPending(data);
 
     return NextResponse.json({
       status: 'success',

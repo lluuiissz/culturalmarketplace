@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
-import { createArtisan, getArtisanByEmail, logActivity } from '@/lib/db';
+import { createArtisan, getArtisanByEmail, logActivity, findUserByEmail } from '@/lib/db';
+import { openPending } from '@/lib/pendingToken';
 import { captureOcr } from '@/lib/ocr';
 import { verifyFace, checkDuplicateFace } from '@/lib/faceVerify';
 import { listFaceEmbeddings, saveFaceEmbedding } from '@/lib/faceEmbeddings';
 import { logFaceAttempt } from '@/lib/faceLogs';
 import { uploadFile } from '@/lib/storage';
 
-// In-memory pending-artisan handoff shared with ../route.ts.
+// In-memory pending-artisan handoff shared with ../route.ts.s
 declare global {
   // eslint-disable-next-line no-var
   var __pendingArtisans: Map<string, { data: Record<string, string>; expires: number }> | undefined;
@@ -18,12 +19,14 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
     const token = String(form.get('token') ?? '');
-    const entry = globalThis.__pendingArtisans?.get(token);
-    if (!entry || entry.expires < Date.now()) {
-      globalThis.__pendingArtisans?.delete(token);
-      return NextResponse.json({ status: 'error', message: 'Registration session expired. Please start again.' }, { status: 410 });
-    }
-    const d = entry.data;
+    const d = openPending(token);
+if (!d) {
+  return NextResponse.json({ status: 'error', message: 'Registration session expired. Please start again.' }, { status: 410 });
+}
+// A token can be reused until it expires, so refuse if this email already registered.
+if (await findUserByEmail(d.email ?? '')) {
+  return NextResponse.json({ status: 'error', message: 'This email is already registered.' }, { status: 409 });
+}
 
     const idFront = form.get('id_front') as File | null;
     const idBack = form.get('id_back') as File | null;
@@ -154,7 +157,7 @@ export async function POST(req: Request) {
 
     await logActivity({ userId: artisanId, role: 'artisan', userName: d.name ?? '', action: 'registration', description: `New artisan registered: ${d.name} (${d.email}) - Status: pending${faceMatch ? ' - face verified' : ''}` });
 
-    globalThis.__pendingArtisans?.delete(token);
+    
     return NextResponse.json({
       status: 'success',
       message: 'Registration submitted! Your account is pending admin approval.',

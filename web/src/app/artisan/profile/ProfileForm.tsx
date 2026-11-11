@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { compressImage } from '@/lib/imageCompress';
+import WeaveDivider from '@/components/WeaveDivider';
 
 export interface ArtisanProfileInitialData {
   name: string;
@@ -101,7 +102,7 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
   const currentDisplayPhoto = photoPreview || profilePicture;
 
   return (
-    <div className="card space-y-8 p-6 md:p-8 bg-white border border-abaca-300 shadow-sm rounded-2xl">
+    <div className="card relative space-y-8 overflow-hidden border border-abaca-300 bg-white p-6 !pt-10 shadow-sm md:p-8 md:!pt-11 rounded-2xl">
       {/* 1. Artisan Photo & Portrait Section */}
       <div className="flex flex-col sm:flex-row items-center gap-6 border-b border-abaca-200 pb-7">
         <div className="relative group shrink-0">
@@ -283,6 +284,11 @@ export default function ProfileForm({ initial }: { initial: ArtisanProfileInitia
           )}
         </div>
       </div>
+       {/* Weave design at the top of the card */}
+      <WeaveDivider
+        pattern="kalinga"
+        className="pointer-events-none absolute left-0 right-0 top-0 !mt-0"
+      />
     </div>
   );
 }

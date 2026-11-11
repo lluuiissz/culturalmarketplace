@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import { getArtisan } from '@/lib/db';
 import ProfileForm from './ProfileForm';
-import WeaveDivider from '@/components/WeaveDivider';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -43,7 +43,7 @@ export default async function ArtisanProfilePage() {
           </Link>
         </div>
 
-        <WeaveDivider pattern="diamond" className="my-5" subtle />
+        
 
         <ProfileForm
           initial={{
