@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-
+import WeaveDivider from '@/components/WeaveDivider';
 import {
   Home,
   ReceiptText,
@@ -130,16 +130,16 @@ export default function PortalSidebar({
   }, [open]);
 
   const roleTitle = portalLabel.toLowerCase().includes('admin')
-    ? 'Curator Administrator'
+    ? 'Administrator'
     : portalLabel.toLowerCase().includes('artisan')
       ? 'Master Artisan'
-      : 'Active Patron';
+      : 'Customer';
 
   const content = (
     <div className="flex h-full max-h-full min-h-0 flex-col overflow-hidden">
 
       {/* SIDEBAR HEADER */}
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#DCC5A8] pb-3.5">
+      <div className="flex shrink-0 items-center justify-between gap-2 pb-3.5">
         <Link
           href={portalHome}
           className="group flex min-w-0 items-center gap-2.5"
@@ -161,9 +161,9 @@ export default function PortalSidebar({
               Agusan del Sur Indigenous Crafts and Experiences
             </span>
 
-            <span className="mt-1 inline-block w-fit rounded border border-[#D6B56D] bg-[#F0DFC0] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#5C421D]">
-              {portalLabel}
-            </span>
+            <span className="mt-1 inline-block w-fit max-w-full truncate rounded-md border border-[#D6B56D] bg-[#FFF9EF] px-4 py-1 text-[9px] font-medium tracking-wide text-[#8B5A16]">
+  {userName}
+</span>
           </div>
         </Link>
 
@@ -178,6 +178,11 @@ export default function PortalSidebar({
         </button>
       </div>
 
+
+    {/* FULL-WIDTH WEAVE DIVIDER */}
+<div className="-mx-4 w-[calc(100%+2rem)] shrink-0 py-2">
+  <WeaveDivider className="!w-full !mx-0" />
+</div>
       {/* NAVIGATION SECTIONS */}
       <nav
         className="my-3 min-h-0 flex-1 space-y-4 overflow-y-auto pr-1 text-xs font-medium [scrollbar-color:#B8A58F_transparent] [scrollbar-width:thin]"

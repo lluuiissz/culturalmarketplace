@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import { getArtisan } from '@/lib/db';
+import ProfileHeader from './ProfileHeader';
 import ProfileForm from './ProfileForm';
-
 
 export const dynamic = 'force-dynamic';
 
@@ -12,39 +11,23 @@ export default async function ArtisanProfilePage() {
   if (!session || session.role !== 'artisan') redirect('/auth/login?next=/artisan/profile');
 
   const artisan = await getArtisan(session.id);
+
   return (
-    <main className="min-h-screen bg-canvas px-4 py-8 md:px-8">
-      <div className="mx-auto max-w-3xl">
-        {/* Navigation & Header */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ochre-700">
-              <Link href="/artisan/dashboard" className="hover:text-ochre-800 hover:underline">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span className="text-charcoal-500">Artisan Profile</span>
-            </div>
-            <h1 className="mt-1 font-sculpted text-2xl font-bold tracking-tight text-charcoal-900 md:text-3xl">
-              My Profile
-            </h1>
-            <p className="mt-1 text-xs text-charcoal-600 md:text-sm">
-              Manage your personal heritage biography, studio identity, workshop location, and public artisan portrait.
-            </p>
-          </div>
-
-          <Link
-            href={`/artisans/${session.id}`}
-            target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-abaca-300 bg-white px-3.5 py-2 text-xs font-semibold text-charcoal-800 shadow-2xs hover:bg-ochre-50 transition"
-          >
-            <span>👁️</span>
-            <span>View Public Profile</span>
-          </Link>
+    <main className="min-h-screen bg-canvas">
+      {/* Header: photo, names, actions */}
+      <div className="border-b border-abaca-200">
+        <div className="mx-auto max-w-3xl px-4 py-6 md:px-8">
+          <ProfileHeader
+            name={artisan?.name ?? session.name}
+            businessName={artisan?.business_name ?? null}
+            profilePicture={artisan?.profile_picture ?? null}
+            publicHref={`/artisans/${session.id}`}
+          />
         </div>
+      </div>
 
-        
-
+      {/* Profile form */}
+      <div className="mx-auto max-w-3xl px-4 py-6 md:px-8">
         <ProfileForm
           initial={{
             name: artisan?.name ?? session.name,

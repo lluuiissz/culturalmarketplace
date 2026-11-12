@@ -9,13 +9,13 @@ const SECTIONS: NavSection[] = [
     title: 'Overview',
     items: [
       { href: '/artisan/dashboard', label: 'Artisan Dashboard', icon: 'home' },
-      { href: '/artisan/analytics', label: 'Studio Statistics', icon: 'chart' },
+      { href: '/artisan/analytics', label: 'Statistics', icon: 'chart' },
     ],
   },
   {
-    title: 'Heritage Crafting',
+    title: 'Traditional Crafting',
     items: [
-      { href: '/artisan/products', label: 'My Creations', icon: 'package' },
+      { href: '/artisan/products', label: 'Creations', icon: 'package' },
       { href: '/artisan/products/new', label: 'Add New Craft', icon: 'tags' },
       { href: '/artisan/experiences', label: 'Workshops & Experiences', icon: 'calendar' },
     ],
@@ -23,7 +23,7 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Orders & Delivery',
     items: [
-      { href: '/artisan/orders', label: 'Customer Orders', icon: 'receipt' },
+      { href: '/artisan/orders', label: 'Orders', icon: 'receipt' },
       { href: '/artisan/shipments', label: 'Shipments (J&T)', icon: 'truck' },
       { href: '/artisan/bookings', label: 'Workshop Bookings', icon: 'ticket' },
     ],
@@ -31,15 +31,15 @@ const SECTIONS: NavSection[] = [
   {
     title: 'Community',
     items: [
-      { href: '/artisan/messages', label: 'Customer Messages', icon: 'message' },
-      { href: '/artisan/reviews', label: 'Customer Reviews', icon: 'star' },
+      { href: '/artisan/messages', label: 'Messages', icon: 'message' },
+      { href: '/artisan/reviews', label: 'Reviews', icon: 'star' },
       { href: '/artisan/notifications', label: 'Notifications', icon: 'radio' },
     ],
   },
   {
-    title: 'Atelier Identity',
+    title: 'Identity',
     items: [
-      { href: '/artisan/profile', label: 'Artisan Profile', icon: 'user' },
+      { href: '/artisan/profile', label: 'Profile', icon: 'user' },
     ],
   },
 ];
