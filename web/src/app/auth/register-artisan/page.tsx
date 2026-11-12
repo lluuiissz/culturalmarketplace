@@ -1164,9 +1164,9 @@ Make sure that the information and photo on your ID are clear and readable.
 
             <div className="mt-3 grid grid-cols-3 gap-3">
               {([
-  ['proof', proofRef, proofCraft, setProofCraft, proofPreview, setProofPreview, 'proof', 'Proof of Making'],
-  ['sample1', s1Ref, sample1, setSample1, s1Preview, setS1Preview, 'basket', 'Product Sample 1'],
-  ['sample2', s2Ref, sample2, setSample2, s2Preview, setS2Preview, 'package', 'Product Sample 2'],
+  ['proof', proofRef, proofCraft, setProofCraft, proofPreview, setProofPreview, 'Photo', 'Product Sample 1'],
+  ['sample1', s1Ref, sample1, setSample1, s1Preview, setS1Preview, 'Photo', 'Product Sample 2'],
+  ['sample2', s2Ref, sample2, setSample2, s2Preview, setS2Preview, 'Photo', 'Product Sample 3'],
 ] as const).map(([side, ref, file, setFile, preview, setPreview, icon, label]) => (
                 <div key={side} className="rounded-xl border-2 border-dashed border-stone-200 p-2 text-center">
                   {preview ? (
