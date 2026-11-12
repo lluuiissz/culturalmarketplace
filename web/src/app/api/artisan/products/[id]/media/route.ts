@@ -10,6 +10,31 @@ import { moderateUpload } from '@/lib/imageModeration';
 const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 
+function parseGallery(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter(
+      (item): item is string => typeof item === 'string'
+    );
+  }
+
+  if (typeof value === 'string') {
+    try {
+      const parsed: unknown = JSON.parse(value);
+
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (item): item is string => typeof item === 'string'
+        );
+      }
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
+
+
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session || session.role !== 'artisan') {
@@ -72,9 +97,9 @@ export async function POST(req: Request) {
       : [{ image_path: product.image_path, product_gallery: product.product_gallery }];
 
     let new_image_path = (currentRows[0]?.image_path as string) ?? null;
-    let new_gallery: string[] = Array.isArray(currentRows[0]?.product_gallery)
-      ? (currentRows[0].product_gallery as string[])
-      : [];
+    let new_gallery: string[] = parseGallery(
+  currentRows[0]?.product_gallery
+);
 
     if (kind === 'main') {
       new_image_path = publicUrl;
@@ -91,9 +116,7 @@ export async function POST(req: Request) {
         returning image_path, product_gallery
       `;
       new_image_path = (updated[0]?.image_path as string) ?? null;
-      new_gallery = Array.isArray(updated[0]?.product_gallery)
-        ? (updated[0].product_gallery as string[])
-        : [];
+      new_gallery = parseGallery(updated[0]?.product_gallery);
     } else {
       const { updateProductMediaDemo } = await import('@/lib/db');
       updateProductMediaDemo(productId, new_image_path, new_gallery);
@@ -145,9 +168,9 @@ export async function DELETE(req: Request) {
     : [{ image_path: product.image_path, product_gallery: product.product_gallery }];
 
   let new_image_path: string | null = (currentRows[0]?.image_path as string | null) ?? null;
-  let new_gallery: string[] = Array.isArray(currentRows[0]?.product_gallery)
-    ? (currentRows[0].product_gallery as string[])
-    : [];
+  let new_gallery: string[] = parseGallery(
+  currentRows[0]?.product_gallery
+);
 
   // kind=main-remove clears the main image; otherwise remove a gallery URL.
   if (kind === 'main-remove') {

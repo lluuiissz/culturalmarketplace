@@ -7,6 +7,31 @@ import { moderateUpload } from '@/lib/imageModeration';
 const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 
+function parseGallery(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter(
+      (item): item is string => typeof item === 'string'
+    );
+  }
+
+  if (typeof value === 'string') {
+    try {
+      const parsed: unknown = JSON.parse(value);
+
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (item): item is string => typeof item === 'string'
+        );
+      }
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
+
+
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session || session.role !== 'artisan') {
