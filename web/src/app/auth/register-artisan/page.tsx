@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { compressImage, fileToDataUrl, dataUrlToFile } from '@/lib/imageCompress';
-import AuthShell from '@/components/AuthShell';
 import ArtisanHeader from '@/components/ArtisanHeader';
 import {
   UserRound,
@@ -548,27 +547,29 @@ export default function ArtisanRegisterPage() {
 
   if (done) {
     return (
-      <AuthShell width="md" centered>
-  <div className="card p-8 text-center">
-          <div className="text-4xl">🧵</div>
-          <h1 className="mt-3 font-serif text-2xl font-bold text-brand-900">Application received</h1>
-          <p className="mt-2 text-sm text-stone-600">
-            Your artisan account is pending admin approval. You&apos;ll be able to sign in once approved.
-          </p>
-          <p className="mt-3 text-xs text-stone-400">
-            {faceResult === 'match' ? '✅ Your face was automatically verified against your ID.' : 'An admin will review your documents manually.'}
-          </p>
-          <Link href="/" className="btn-primary mt-6 inline-block">Back to home</Link>
-        </div>
-</AuthShell>    );
+      <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-10">
+  <div className="card w-full max-w-md p-8 text-center">
+    <div className="text-4xl">🧵</div>
+    <h1 className="mt-3 font-serif text-2xl font-bold text-brand-900">Application received</h1>
+    <p className="mt-2 text-sm text-stone-600">
+      Your artisan account is pending admin approval. You&apos;ll be able to sign in once approved.
+    </p>
+    <p className="mt-3 text-xs text-stone-400">
+      {faceResult === 'match' ? '✅ Your face was automatically verified against your ID.' : 'An admin will review your documents manually.'}
+    </p>
+    <Link href="/" className="btn-primary mt-6 inline-block">Back to home</Link>
+  </div>
+</main>   
+);
   }
 
   const inputClass = 'input w-full';
   const labelClass = 'block text-sm font-medium text-stone-700 mt-4';
 
       return (
-    <AuthShell>
-      <ArtisanHeader step={step} />
+    <main className="min-h-screen bg-canvas px-4 py-10">
+  <div className="mx-auto w-full max-w-xl">
+    <ArtisanHeader step={step} />
 
       
 
@@ -1228,6 +1229,7 @@ Make sure that the information and photo on your ID are clear and readable.
           </div>
         </form>
       )}
-        </AuthShell>
+          </div>
+</main>
   );
 }
