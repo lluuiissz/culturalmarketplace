@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
-import { createArtisan, getArtisanByEmail, logActivity, findUserByEmail } from '@/lib/db';
+import {
+  createArtisan,
+  getArtisanByEmail,
+  logActivity,
+  findUserByEmail,
+  hashPassword,
+} from '@/lib/db';
+
 import { openPending } from '@/lib/pendingToken';
 import { captureOcr } from '@/lib/ocr';
 import { verifyFace, checkDuplicateFace } from '@/lib/faceVerify';
@@ -141,22 +148,43 @@ if (await findUserByEmail(d.email ?? '')) {
       notes.push('Document upload failed; an admin may contact you for re-submission.');
       if (e instanceof Error) notes.push(`(${e.message})`);
     }
+    // Hash the password before saving the artisan account.
+const passwordHash = await hashPassword(d.password ?? '');
 
     // ---- 5. Create the pending artisan ----
-    const artisanId = await createArtisan({
-      name: d.name ?? '', email: d.email ?? '', password: d.password ?? '',
-      phone: d.phone ?? '', location: d.location ?? '',
-      craft_type: d.craft_type ?? '', business_name: d.business_name,
-      id_number: d.id_number ?? '', dob: d.dob,
-      id_document_path: idFrontPath, id_document_back_path: idBackPath,
-      proof_of_craft_path: proofPath, product_sample_1_path: s1Path, product_sample_2_path: s2Path,
-      selfie_path: selfiePath, face_matched: faceMatch, face_confidence: faceConfidence,
-      registration_notes: notes.join(' ') || null,
-    });
-    if (selfieEmbedding) await saveFaceEmbedding(artisanId, selfieEmbedding);
+    // ---- 5. Create the pending artisan ----
+const artisanId = await createArtisan({
+  name: d.name ?? '',
+  email: d.email ?? '',
+  password: passwordHash,
+  phone: d.phone ?? '',
+  location: d.location ?? '',
+  craft_type: d.craft_type ?? '',
+  business_name: d.business_name,
+  id_number: d.id_number ?? '',
+  dob: d.dob,
+  id_document_path: idFrontPath,
+  id_document_back_path: idBackPath,
+  proof_of_craft_path: proofPath,
+  product_sample_1_path: s1Path,
+  product_sample_2_path: s2Path,
+  selfie_path: selfiePath,
+  face_matched: faceMatch,
+  face_confidence: faceConfidence,
+  registration_notes: notes.join(' ') || null,
+});
 
-    await logActivity({ userId: artisanId, role: 'artisan', userName: d.name ?? '', action: 'registration', description: `New artisan registered: ${d.name} (${d.email}) - Status: pending${faceMatch ? ' - face verified' : ''}` });
+if (selfieEmbedding) {
+  await saveFaceEmbedding(artisanId, selfieEmbedding);
+}
 
+await logActivity({
+  userId: artisanId,
+  role: 'artisan',
+  userName: d.name ?? '',
+  action: 'registration',
+  description: `New artisan registered: ${d.name} (${d.email}) - Status: pending${faceMatch ? ' - face verified' : ''}`,
+});
     
     return NextResponse.json({
       status: 'success',
