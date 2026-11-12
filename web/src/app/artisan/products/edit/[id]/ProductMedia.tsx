@@ -19,45 +19,61 @@ export default function ProductMedia({
   const mainInput = useRef<HTMLInputElement>(null);
   const galleryInput = useRef<HTMLInputElement>(null);
 
-  async function upload(file: File, kind: 'main' | 'gallery', clearBusyOnFinish = true): Promise<boolean> {
-    setError('');
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      setError('Only JPEG, PNG, or WebP images are allowed.');
-      return false;
-    }
+  async function upload(
+  file: File,
+  kind: 'main' | 'gallery',
+  clearBusyOnFinish = true
+): Promise<boolean> {
+  setError('');
 
-    try {
-      setBusy(`Compressing ${kind === 'main' ? 'main' : 'gallery'} photo…`);
-      // Client-side canvas compression (1200x1200px max, 80% quality JPEG)
-      // Reduces 8MB-12MB down to ~150KB to preserve Supabase storage
-      const compressedFile = await compressImage(file, 1200, 1200, 0.8);
-
-      setBusy(kind === 'main' ? 'Uploading main photo…' : 'Uploading to gallery…');
-      const fd = new FormData();
-      fd.append('productId', String(productId));
-      fd.append('kind', kind);
-      fd.append('file', compressedFile);
-
-      const res = await fetch(`/api/artisan/products/${productId}/media`, { method: 'POST', body: fd });
-      const data = await res.json();
-      if (clearBusyOnFinish) setBusy('');
-
-      if (!res.ok || data.status !== 'success') {
-        setError(data.message || 'Upload failed.');
-        return false;
-      }
-
-      if (kind === 'main') {
-        setMain(data.image_path);
-      }
-      setGallery(data.product_gallery ?? []);
-      return true;
-    } catch {
-      if (clearBusyOnFinish) setBusy('');
-      setError('Upload failed. Please check your connection and try again.');
-      return false;
-    }
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+    setError('Only JPEG, PNG, or WebP images are allowed.');
+    return false;
   }
+
+  try {
+    setBusy(`Compressing ${kind === 'main' ? 'main' : 'gallery'} photo…`);
+
+    const compressedFile = await compressImage(file, 1200, 1200, 0.8);
+
+    setBusy(
+      kind === 'main'
+        ? 'Uploading main photo…'
+        : 'Uploading to gallery…'
+    );
+
+    const fd = new FormData();
+    fd.append('productId', String(productId));
+    fd.append('kind', kind);
+    fd.append('file', compressedFile);
+
+    const res = await fetch(`/api/artisan/products/${productId}/media`, {
+      method: 'POST',
+      body: fd,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.status !== 'success') {
+      setError(data.message || 'Upload failed.');
+      return false;
+    }
+
+    if (kind === 'main') {
+      setMain(data.image_path);
+    } else if (Array.isArray(data.product_gallery)) {
+      // Immediately update the gallery without refreshing the page.
+      setGallery(data.product_gallery);
+    }
+
+    return true;
+  } catch {
+    setError('Upload failed. Please check your connection and try again.');
+    return false;
+  } finally {
+    if (clearBusyOnFinish) setBusy('');
+  }
+}
 
   async function handleGalleryFiles(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
