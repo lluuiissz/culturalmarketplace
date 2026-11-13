@@ -40,7 +40,7 @@ export default function OfficialReceiptTicketView({
       {/* 1. Header Navigation or Celebration Banner */}
       {showCelebration ? (
         <div className="card p-6 text-center print:hidden border-brand-200 bg-gradient-to-b from-brand-50 to-white shadow-sm">
-          <div className="text-4xl">🎉</div>
+          <div className="text-4xl"></div>
           <h1 className="mt-2 font-serif text-2xl font-bold text-brand-900">
             {hasWorkshop ? 'Booking & Order Confirmed!' : 'Order Placed Successfully!'}
           </h1>
@@ -89,15 +89,29 @@ export default function OfficialReceiptTicketView({
         {/* Receipt Header */}
         <div className="flex flex-wrap items-start justify-between border-b-2 border-charcoal-900/10 pb-5 gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl text-ochre-500">☀️</span>
-              <span className="font-sculpted text-2xl font-bold text-charcoal-900 print:text-xl">
-                Cultural Marketplace
-              </span>
-            </div>
-            <p className="mt-1 text-xs text-ochre-800 font-medium">
-              Preserving Cultural Heritage · Agusan del Sur, Philippines
-            </p>
+            {/* OFFICIAL LOGO + BRAND NAME */}
+    <div className="flex items-center gap-2">
+      <img
+        src="/images/cultural-marketplace-logo.png"
+        alt="Cultural Marketplace Logo"
+        className="h-10 w-auto max-w-[48px] object-contain print:h-9"
+      />
+
+      <div className="flex min-w-0 flex-col justify-center leading-tight">
+        <h2 className="font-sculpted text-xl font-extrabold tracking-tight sm:text-2xl print:text-xl">
+          <span className="text-[#8B0000]">Cultural</span>{' '}
+          <span className="text-[#FFA500]">Marketplace</span>
+        </h2>
+
+        <p className="mt-0.5 text-[8px] font-bold leading-tight text-[#B00000] sm:text-[9px]">
+          Agusan del Sur Indigenous Crafts and Experiences
+        </p>
+      </div>
+    </div>
+
+    <p className="mt-2 text-xs font-medium text-ochre-800">
+      Preserving Cultural Heritage · Agusan del Sur, Philippines
+    </p>
             <p className="text-[11px] text-stone-400">registry@culturalmarketplace.local</p>
           </div>
 
@@ -280,7 +294,7 @@ export default function OfficialReceiptTicketView({
           <div className="flex items-center justify-between border-b border-stone-200 pb-2">
             <div>
               <h2 className="font-sculpted text-xl font-bold text-charcoal-900 flex items-center gap-2">
-                <span>🎟️</span>
+                <span></span>
                 <span>Official Workshop Admission Tickets</span>
               </h2>
               <p className="text-xs text-stone-500">
@@ -306,7 +320,7 @@ export default function OfficialReceiptTicketView({
                 {/* Ticket Top Ribbon */}
                 <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-charcoal-950 via-crimson-900 to-charcoal-900 px-6 py-3.5 text-white">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">🌿</span>
+                    <span className="text-lg"></span>
                     <div>
                       <p className="text-[11px] font-bold uppercase tracking-wider text-ochre-300">
                         Cultural Heritage Masterclass Admission Pass
@@ -319,7 +333,7 @@ export default function OfficialReceiptTicketView({
 
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-white/20 px-3 py-1 font-mono text-sm font-bold text-white border border-white/30">
-                      🎟️ {item.ticket_code || `TKT-${order.id}-${item.id}`}
+                       {item.ticket_code || `TKT-${order.id}-${item.id}`}
                     </span>
                   </div>
                 </div>
@@ -337,7 +351,7 @@ export default function OfficialReceiptTicketView({
                       </p>
                       {item.selected_session?.time_start && (
                         <p className="text-xs font-medium text-stone-600 mt-0.5">
-                          ⏰ {item.selected_session.time_start} – {item.selected_session.time_end}
+                           {item.selected_session.time_start} – {item.selected_session.time_end}
                         </p>
                       )}
                     </div>
@@ -356,7 +370,7 @@ export default function OfficialReceiptTicketView({
                     {/* Master Artisan Instructor */}
                     <div className="rounded-xl bg-stone-50 p-3.5 border border-stone-200">
                       <p className="text-[11px] font-bold uppercase tracking-wide text-stone-500">
-                        🧑‍🎨 Master Artisan Instructor
+                        Master Artisan Instructor
                       </p>
                       <p className="mt-1 font-semibold text-stone-800 text-sm">
                         {artisan?.name ?? 'Master Artisan'}
@@ -365,7 +379,7 @@ export default function OfficialReceiptTicketView({
                         <p className="text-xs text-brand-700">{artisan.business_name}</p>
                       )}
                       {artisan?.phone && (
-                        <p className="text-[11px] text-stone-500 mt-0.5">📞 {artisan.phone}</p>
+                        <p className="text-[11px] text-stone-500 mt-0.5"> {artisan.phone}</p>
                       )}
                     </div>
                   </div>

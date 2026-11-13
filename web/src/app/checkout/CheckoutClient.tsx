@@ -404,7 +404,7 @@ export default function CheckoutClient({
           {total === 0 ? (
             <div className="rounded-xl border border-ochre-300 bg-ochre-50/70 p-4">
               <p className="font-bold text-charcoal-900 flex items-center gap-1.5">
-                <span>✨</span> Free Workshop Registration (₱0.00)
+                <span></span> Free Workshop Registration (₱0.00)
               </p>
               <p className="text-xs text-charcoal-800 mt-1">
                 This cultural crafting session is provided free of charge. No payment or credit card is required.
@@ -428,7 +428,7 @@ export default function CheckoutClient({
                     onChange={() => setMethod('cash_on_delivery')}
                   />
                   <div>
-                    <p className="font-semibold text-stone-900">💵 Cash on Delivery (COD)</p>
+                    <p className="font-semibold text-stone-900">Cash on Delivery (COD)</p>
                     <p className="text-xs text-stone-500">Pay when your parcel arrives via courier</p>
                   </div>
                 </label>
@@ -449,7 +449,7 @@ export default function CheckoutClient({
                   onChange={() => setMethod('gcash')}
                 />
                 <div>
-                  <p className="font-semibold text-stone-900">📱 GCash E-Wallet</p>
+                  <p className="font-semibold text-stone-900"> GCash E-Wallet</p>
                   <p className="text-xs text-stone-500">Instant simulation / verification</p>
                 </div>
               </label>
@@ -477,11 +477,11 @@ export default function CheckoutClient({
                 <div className="space-y-0.5">
                   <p className="font-semibold text-stone-800">{i.name}</p>
                   <p className="text-xs text-stone-500">
-                    {i.purchase_type === 'workshop' ? '🌿 Workshop Booking' : '📦 Handcrafted Item'} × {i.quantity}
+                    {i.purchase_type === 'workshop' ? ' Workshop Booking' : ' Handcrafted Item'} × {i.quantity}
                   </p>
                   {i.variant && (
                     <p className="text-xs text-brand-700 font-medium">
-                      🎨 {i.variant}
+                      {i.variant}
                     </p>
                   )}
                   {i.attendee_name && (
@@ -506,7 +506,7 @@ export default function CheckoutClient({
           {hasPhysicalCraft && (
             <div className="rounded-lg bg-brand-50/70 p-3 border border-brand-200/80 text-xs text-stone-700 space-y-1">
               <p className="font-bold text-brand-900 flex items-center gap-1">
-                <span>🚚</span> Delivering to:
+                <span></span> Delivering to:
               </p>
               <p className="font-semibold text-stone-800">
                 {effectiveRecipientName || 'Recipient Name'} · {effectivePhone || 'Phone'}

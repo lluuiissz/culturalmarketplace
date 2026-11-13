@@ -102,12 +102,14 @@ export default function PortalSidebar({
   portalLabel,
   userName,
   backLabel = '← Storefront',
+  roleTitle: roleTitleProp,
 }: {
   sections: NavSection[];
   portalHome: string;
   portalLabel: string;
   userName: string;
   backLabel?: string;
+  roleTitle?: string;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -129,11 +131,13 @@ export default function PortalSidebar({
     };
   }, [open]);
 
-  const roleTitle = portalLabel.toLowerCase().includes('admin')
+  const roleTitle =
+  roleTitleProp ??
+  (portalLabel.toLowerCase().includes('admin')
     ? 'Administrator'
     : portalLabel.toLowerCase().includes('artisan')
       ? 'Master Artisan'
-      : 'Customer';
+      : 'Customer');
 
   const content = (
     <div className="flex h-full max-h-full min-h-0 flex-col overflow-hidden">

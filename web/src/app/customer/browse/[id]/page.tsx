@@ -137,11 +137,11 @@ const workshopReviews = reviews.filter((r) => r.purchase_type === 'workshop');
             )}
 
             <Link
-              href="/customer/account/report"
-              className="rounded-md border border-[#E89A9A] bg-[#FBD5D5] px-10 py-1 text-[10px] font-medium text-[#B00000] transition hover:bg-[#F8C2C2]"
-            >
-              Report this product
-            </Link>
+  href={`/customer/account/report?type=product&id=${product.id}`}
+  className="rounded-md border border-[#E89A9A] bg-[#FBD5D5] px-10 py-1 text-[10px] font-medium text-[#B00000] transition hover:bg-[#F8C2C2]"
+>
+  Report this product
+</Link>
           </div>
         </section>
 

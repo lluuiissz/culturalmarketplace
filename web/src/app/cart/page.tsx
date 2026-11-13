@@ -19,8 +19,8 @@ export default async function CartPage() {
         <main className="mx-auto max-w-2xl px-4 py-20 text-center flex-1 flex flex-col justify-center">
           <div className="rounded-3xl border border-abaca-200 bg-white p-8 shadow-xs">
             <p className="text-3xl mb-2">🧺</p>
-            <h1 className="font-sculpted text-xl font-bold text-charcoal-900">Patron Basket Notice</h1>
-            <p className="mt-2 text-xs text-stone-600">The artisan basket is exclusively available for customer patron accounts.</p>
+            <h1 className="font-sculpted text-xl font-bold text-charcoal-900">Customer Basket Notice</h1>
+            <p className="mt-2 text-xs text-stone-600">The artisan basket is exclusively available for customer accounts.</p>
             <Link className="btn-primary mt-5 text-xs px-4 py-2" href="/">Back to Storefront</Link>
           </div>
         </main>
@@ -31,11 +31,16 @@ export default async function CartPage() {
 
   const cart = await getCart(session.id);
 
-  return (
+    return (
     <div className="min-h-screen flex flex-col bg-canvas">
       <Header />
 
-      <main className="mx-auto max-w-4xl px-4 py-10 flex-1 w-full">
+      {/* Top decorative weave border */}
+      <div className="relative z-20">
+        <WeaveDivider pattern="kalinga" />
+      </div>
+
+      <main className="mx-auto max-w-4xl px-4 py-8 flex-1 w-full">
         {/* Page Header */}
         <div className="border-b border-abaca-200 pb-5">
           <div className="flex items-center gap-2 text-xs text-stone-500 mb-1">
@@ -49,7 +54,7 @@ export default async function CartPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-sculpted text-2xl sm:text-3xl font-bold text-charcoal-900">
-                Your Artisan Basket
+                Your Basket
               </h1>
               <p className="mt-1 text-xs sm:text-sm text-stone-600">
                 Review your handcrafted selections and workshop passes before completing the secure exchange.

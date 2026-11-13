@@ -70,9 +70,14 @@ export default async function CheckoutPage({
     is_default: a.is_default,
   }));
 
-  return (
+    return (
     <div className="min-h-screen flex flex-col bg-canvas">
       <Header />
+
+      {/* Top decorative weave border */}
+      <div className="relative z-20">
+        <WeaveDivider pattern="kalinga" />
+      </div>
 
       <main className="mx-auto max-w-4xl px-4 py-8 flex-1 w-full">
         {/* Breadcrumb Navigation */}
@@ -88,7 +93,7 @@ export default async function CheckoutPage({
               Secure Artisan Exchange
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-stone-600">
-              Confirm your delivery address and preferred settlement method.
+              Confirm your delivery address and preferred payment method.
             </p>
           </div>
           <Link href="/cart" className="text-xs font-semibold text-crimson-700 hover:underline">

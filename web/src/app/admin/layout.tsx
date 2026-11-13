@@ -7,9 +7,9 @@ export const dynamic = 'force-dynamic';
 
 const SECTIONS: NavSection[] = [
   {
-    title: 'Cultural Directorate',
+    title: 'Administrator Directorate',
     items: [
-      { href: '/admin/dashboard', label: 'Curator Dashboard', icon: 'home' },
+      { href: '/admin/dashboard', label: 'Admin Dashboard', icon: 'home' },
       { href: '/admin/analytics', label: 'Analytics & Provenance', icon: 'chart' },
       { href: '/admin/activity', label: 'Activity Logs', icon: 'history' },
     ],
@@ -51,7 +51,7 @@ const SECTIONS: NavSection[] = [
     title: 'System Settings',
     items: [
       { href: '/admin/settings', label: 'Platform Settings', icon: 'settings' },
-      { href: '/admin/profile', label: 'Curator Profile', icon: 'user' },
+      { href: '/admin/profile', label: 'Admin Profile', icon: 'user' },
     ],
   },
 ];
@@ -75,6 +75,7 @@ export default async function AdminLayout({
         portalLabel="Curator Directorate"
         userName={session.name}
         backLabel="View Storefront"
+        roleTitle="Administrator" 
       />
 
       <main className="min-w-0 flex-1 bg-canvas p-4 md:p-8">
