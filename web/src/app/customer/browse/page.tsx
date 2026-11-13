@@ -42,7 +42,7 @@ export default async function BrowsePage({
           </div>
 
           <h1 className="font-sculpted text-3xl sm:text-4xl font-bold text-charcoal-900">
-            Discover the Craft
+            Discover Original Handicrafts the Craft
           </h1>
           <p className="mt-1.5 text-sm text-stone-600 max-w-2xl">
             Explore authentic handwoven textiles, traditional woodcarvings, basketry, and living workshop experiences from Agusan del Sur master craftspeople.
@@ -101,11 +101,10 @@ export default async function BrowsePage({
               <Link
                 key={c.id}
                 href={`/customer/browse?category=${encodeURIComponent(c.name)}`}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
-                  activeCategory === c.name
-                    ? 'border-crimson-700 bg-crimson-700 text-white'
-                    : 'border-abaca-300 bg-white text-charcoal-800 hover:border-ochre-400 hover:bg-ochre-50'
-                }`}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition ${activeCategory === c.name
+                  ? 'border-crimson-700 bg-crimson-700 text-white'
+                  : 'border-abaca-300 bg-white text-charcoal-800 hover:border-ochre-400 hover:bg-ochre-50'
+                  }`}
               >
                 {c.name}
               </Link>
