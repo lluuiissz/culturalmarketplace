@@ -3,8 +3,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-// Product media viewer: main image + clickable gallery thumbnails that swap it.
-// Falls back to the craft-emoji placeholder when no images are uploaded yet.
 export default function ProductGallery({
   main, gallery, name, hasTutorial,
 }: {
@@ -19,7 +17,7 @@ export default function ProductGallery({
 
   if (images.length === 0) {
     return (
-      <div className="card flex h-80 items-center justify-center bg-brand-100 text-7xl">
+      <div className="flex h-52 items-center justify-center rounded-xl border border-[#D6D0C9] bg-[#FFF5E4] text-6xl">
         {hasTutorial ? '🧺' : '🧶'}
       </div>
     );
@@ -27,27 +25,32 @@ export default function ProductGallery({
 
   return (
     <div>
-      <div className="card relative h-80 overflow-hidden">
+      <div className="relative h-52 w-full overflow-hidden rounded-xl border border-[#D6D0C9] sm:h-56">
         <Image
           src={current as string}
           alt={name}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, 340px"
           className="object-cover"
           priority
         />
       </div>
+
       {images.length > 1 && (
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-2">
           {images.map((url, i) => (
             <button
               key={url}
               type="button"
               onClick={() => setActive(i)}
               aria-label={`Show photo ${i + 1}`}
-              className={`relative h-16 w-16 overflow-hidden rounded-lg border-2 transition ${i === active ? 'border-brand-600' : 'border-transparent opacity-70 hover:opacity-100'}`}
+              className={`relative h-9 w-9 overflow-hidden rounded-md border transition ${
+                i === active
+                  ? 'border-[#8B0000] ring-1 ring-[#8B0000]'
+                  : 'border-[#D6D0C9] opacity-80 hover:opacity-100'
+              }`}
             >
-              <Image src={url} alt="" fill sizes="64px" className="object-cover" />
+              <Image src={url} alt="" fill sizes="36px" className="object-cover" />
             </button>
           ))}
         </div>

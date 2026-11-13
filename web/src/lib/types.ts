@@ -272,3 +272,21 @@ export interface Shipment {
   created_at: string;
   updated_at: string;
 }
+
+export interface ProductReview {
+  id: number;
+  purchase_type: 'product' | 'workshop' | 'bundle';
+  review_rating: number;
+  review_comment: string | null;
+  reviewed_at: string | null;
+  customer_name: string | null;
+}
+
+export interface ProductReview {
+  id: number;
+  purchase_type: 'product' | 'workshop' | 'bundle';
+  review_rating: number;
+  review_comment: string | null;
+  reviewed_at: string | null;
+  customer_name: string | null;
+}

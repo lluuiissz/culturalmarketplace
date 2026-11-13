@@ -23,96 +23,160 @@ export default async function CustomerDashboard() {
   );
 
   return (
-    <>
-      <main className="mx-auto max-w-5xl px-4 py-10">
-        <div className="flex items-center gap-4">
-          {user?.profile_picture ? (
-            <img
-              src={user.profile_picture}
-              alt={session.name}
-              className="h-16 w-16 rounded-full object-cover border-2 border-brand-200 shadow-xs"
-            />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-crimson-700 to-ochre-600 text-xl font-bold text-white shadow-xs">
-              {session.name.slice(0, 2).toUpperCase()}
-            </div>
-          )}
-          <div>
-            <h1 className="font-serif text-3xl font-bold text-brand-900">Hi, {session.name} </h1>
-            <p className="mt-1 text-stone-500">Track your orders and support local artisans.</p>
-          </div>
-        </div>
-
-        {nextBooking && (
-          <div className="card mt-6 p-5 border-2 border-ochre-400/50 bg-gradient-to-r from-ochre-50/80 via-white to-brand-50/40 flex flex-wrap items-center justify-between gap-4 shadow-xs">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="badge bg-ochre-500 text-charcoal-950 border border-ochre-600 text-xs font-bold"> Upcoming Workshop</span>
-                {nextBooking.ticket_code && (
-                  <span className="font-mono text-xs font-bold text-brand-800">🎟️ {nextBooking.ticket_code}</span>
-                )}
+    <main className="min-h-screen bg-[#FCF9F4]">
+      {/* PROFILE HEADER */}
+      <section className="border-b border-[#E8DCCB] px-4 py-6 md:px-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
+          {/* PROFILE PHOTO */}
+          <div className="h-28 w-28 shrink-0 overflow-hidden rounded-full border border-[#D8C8B5] bg-white">
+            {user?.profile_picture ? (
+              <img
+                src={user.profile_picture}
+                alt={`${session.name}'s profile`}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-[#8B0000]">
+                {session.name?.charAt(0)?.toUpperCase() || 'C'}
               </div>
-              <h3 className="font-serif text-lg font-bold text-stone-900">{nextBooking.product_name}</h3>
-              <p className="text-xs text-stone-600">
-               {nextBooking.selected_session?.date || 'Confirmed Session'} · 📍 {nextBooking.venue_location || 'Artisan Workshop Studio'}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Link href="/customer/account/bookings" className="btn-primary text-xs px-3.5 py-2 font-bold shadow-xs">
-                 Track Venue & Pathfinding →
+            )}
+          </div>
+
+          {/* CUSTOMER INFORMATION */}
+          <div className="min-w-0 text-center sm:text-left">
+            <h1 className="font-serif text-xl font-bold text-[#3D3028] md:text-2xl">
+              Hi, {session.name}
+            </h1>
+
+            <p className="mt-1 text-sm font-semibold text-[#D18A00]">Valued Customer</p>
+
+            <p className="mt-1 text-sm text-[#71675F]">
+              Track your orders and support local artisans.
+            </p>
+
+            {/* PROFILE ACTIONS */}
+            <div className="mt-2 flex flex-wrap justify-center gap-2 sm:justify-start">
+              <Link
+                href="/customer/account/profile"
+                className="rounded-md border border-[#D6B56D] bg-white px-4 py-1 text-[10px] font-medium text-[#9A681D] transition hover:bg-[#FFF5E4]"
+              >
+                Change Photo
+              </Link>
+
+              <Link
+                href="/customer/account/bookings"
+                className="rounded-md border border-[#D9A6A6] bg-white px-4 py-1 text-[10px] font-medium text-[#8B0000] transition hover:bg-[#FCEEEE]"
+              >
+                My Bookings
               </Link>
             </div>
           </div>
-        )}
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="card p-5">
-            <p className="text-sm text-stone-500">Total orders</p>
-            <p className="mt-1 text-3xl font-bold text-brand-700">{orders.length}</p>
-          </div>
-          <div className="card p-5">
-            <p className="text-sm text-stone-500">Unread notifications</p>
-            <p className="mt-1 text-3xl font-bold text-brand-700">{unread}</p>
-          </div>
-          <div className="card p-5">
-            <p className="text-sm text-stone-500">Items in cart</p>
-            <p className="mt-1 text-3xl font-bold text-brand-700">{cartCount}</p>
-          </div>
         </div>
+      </section>
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link className="btn-primary" href="/customer/account/bookings">🎟️ Workshops & Bookings</Link>
-          <Link className="btn-outline" href="/customer/account/profile">Edit profile</Link>
-          <Link className="btn-outline" href="/customer/account/addresses">Address book</Link>
-          <Link className="btn-outline" href="/customer/account/report">Report an issue</Link>
-          <Link className="btn-outline" href="/customer/account/messages">Messages</Link>
-        </div>
+      {/* DIVIDER */}
+      <div className="h-px w-full bg-gray-300" />
 
-        <h2 className="mt-10 font-serif text-2xl font-bold text-brand-900">Recent orders</h2>
-        <div className="mt-4 space-y-3">
-          {orders.slice(0, 5).map((o) => (
-            <Link key={o.id} href="/customer/account/orders" className="card flex items-center justify-between p-4 hover:bg-brand-50/50">
-              <div>
-                <p className="font-semibold text-stone-800">Order #{o.id}</p>
-                <p className="text-sm text-stone-500">{new Date(o.created_at).toLocaleDateString()} · {o.payment_method === 'gcash' ? 'GCash' : 'COD'}</p>
+      {/* DASHBOARD CONTENT */}
+      <section className="px-4 py-5 md:px-8 md:py-6">
+        <div className="mx-auto max-w-4xl">
+          {/* UPCOMING WORKSHOP */}
+          {nextBooking && (
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#D6B56D] bg-[#FFF9EF] p-5 shadow-sm">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full border border-[#D6B56D] bg-[#F5A000] px-2.5 py-0.5 text-xs font-bold text-[#3D3028]">
+                    Upcoming Workshop
+                  </span>
+                  {nextBooking.ticket_code && (
+                    <span className="font-mono text-xs font-bold text-[#8B0000]">
+                      🎟️ {nextBooking.ticket_code}
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-serif text-lg font-bold text-[#3D3028]">{nextBooking.product_name}</h3>
+                <p className="text-xs text-[#71675F]">
+                  {nextBooking.selected_session?.date || 'Confirmed Session'} · 📍{' '}
+                  {nextBooking.venue_location || 'Artisan Workshop Studio'}
+                </p>
               </div>
-              <span className="badge bg-stone-100 capitalize text-stone-600">{o.status.replace(/_/g, ' ')}</span>
-            </Link>
-          ))}
-          {orders.length === 0 && <p className="text-stone-500">No orders yet — <Link className="text-brand-600 underline" href="/customer/browse">start browsing</Link>.</p>}
-        </div>
-
-        <h2 className="mt-10 font-serif text-2xl font-bold text-brand-900">Notifications</h2>
-        <div className="mt-4 space-y-2">
-          {notifications.slice(0, 5).map((n) => (
-            <div key={n.id} className={`card p-4 ${n.is_read ? 'opacity-60' : ''}`}>
-              <p className="text-sm text-stone-700">{n.message}</p>
-              <p className="mt-1 text-xs text-stone-400">{new Date(n.created_at).toLocaleString()}</p>
+              <Link href="/customer/account/bookings" className="btn-primary px-3.5 py-2 text-xs font-bold shadow-sm">
+                Track Venue & Pathfinding →
+              </Link>
             </div>
-          ))}
-          {notifications.length === 0 && <p className="text-stone-500">You&apos;re all caught up.</p>}
+          )}
+
+          {/* STATS */}
+          <div className={`grid gap-4 sm:grid-cols-3 ${nextBooking ? 'mt-5' : ''}`}>
+            {[
+              { label: 'Total orders', value: orders.length },
+              { label: 'Unread notifications', value: unread },
+              { label: 'Items in cart', value: cartCount },
+            ].map((s) => (
+              <div key={s.label} className="rounded-2xl border border-[#D6D0C9] bg-white p-5 shadow-sm">
+                <p className="text-sm text-[#71675F]">{s.label}</p>
+                <p className="mt-1 text-3xl font-bold text-[#8B0000]">{s.value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* QUICK LINKS */}
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link className="btn-primary" href="/customer/account/bookings">Workshops & Bookings</Link>
+            <Link className="btn-outline" href="/customer/account/profile">Edit profile</Link>
+            <Link className="btn-outline" href="/customer/account/addresses">Address book</Link>
+            <Link className="btn-outline" href="/customer/account/report">Report an issue</Link>
+            <Link className="btn-outline" href="/customer/account/messages">Messages</Link>
+          </div>
+
+          {/* RECENT ORDERS */}
+          <div className="mt-8 rounded-2xl border border-[#D6D0C9] bg-white p-5 shadow-sm sm:p-6">
+            <h2 className="font-serif text-xl font-bold text-[#3D3028]">Recent orders</h2>
+            <div className="mt-4 space-y-3">
+              {orders.slice(0, 5).map((o) => (
+                <Link
+                  key={o.id}
+                  href="/customer/account/orders"
+                  className="flex items-center justify-between rounded-xl border border-[#E8DCCB] p-4 transition hover:bg-[#FFF5E4]"
+                >
+                  <div>
+                    <p className="font-semibold text-[#3D3028]">Order #{o.id}</p>
+                    <p className="text-sm text-[#71675F]">
+                      {new Date(o.created_at).toLocaleDateString()} · {o.payment_method === 'gcash' ? 'GCash' : 'COD'}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs capitalize text-stone-600">
+                    {o.status.replace(/_/g, ' ')}
+                  </span>
+                </Link>
+              ))}
+              {orders.length === 0 && (
+                <p className="text-[#71675F]">
+                  No orders yet —{' '}
+                  <Link className="text-[#8B0000] underline" href="/customer/browse">start browsing</Link>.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* NOTIFICATIONS */}
+          <div className="mt-5 rounded-2xl border border-[#D6D0C9] bg-white p-5 shadow-sm sm:p-6">
+            <h2 className="font-serif text-xl font-bold text-[#3D3028]">Notifications</h2>
+            <div className="mt-4 space-y-2">
+              {notifications.slice(0, 5).map((n) => (
+                <div
+                  key={n.id}
+                  className={`rounded-xl border border-[#E8DCCB] p-4 ${n.is_read ? 'opacity-60' : ''}`}
+                >
+                  <p className="text-sm text-[#3D3028]">{n.message}</p>
+                  <p className="mt-1 text-xs text-stone-400">{new Date(n.created_at).toLocaleString()}</p>
+                </div>
+              ))}
+              {notifications.length === 0 && <p className="text-[#71675F]">You&apos;re all caught up.</p>}
+            </div>
+          </div>
         </div>
-      </main>
-    </>
+      </section>
+    </main>
   );
 }

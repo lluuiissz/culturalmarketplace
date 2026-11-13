@@ -15,6 +15,7 @@ import {
 import type {
   Product, Artisan, Order, OrderItem, CartItem, Notification,
   ChatMessage, ActivityLog, SessionUser, Role,
+  ProductReview,
 } from './types';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
@@ -844,6 +845,42 @@ export async function listArtisanOrders(artisanId: number): Promise<Array<OrderI
       return { ...x, order: o, customer_name: u?.name ?? null };
     })
     .sort((a, b) => b.id - a.id);
+}
+
+export async function listProductReviews(productId: number): Promise<ProductReview[]> {
+  if (usingPostgres) {
+    const rows = await sql`
+      select oi.id, oi.purchase_type, oi.review_rating, oi.review_comment, oi.reviewed_at,
+             u.name as customer_name
+      from order_items oi
+      join orders o on o.id = oi.order_id
+      join users u on u.id = o.customer_id
+      where oi.product_id = ${productId} and oi.review_rating is not null
+      order by oi.reviewed_at desc`;
+    return (rows as unknown as Record<string, unknown>[]).map((r) => ({
+      id: Number(r.id),
+      purchase_type: r.purchase_type as ProductReview['purchase_type'],
+      review_rating: Number(r.review_rating),
+      review_comment: (r.review_comment as string) ?? null,
+      reviewed_at: r.reviewed_at ? new Date(r.reviewed_at as string).toISOString() : null,
+      customer_name: (r.customer_name as string) ?? null,
+    }));
+  }
+  return store!.order_items
+    .filter((x) => x.product_id === productId && x.review_rating != null)
+    .map((x) => {
+      const o = store!.orders.find((oo) => oo.id === x.order_id);
+      const u = o ? store!.users.find((uu) => uu.id === o.customer_id) : undefined;
+      return {
+        id: x.id,
+        purchase_type: x.purchase_type,
+        review_rating: x.review_rating as number,
+        review_comment: x.review_comment,
+        reviewed_at: x.reviewed_at,
+        customer_name: u?.name ?? null,
+      };
+    })
+    .sort((a, b) => (b.reviewed_at ?? '').localeCompare(a.reviewed_at ?? ''));
 }
 
 export async function updateOrderStatus(orderId: number, status: string): Promise<void> {

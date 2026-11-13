@@ -180,8 +180,8 @@ export default function PortalSidebar({
 
 
     {/* FULL-WIDTH WEAVE DIVIDER */}
-<div className="-mx-4 w-[calc(100%+2rem)] shrink-0 py-2">
-  <WeaveDivider className="!w-full !mx-0" />
+<div className="-mx-6 w-[calc(100%+3rem)] shrink-0 py-2">
+  <WeaveDivider className="!w-full !mx-0 !max-w-none" />
 </div>
       {/* NAVIGATION SECTIONS */}
       <nav
