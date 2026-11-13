@@ -42,7 +42,7 @@ export default async function BrowsePage({
           </div>
 
           <h1 className="font-sculpted text-3xl sm:text-4xl font-bold text-charcoal-900">
-            Discover Original Handicrafts the Craft
+            Discover the Craft
           </h1>
           <p className="mt-1.5 text-sm text-stone-600 max-w-2xl">
             Explore authentic handwoven textiles, traditional woodcarvings, basketry, and living workshop experiences from Agusan del Sur master craftspeople.
