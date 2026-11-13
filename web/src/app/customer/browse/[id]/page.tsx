@@ -63,15 +63,14 @@ const workshopReviews = reviews.filter((r) => r.purchase_type === 'workshop');
 
               {product.has_tutorial && (
                 <div className="mt-3 flex items-center gap-3 rounded-xl border border-[#E3E3E3] bg-[#F8F8F8] p-3">
-                  {/* Map thumbnail */}
-                  <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl">
-                    <ExperienceMap
-                      lat={lat}
-                      lng={lng}
-                      locationName={product.tutorial_location || product.tutorial_dates?.[0]?.location}
-                      artisanPhone={artisan?.phone}
-                    />
-                  </div>
+                  {/* Map shortcut tile */}
+                  <a
+                    href="#workshop-map"
+                    className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border border-[#D6D0C9] bg-white text-center transition hover:bg-[#FFF5E4]"
+                  >
+                  <span className="text-2xl">🗺️</span>
+                  <span className="text-[10px] font-semibold text-[#9A681D]">View map</span>
+                  </a>
 
                   {/* Workshop info */}
                   <div className="min-w-0 flex-1 text-center">
@@ -145,6 +144,32 @@ const workshopReviews = reviews.filter((r) => r.purchase_type === 'workshop');
             </Link>
           </div>
         </section>
+
+{/* ===== WORKSHOP VENUE MAP ===== */}
+{product.has_tutorial && (
+  <section
+    id="workshop-map"
+    className="mt-6 scroll-mt-24 rounded-xl border border-[#D6D0C9] bg-white p-4 shadow-sm"
+  >
+    <h2 className="border-b border-[#D6D0C9] pb-1 font-serif text-base font-bold text-[#3D3028]">
+      Workshop Venue
+    </h2>
+    {(product.tutorial_location || product.tutorial_dates?.[0]?.location) && (
+      <p className="mt-2 text-xs text-[#71675F]">
+        📍 {product.tutorial_location || product.tutorial_dates?.[0]?.location}
+      </p>
+    )}
+    <div className="mt-3">
+      <ExperienceMap
+        lat={lat}
+        lng={lng}
+        locationName={product.tutorial_location || product.tutorial_dates?.[0]?.location}
+        artisanPhone={artisan?.phone}
+      />
+    </div>
+  </section>
+)}
+
 
         {/* ===== BOOKING / ORDER PANEL (logic unchanged) ===== */}
         <ProductDetailClient product={product} loggedIn={session?.role === 'customer'} />

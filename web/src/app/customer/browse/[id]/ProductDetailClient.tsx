@@ -248,7 +248,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               Select Experience Option:
             </label>
             <span className="text-[11px] font-semibold text-ochre-800">
-              🌿 Live Workshop Available
+              Live Workshop Available
             </span>
           </div>
 
@@ -283,7 +283,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               }`}
             >
               <div className="flex items-center gap-1.5 font-bold">
-                <span>🌿</span>
+                <span></span>
                 <span>Live Workshop</span>
               </div>
               <span className="text-[11px] font-bold text-ochre-800">
@@ -302,7 +302,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               }`}
             >
               <div className="flex items-center gap-1.5 font-bold">
-                <span>✨</span>
+                <span></span>
                 <span>Craft + Workshop</span>
               </div>
               <span className="text-[11px] font-bold text-ochre-700">
@@ -557,7 +557,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               disabled={busy}
               onClick={() => addToCart('workshop')}
             >
-              <span>🌿</span>
+              <span></span>
               <span>
                 {product.tutorial_fee_type === 'free'
                   ? `Confirm Free Workshop Registration (${qty} seat${qty > 1 ? 's' : ''})`
@@ -582,7 +582,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
           <div className="flex items-center justify-between border-b border-ochre-200 pb-3">
             <div>
               <p className="text-sm font-bold text-ochre-900 flex items-center gap-1.5 font-sculpted">
-                <span>✨</span> Complete Cultural Heritage Bundle
+                <span></span> Complete Cultural Heritage Bundle
               </p>
               <p className="text-xs text-stone-600 mt-0.5">
                 Receive the authentic craft item AND attend the masterclass workshop.
@@ -742,7 +742,7 @@ export default function ProductDetailClient({ product, loggedIn }: { product: Pr
               disabled={busy || product.stock_quantity <= 0}
               onClick={() => addToCart('bundle')}
             >
-              ✨ Add Craft & Workshop to Cart — ₱{(bundleUnitPrice * qty).toFixed(2)}
+              Add Craft & Workshop to Cart — ₱{(bundleUnitPrice * qty).toFixed(2)}
             </button>
             <button
               type="button"
