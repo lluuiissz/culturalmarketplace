@@ -14,7 +14,7 @@ export default async function CustomerProfilePage() {
   return (
     <>
       <main className="mx-auto max-w-xl px-4 py-10">
-        <h1 className="font-serif text-3xl font-bold text-brand-900">My profile</h1>
+        <h1 className="font-serif text-3xl font-bold text-brand-900">My profiles</h1>
         <ProfileForm
           initial={{
             name: user?.name || session.name,
