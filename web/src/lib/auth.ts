@@ -3,6 +3,7 @@
 
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 import type { SessionUser, Role } from './types';
 import { getArtisanByEmail, isAccountActive } from './db';
 import { SESSION_COOKIE_NAME, sessionSecret, verifySessionToken, type SessionPayload } from './sessionToken';
@@ -25,9 +26,9 @@ export async function createSession(user: SessionUser): Promise<void> {
   });
 }
 
-export async function getSession(): Promise<SessionPayload | null> {
+export const getSession = cache(async (): Promise<SessionPayload | null> => {
   const session = await verifySessionToken((await cookies()).get(SESSION_COOKIE_NAME)?.value);
-  if (!session || !await isAccountActive(session.id, session.role, session.email)) return null;
+  if (!session) return null;
   if (session.role === 'artisan') {
     const artisan = await getArtisanByEmail(session.email);
     if (!artisan) return null;
@@ -39,8 +40,9 @@ export async function getSession(): Promise<SessionPayload | null> {
       profile_picture: artisan.profile_picture,
     };
   }
+  if (!await isAccountActive(session.id, session.role, session.email)) return null;
   return session;
-}
+});
 
 export async function destroySession(): Promise<void> {
   (await cookies()).delete(SESSION_COOKIE_NAME);

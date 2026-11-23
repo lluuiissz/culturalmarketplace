@@ -26,7 +26,7 @@ export default function AxisChart({
 }) {
   const maxVal = Math.max(...series.flatMap((s) => s.values), 0);
   if (maxVal === 0 || labels.length === 0) {
-    return <p className="py-10 text-center text-sm text-stone-400">No activity in this period yet.</p>;
+    return <p className="py-10 text-center text-sm text-[#000000]/60">No activity in this period yet.</p>;
   }
 
   const W = 600, H = 240, L = 46, R = 12, T = 14, B = 30;
@@ -49,14 +49,14 @@ export default function AxisChart({
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={ariaLabel}>
         {ticks.map((t) => (
           <g key={t}>
-            <line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke="#e7e5e4" strokeDasharray={t === 0 ? undefined : '3 3'} />
-            <text x={L - 6} y={y(t) + 3} textAnchor="end" fontSize="10" fill="#a8a29e">{formatY(t)}</text>
+            <line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke="#000000" strokeOpacity="0.1" strokeDasharray={t === 0 ? undefined : '3 3'} />
+            <text x={L - 6} y={y(t) + 3} textAnchor="end" fontSize="10" fill="#000000" fillOpacity="0.6">{formatY(t)}</text>
           </g>
         ))}
 
         {labels.map((lb, i) =>
           i % step === 0 || i === n - 1 ? (
-            <text key={i} x={variant === 'bars' ? L + gw * i + gw / 2 : lineX(i)} y={H - 10} textAnchor="middle" fontSize="10" fill="#a8a29e">{lb}</text>
+            <text key={i} x={variant === 'bars' ? L + gw * i + gw / 2 : lineX(i)} y={H - 10} textAnchor="middle" fontSize="10" fill="#000000" fillOpacity="0.6">{lb}</text>
           ) : null,
         )}
 
@@ -69,7 +69,7 @@ export default function AxisChart({
                 <polygon points={area} fill={s.color} opacity="0.12" />
                 <polyline points={pts.join(' ')} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
                 {s.values.map((v, i) => (
-                  <circle key={i} cx={lineX(i)} cy={y(v)} r="3" fill="#fff" stroke={s.color} strokeWidth="2">
+                  <circle key={i} cx={lineX(i)} cy={y(v)} r="3" fill="#fdfbf9" stroke={s.color} strokeWidth="2">
                     <title>{`${labels[i]} · ${s.name}: ${formatTip(v)}`}</title>
                   </circle>
                 ))}
@@ -106,7 +106,7 @@ export default function AxisChart({
       </svg>
 
       {series.length > 1 && (
-        <div className="mt-2 flex flex-wrap gap-4 text-xs text-stone-500">
+        <div className="mt-2 flex flex-wrap gap-4 text-xs text-[#000000]/70">
           {series.map((s) => (
             <span key={s.name} className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: s.color }} />

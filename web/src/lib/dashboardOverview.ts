@@ -22,44 +22,13 @@ export interface AttentionCounts {
 export interface CategoryRevenue { category: string; revenue: number; units: number }
 export interface PaymentCount { method: string; count: number }
 
-async function loadKpis(): Promise<OverviewKpis> {
-  if (!usingPg) {
-    return { revenueToday: 0, revenue7d: 0, revenuePrev7d: 0, orders7d: 0, ordersPrev7d: 0, newCustomers7d: 0, newArtisans7d: 0 };
-  }
-  const [rev, signups] = await Promise.all([
-    sql`with recent as (
-          select o.created_at, sum(oi.price * oi.quantity) as amt
-          from orders o join order_items oi on oi.order_id = o.id
-          where o.status <> 'cancelled' and o.created_at >= now() - interval '14 days'
-          group by o.id, o.created_at
-        )
-        select
-          coalesce(sum(amt) filter (where created_at >= (date_trunc('day', now() at time zone 'Asia/Manila') at time zone 'Asia/Manila')), 0) as revenue_today,
-          coalesce(sum(amt) filter (where created_at >= now() - interval '7 days'), 0) as revenue_7d,
-          coalesce(sum(amt) filter (where created_at <  now() - interval '7 days'), 0) as revenue_prev_7d,
-          count(*) filter (where created_at >= now() - interval '7 days') as orders_7d,
-          count(*) filter (where created_at <  now() - interval '7 days') as orders_prev_7d
-        from recent`,
-    sql`select
-          (select count(*) from users where role='customer' and created_at >= now() - interval '7 days') as customers,
-          (select count(*) from artisans where created_at >= now() - interval '7 days') as artisans`,
-  ]);
-  const r = rev[0] as Record<string, unknown>;
-  const s = signups[0] as Record<string, unknown>;
-  return {
-    revenueToday: Number(r.revenue_today ?? 0),
-    revenue7d: Number(r.revenue_7d ?? 0),
-    revenuePrev7d: Number(r.revenue_prev_7d ?? 0),
-    orders7d: Number(r.orders_7d ?? 0),
-    ordersPrev7d: Number(r.orders_prev_7d ?? 0),
-    newCustomers7d: Number(s.customers ?? 0),
-    newArtisans7d: Number(s.artisans ?? 0),
-  };
-}
-
 // One query: per-day revenue, orders and signups for the last 14 days (Manila time).
-async function loadDailySeries(): Promise<DailyPoint[]> {
-  if (!usingPg) return [];
+async function loadDailySeries(): Promise<{ days: DailyPoint[]; kpis: OverviewKpis }> {
+  const emptyKpis: OverviewKpis = {
+    revenueToday: 0, revenue7d: 0, revenuePrev7d: 0, orders7d: 0,
+    ordersPrev7d: 0, newCustomers7d: 0, newArtisans7d: 0,
+  };
+  if (!usingPg) return { days: [], kpis: emptyKpis };
   const rows = (await sql`
     with days as (
       select d::date as day
@@ -68,12 +37,17 @@ async function loadDailySeries(): Promise<DailyPoint[]> {
         (now() at time zone 'Asia/Manila')::date::timestamp,
         interval '1 day') d
     ),
-    ord as (
-      select (o.created_at at time zone 'Asia/Manila')::date as day,
-             count(distinct o.id) as orders,
-             sum(oi.price * oi.quantity) as revenue
+    order_totals as (
+      select o.id, o.created_at, sum(oi.price * oi.quantity) as amount
       from orders o join order_items oi on oi.order_id = o.id
       where o.status <> 'cancelled' and o.created_at >= now() - interval '15 days'
+      group by o.id, o.created_at
+    ),
+    ord as (
+      select (created_at at time zone 'Asia/Manila')::date as day,
+             count(*) as orders,
+             sum(amount) as revenue
+      from order_totals
       group by 1
     ),
     cu as (
@@ -85,24 +59,63 @@ async function loadDailySeries(): Promise<DailyPoint[]> {
       select (created_at at time zone 'Asia/Manila')::date as day, count(*) as n
       from artisans where created_at >= now() - interval '15 days'
       group by 1
+    ),
+    order_summary as (
+      select
+        coalesce(sum(amount) filter (where created_at >= (date_trunc('day', now() at time zone 'Asia/Manila') at time zone 'Asia/Manila')), 0) as revenue_today,
+        coalesce(sum(amount) filter (where created_at >= now() - interval '7 days'), 0) as revenue_7d,
+        coalesce(sum(amount) filter (where created_at >= now() - interval '14 days' and created_at < now() - interval '7 days'), 0) as revenue_prev_7d,
+        count(*) filter (where created_at >= now() - interval '7 days') as orders_7d,
+        count(*) filter (where created_at >= now() - interval '14 days' and created_at < now() - interval '7 days') as orders_prev_7d
+      from order_totals
+    ),
+    signup_summary as (
+      select
+        (select count(*) from users where role = 'customer' and created_at >= now() - interval '7 days') as customers,
+        (select count(*) from artisans where created_at >= now() - interval '7 days') as artisans
     )
     select to_char(days.day, 'YYYY-MM-DD') as day,
            coalesce(ord.revenue, 0) as revenue,
            coalesce(ord.orders, 0) as orders,
            coalesce(cu.n, 0) as customers,
-           coalesce(ar.n, 0) as artisans
+           coalesce(ar.n, 0) as artisans,
+           order_summary.revenue_today,
+           order_summary.revenue_7d,
+           order_summary.revenue_prev_7d,
+           order_summary.orders_7d,
+           order_summary.orders_prev_7d,
+           signup_summary.customers as new_customers_7d,
+           signup_summary.artisans as new_artisans_7d
     from days
     left join ord on ord.day = days.day
     left join cu on cu.day = days.day
     left join ar on ar.day = days.day
-    order by days.day`) as unknown as Array<{ day: string; revenue: string; orders: string; customers: string; artisans: string }>;
-  return rows.map((r) => ({
-    day: r.day,
-    revenue: Number(r.revenue ?? 0),
-    orders: Number(r.orders ?? 0),
-    customers: Number(r.customers ?? 0),
-    artisans: Number(r.artisans ?? 0),
-  }));
+    cross join order_summary
+    cross join signup_summary
+    order by days.day`) as unknown as Array<{
+      day: string; revenue: string; orders: string; customers: string; artisans: string;
+      revenue_today: string; revenue_7d: string; revenue_prev_7d: string;
+      orders_7d: string; orders_prev_7d: string; new_customers_7d: string; new_artisans_7d: string;
+    }>;
+  const first = rows[0] as Record<string, unknown> | undefined;
+  return {
+    days: rows.map((r) => ({
+      day: r.day,
+      revenue: Number(r.revenue ?? 0),
+      orders: Number(r.orders ?? 0),
+      customers: Number(r.customers ?? 0),
+      artisans: Number(r.artisans ?? 0),
+    })),
+    kpis: first ? {
+      revenueToday: Number(first.revenue_today ?? 0),
+      revenue7d: Number(first.revenue_7d ?? 0),
+      revenuePrev7d: Number(first.revenue_prev_7d ?? 0),
+      orders7d: Number(first.orders_7d ?? 0),
+      ordersPrev7d: Number(first.orders_prev_7d ?? 0),
+      newCustomers7d: Number(first.new_customers_7d ?? 0),
+      newArtisans7d: Number(first.new_artisans_7d ?? 0),
+    } : emptyKpis,
+  };
 }
 
 async function loadTopProducts(): Promise<TopProduct[]> {
@@ -229,7 +242,6 @@ async function loadAttention(): Promise<AttentionCounts> {
   };
 }
 
-export const getOverviewKpis = unstable_cache(loadKpis, ['dash-kpis'], { revalidate: 60 });
 export const getDailySeries = unstable_cache(loadDailySeries, ['dash-daily-series'], { revalidate: 120 });
 export const getTopProducts30d = unstable_cache(loadTopProducts, ['dash-top-products'], { revalidate: 300 });
 export const getCategoryRevenue30d = unstable_cache(loadCategoryRevenue, ['dash-category-revenue'], { revalidate: 300 });

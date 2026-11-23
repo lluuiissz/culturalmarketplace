@@ -7,7 +7,7 @@
 // The Map lives on globalThis so Next.js dev hot-reload reuses it instead of
 // starting cold on every module re-evaluation.
 
-type Entry<T> = { value: T; expires: number };
+type Entry<T> = { value: T; expires: number } | { promise: Promise<T> };
 
 const TTL_MS = 30_000;
 
@@ -23,11 +23,23 @@ function cache(): Map<string, Entry<unknown>> {
 
 /** Get-or-load a cached value. `load` only runs on miss/expiry. */
 export async function cached<T>(key: string, load: () => Promise<T>, ttlMs: number = TTL_MS): Promise<T> {
-  const hit = cache().get(key);
-  if (hit && hit.expires > Date.now()) return hit.value as T;
-  const value = await load();
-  cache().set(key, { value, expires: Date.now() + ttlMs });
-  return value;
+  const entries = cache();
+  const existing = entries.get(key);
+  if (existing && 'promise' in existing) return existing.promise as Promise<T>;
+  if (existing && existing.expires > Date.now()) return existing.value as T;
+
+  const entry: Entry<T> = { promise: Promise.resolve().then(load) };
+  entries.set(key, entry);
+  try {
+    const value = await entry.promise;
+    if (entries.get(key) === entry) {
+      entries.set(key, { value, expires: Date.now() + ttlMs });
+    }
+    return value;
+  } catch (error) {
+    if (entries.get(key) === entry) entries.delete(key);
+    throw error;
+  }
 }
 
 /** Drop one key or the whole cache (prefix match when key ends with '*'). */
