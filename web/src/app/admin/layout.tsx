@@ -7,50 +7,50 @@ export const dynamic = 'force-dynamic';
 
 const SECTIONS: NavSection[] = [
   {
-    title: 'Administrator Directorate',
+    title: 'Admin Panel',
     items: [
       { href: '/admin/dashboard', label: 'Admin Dashboard', icon: 'home' },
-      { href: '/admin/analytics', label: 'Analytics & Provenance', icon: 'chart' },
+      { href: '/admin/analytics', label: 'Reports & Analytics', icon: 'chart' },
       { href: '/admin/activity', label: 'Activity Logs', icon: 'history' },
     ],
   },
   {
-    title: 'Artisans & Patrons',
+    title: 'Users & Artisans',
     items: [
-      { href: '/admin/artisans', label: 'Master Artisans & KYC', icon: 'users' },
-      { href: '/admin/customers', label: 'Patron Registry', icon: 'shopping-bag' },
+      { href: '/admin/artisans', label: 'Artisan Accounts & Verification', icon: 'users' },
+      { href: '/admin/customers', label: 'Buyer Accounts', icon: 'shopping-bag' },
     ],
   },
   {
-    title: 'Heritage Catalog',
+    title: 'Products & Categories',
     items: [
       { href: '/admin/products', label: 'Craft Listings', icon: 'package' },
-      { href: '/admin/categories', label: 'Weave Categories', icon: 'tags' },
+      { href: '/admin/categories', label: 'Craft Categories', icon: 'tags' },
       { href: '/admin/reviews', label: 'Reviews & Feedback', icon: 'star' },
-      { href: '/admin/homepage', label: 'Homepage Showcase', icon: 'image' },
+      { href: '/admin/homepage', label: 'Homepage Highlights', icon: 'image' },
     ],
   },
   {
-    title: 'Trust & Authenticity',
+    title: 'Verification & Safety',
     items: [
-      { href: '/admin/moderation', label: 'Moderation Queue', icon: 'shield' },
+      { href: '/admin/moderation', label: 'Pending Reviews', icon: 'shield' },
       { href: '/admin/reports', label: 'Cultural Reports', icon: 'flag' },
-      { href: '/admin/nfc', label: 'Sacred NFC Registry', icon: 'radio' },
+      { href: '/admin/nfc', label: 'NFC Authenticity Records', icon: 'radio' },
     ],
   },
   {
-    title: 'Exchanges & Bookings',
+    title: 'Orders & Workshops',
     items: [
       { href: '/admin/orders', label: 'Orders', icon: 'receipt' },
       { href: '/admin/payments', label: 'Payment Verification', icon: 'credit-card' },
-      { href: '/admin/shipments', label: 'Shipments (J&T)', icon: 'truck' },
+      { href: '/admin/shipments', label: 'Shipping & Delivery', icon: 'truck' },
       { href: '/admin/bookings', label: 'Workshop Bookings', icon: 'ticket' },
     ],
   },
   {
     title: 'System Settings',
     items: [
-      { href: '/admin/settings', label: 'Platform Settings', icon: 'settings' },
+      { href: '/admin/settings', label: 'Marketplace Settings', icon: 'settings' },
       { href: '/admin/profile', label: 'Admin Profile', icon: 'user' },
     ],
   },
@@ -72,9 +72,9 @@ export default async function AdminLayout({
       <PortalSidebar
         sections={SECTIONS}
         portalHome="/admin/dashboard"
-        portalLabel="Curator Directorate"
+        portalLabel="Admin Panel"
         userName={session.name}
-        backLabel="View Storefront"
+        backLabel="View Marketplace"
         roleTitle="Administrator" 
       />
 
